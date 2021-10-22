@@ -268,15 +268,12 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: logoOpacityAnimation,
-      child: ScaleTransition(
-        scale: logoSizeAnimation,
-        child: const Icon(
-          Icons.star,
-          color: Colors.white,
-          size: 150,
-        ),
+    return Opacity(
+      opacity: logoOpacityAnimation.value,
+      child: Icon(
+        Icons.star,
+        color: Colors.white,
+        size: logoSizeAnimation.value * 150,
       ),
     );
   }
@@ -299,8 +296,8 @@ class SlideFadeWidget extends StatelessWidget {
           MediaQuery.of(context).size.width *
               (1 - commonFadeSlideAnimation.value),
           0),
-      child: FadeTransition(
-        opacity: commonFadeSlideAnimation,
+      child: Opacity(
+        opacity: commonFadeSlideAnimation.value,
         child: child,
       ),
     );
