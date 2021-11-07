@@ -6,13 +6,11 @@
     "configurations": [
         {
             "name": "flutter_animations",
-            "cwd": "flutter_animations",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
         },
         {
             "name": "flutter_animations (profile mode)",
-            "cwd": "flutter_animations",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
