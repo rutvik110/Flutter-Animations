@@ -33,7 +33,9 @@ class _SpotifyPageState extends State<SpotifyPage> {
     minAppBarHeight = MediaQuery.of(context).padding.top +
         MediaQuery.of(context).size.height * 0.1;
     //TODO:set max size
-    buttonSize = (MediaQuery.of(context).size.width / 320) * 50;
+    buttonSize = (MediaQuery.of(context).size.width / 320) * 50 > 80
+        ? 80
+        : (MediaQuery.of(context).size.width / 320) * 50;
     subHeaderHeight = 180;
     return Material(
       child: DecoratedBox(
@@ -287,12 +289,21 @@ class PageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).size.height * 0.05;
+
     return SliverPersistentHeader(
         pinned: true,
         delegate: SliverAppBarDelegate(
             maxHeight: maxAppBarHeight,
             minHeight: minAppBarHeight,
             builder: (context, shrinkOffset) {
+              final animateAlbumContainer =
+                  shrinkOffset >= MediaQuery.of(context).size.height * 0.2;
+              final albumPositionFromTop =
+                  -(shrinkOffset - MediaQuery.of(context).size.height * 0.2) +
+                      topPadding;
+              final albumImageSize =
+                  MediaQuery.of(context).size.height * 0.3 - shrinkOffset / 2;
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 150),
                 decoration: BoxDecoration(
@@ -322,43 +333,33 @@ class PageHeader extends StatelessWidget {
                   clipBehavior: Clip.none,
                   children: [
                     Positioned(
-                      top: shrinkOffset >=
-                              MediaQuery.of(context).size.height * 0.2
-                          ? -(shrinkOffset -
-                                  MediaQuery.of(context).size.height * 0.2) +
-                              MediaQuery.of(context).size.height * 0.05
-                          : MediaQuery.of(context).size.height * 0.05,
+                      top: animateAlbumContainer
+                          ? albumPositionFromTop
+                          : topPadding,
                       child: AnimatedOpacity(
                         onEnd: onEnd,
                         duration: const Duration(milliseconds: 500),
-                        opacity: shrinkOffset >=
-                                MediaQuery.of(context).size.height * 0.2
-                            ? 0
-                            : 1,
+                        opacity: animateAlbumContainer ? 0 : 1,
                         child: Container(
                           height:
-                              // MediaQuery.of(context).size.height * 0.3 -
-                              //             shrinkOffset / 2 ==
+                              // albumImageSize ==
                               //         100
                               //     ? 100
                               //     :
-                              MediaQuery.of(context).size.height * 0.3 -
-                                  shrinkOffset / 2,
+                              albumImageSize,
                           width:
-                              //  MediaQuery.of(context).size.height * 0.3 -
-                              //             shrinkOffset / 2 ==
+                              //  albumImageSize ==
                               //         100
                               //     ? 100
                               //     :
-                              MediaQuery.of(context).size.height * 0.3 -
-                                  shrinkOffset / 2,
+                              albumImageSize,
                           decoration: BoxDecoration(
                             color: Colors.deepPurpleAccent,
                             image: DecorationImage(
                               image: NetworkImage(albumImageUrl),
                               fit: BoxFit.cover,
                             ),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                 color: Colors.black87,
                                 spreadRadius: 1,
@@ -371,8 +372,7 @@ class PageHeader extends StatelessWidget {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.05),
+                      padding: EdgeInsets.only(top: topPadding),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
