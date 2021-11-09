@@ -338,8 +338,12 @@ class PageHeader extends StatelessWidget {
                           : topPadding,
                       child: AnimatedOpacity(
                         onEnd: onEnd,
-                        duration: const Duration(milliseconds: 500),
-                        opacity: animateAlbumContainer ? 0 : 1,
+                        duration: const Duration(milliseconds: 100),
+                        opacity: (shrinkOffset / maxAppBarHeight) > 0.6
+                            ? 0
+                            : (shrinkOffset / maxAppBarHeight) < 0.4
+                                ? 1
+                                : 1 - shrinkOffset / maxAppBarHeight,
                         child: Container(
                           height:
                               // albumImageSize ==
@@ -375,10 +379,25 @@ class PageHeader extends StatelessWidget {
                       padding: EdgeInsets.only(top: topPadding),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Icon(
+                        children: [
+                          const Icon(
                             Icons.arrow_back,
                             color: Colors.white,
+                          ),
+                          const SizedBox(width: 30),
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: AnimatedOpacity(
+                              opacity: (shrinkOffset / maxAppBarHeight) > 0.6
+                                  ? (shrinkOffset / maxAppBarHeight)
+                                  : 0,
+                              duration: const Duration(milliseconds: 100),
+                              child: Text("=",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                  )),
+                            ),
                           ),
                         ],
                       ),
