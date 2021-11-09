@@ -17,12 +17,11 @@ class _SpotifyPageState extends State<SpotifyPage> {
 
   late double maxAppBarHeight;
   late double minAppBarHeight;
-  late double buttonSize;
-  late double subHeaderHeight;
+  late double playPauseButtonSize;
+  late double infoBoxHeight;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _scrollController = ScrollController();
   }
@@ -32,11 +31,10 @@ class _SpotifyPageState extends State<SpotifyPage> {
     maxAppBarHeight = MediaQuery.of(context).size.height * 0.5;
     minAppBarHeight = MediaQuery.of(context).padding.top +
         MediaQuery.of(context).size.height * 0.1;
-    //TODO:set max size
-    buttonSize = (MediaQuery.of(context).size.width / 320) * 50 > 80
+    playPauseButtonSize = (MediaQuery.of(context).size.width / 320) * 50 > 80
         ? 80
         : (MediaQuery.of(context).size.width / 320) * 50;
-    subHeaderHeight = 180;
+    infoBoxHeight = 180;
     return Material(
       child: DecoratedBox(
         decoration: const BoxDecoration(
@@ -58,138 +56,20 @@ class _SpotifyPageState extends State<SpotifyPage> {
               controller: _scrollController,
               clipBehavior: Clip.none,
               slivers: [
-                PageHeader(
-                  onEnd: () {},
+                SliverCustomeAppBar(
                   maxAppBarHeight: maxAppBarHeight,
                   minAppBarHeight: minAppBarHeight,
                 ),
-                SliverToBoxAdapter(
-                  child: DecoratedBox(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black87,
-                          ],
-                          stops: [
-                            0.00022,
-                            1.0,
-                          ]),
-                    ),
-                    child: SizedBox(
-                      height: 180,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "=",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: Colors.red,
-                                  backgroundImage: NetworkImage(edImageUrl),
-                                ),
-                                const Text(
-                                  "Ed Sheeran",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox.shrink()
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text(
-                              "Album . 2021",
-                              style: TextStyle(
-                                color: Colors.white70,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      Icons.favorite_border,
-                                      color: Colors.white,
-                                    )),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      Icons.download_outlined,
-                                      color: Colors.white,
-                                    )),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      Icons.more_vert_rounded,
-                                      color: Colors.white,
-                                    ))
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => DecoratedBox(
-                      decoration: const BoxDecoration(
-                        color: Colors.black,
-                      ),
-                      child: ListTile(
-                        title: const Text(
-                          "Tides",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                        ),
-                        subtitle: const Text("Ed Sheeran",
-                            style: TextStyle(
-                              color: Colors.white,
-                            )),
-                        trailing: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.more_vert_rounded,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                AlbumInfo(infoBoxHeight: infoBoxHeight),
+                const AlbumSongsList(),
               ],
             ),
-            PlayButton(
+            PlayPauseButton(
               scrollController: _scrollController,
               maxAppBarHeight: maxAppBarHeight,
               minAppBarHeight: minAppBarHeight,
-              buttonSize: buttonSize,
-              subHeaderHeight: subHeaderHeight,
+              playPauseButtonSize: playPauseButtonSize,
+              infoBoxHeight: infoBoxHeight,
             ),
           ],
         ),
@@ -198,27 +78,169 @@ class _SpotifyPageState extends State<SpotifyPage> {
   }
 }
 
-class PlayButton extends StatefulWidget {
-  const PlayButton({
+class AlbumSongsList extends StatelessWidget {
+  const AlbumSongsList({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => DecoratedBox(
+          decoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          child: ListTile(
+            title: const Text(
+              "Tides",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
+            ),
+            subtitle: const Text("Ed Sheeran",
+                style: TextStyle(
+                  color: Colors.white,
+                )),
+            trailing: IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.more_vert_rounded,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AlbumInfo extends StatelessWidget {
+  const AlbumInfo({
+    Key? key,
+    required this.infoBoxHeight,
+  }) : super(key: key);
+
+  final double infoBoxHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.transparent,
+                Colors.black87,
+              ],
+              stops: [
+                0.00022,
+                1.0,
+              ]),
+        ),
+        child: SizedBox(
+          height: infoBoxHeight,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "=",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.red,
+                      backgroundImage: NetworkImage(edImageUrl),
+                    ),
+                    const Text(
+                      "Ed Sheeran",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox.shrink()
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  "Album . 2021",
+                  style: TextStyle(
+                    color: Colors.white70,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.favorite_border,
+                          color: Colors.white,
+                        )),
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.download_outlined,
+                          color: Colors.white,
+                        )),
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.more_vert_rounded,
+                          color: Colors.white,
+                        ))
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PlayPauseButton extends StatefulWidget {
+  const PlayPauseButton({
     Key? key,
     required this.scrollController,
     required this.maxAppBarHeight,
     required this.minAppBarHeight,
-    required this.buttonSize,
-    required this.subHeaderHeight,
+    required this.playPauseButtonSize,
+    required this.infoBoxHeight,
   }) : super(key: key);
 
   final ScrollController scrollController;
   final double maxAppBarHeight;
   final double minAppBarHeight;
-  final double buttonSize;
-  final double subHeaderHeight;
+  final double playPauseButtonSize;
+  final double infoBoxHeight;
 
   @override
-  State<PlayButton> createState() => _PlayButtonState();
+  State<PlayPauseButton> createState() => _PlayPauseButtonState();
 }
 
-class _PlayButtonState extends State<PlayButton> {
+class _PlayPauseButtonState extends State<PlayPauseButton> {
   @override
   void initState() {
     // TODO: implement initState
@@ -231,22 +253,20 @@ class _PlayButtonState extends State<PlayButton> {
 
   double get getPosition {
     double res = widget.maxAppBarHeight;
-    double finalPosition = widget.minAppBarHeight - widget.buttonSize / 2;
+    double finalPosition =
+        widget.minAppBarHeight - widget.playPauseButtonSize / 2;
     if (widget.scrollController.hasClients) {
       double offset = widget.scrollController.offset;
-      //if want to lower button then first add later subtract
-      //if want to move up then first subtract later add
+      //if want to lower button position then first add later subtract
+      //if want to move up button position then first subtract later add
 
       if (offset <
-          (res -
-              finalPosition +
-              widget.subHeaderHeight -
-              widget.buttonSize -
+          (res +
+              widget.infoBoxHeight -
+              finalPosition -
+              widget.playPauseButtonSize -
               10)) {
-        res -= offset -
-            widget.subHeaderHeight +
-            widget.buttonSize +
-            10; //subtract from res
+        res -= offset - widget.infoBoxHeight + widget.playPauseButtonSize + 10;
       } else {
         res = finalPosition;
       }
@@ -262,7 +282,8 @@ class _PlayButtonState extends State<PlayButton> {
       child: ElevatedButton(
         style: OutlinedButton.styleFrom(
           backgroundColor: Color(0xFF78FF45),
-          fixedSize: Size(widget.buttonSize, widget.buttonSize),
+          fixedSize:
+              Size(widget.playPauseButtonSize, widget.playPauseButtonSize),
           shape: CircleBorder(),
         ),
         onPressed: () {},
@@ -275,21 +296,25 @@ class _PlayButtonState extends State<PlayButton> {
   }
 }
 
-class PageHeader extends StatelessWidget {
-  const PageHeader({
+class SliverCustomeAppBar extends StatelessWidget {
+  const SliverCustomeAppBar({
     Key? key,
-    required this.onEnd,
     required this.maxAppBarHeight,
     required this.minAppBarHeight,
   }) : super(key: key);
 
-  final VoidCallback onEnd;
   final double maxAppBarHeight;
   final double minAppBarHeight;
 
   @override
   Widget build(BuildContext context) {
+    //status bar height
     final topPadding = MediaQuery.of(context).size.height * 0.05;
+    //app bar content padding from top and horizantal padding
+    var padding = EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + topPadding,
+        right: 10,
+        left: 10);
 
     return SliverPersistentHeader(
         pinned: true,
@@ -297,66 +322,41 @@ class PageHeader extends StatelessWidget {
             maxHeight: maxAppBarHeight,
             minHeight: minAppBarHeight,
             builder: (context, shrinkOffset) {
-              final animateAlbumContainer =
-                  shrinkOffset >= MediaQuery.of(context).size.height * 0.2;
-              final albumPositionFromTop =
-                  -(shrinkOffset - MediaQuery.of(context).size.height * 0.2) +
-                      topPadding;
+              final double shrinkToMaxAppBarHeightRatio =
+                  shrinkOffset / maxAppBarHeight;
+              const double animatAlbumImageFromPoint = 0.4;
+              final animateAlbumImage =
+                  shrinkToMaxAppBarHeightRatio >= animatAlbumImageFromPoint;
+              final animateOpacityToZero = shrinkToMaxAppBarHeightRatio > 0.6;
+              final albumPositionFromTop = animateAlbumImage
+                  ? (animatAlbumImageFromPoint - shrinkToMaxAppBarHeightRatio) *
+                      maxAppBarHeight
+                  : null;
               final albumImageSize =
                   MediaQuery.of(context).size.height * 0.3 - shrinkOffset / 2;
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                decoration: BoxDecoration(
-                  gradient:
-                      shrinkOffset >= MediaQuery.of(context).size.height * 0.35
-                          ? const LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                  Color(0xFF816EC1),
-                                  // Colors.black,
-                                  Color(0xFF5E4E95),
-                                ],
-                              stops: [
-                                  0,
-                                  // 0.6,
-                                  0.5
-                                ])
-                          : null,
-                ),
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top,
-                    right: 10,
-                    left: 10),
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned(
-                      top: animateAlbumContainer
-                          ? albumPositionFromTop
-                          : topPadding,
+              final showAppBar = shrinkToMaxAppBarHeightRatio > 0.7;
+              final appBarOpacityDouble = showAppBar
+                  ? 1 - (maxAppBarHeight - shrinkOffset) / minAppBarHeight
+                  : 0;
+
+              return Stack(
+                alignment: Alignment.topCenter,
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned(
+                    top: albumPositionFromTop,
+                    child: Padding(
+                      padding: padding,
                       child: AnimatedOpacity(
-                        onEnd: onEnd,
                         duration: const Duration(milliseconds: 100),
-                        opacity: (shrinkOffset / maxAppBarHeight) > 0.6
+                        opacity: animateOpacityToZero
                             ? 0
-                            : (shrinkOffset / maxAppBarHeight) < 0.4
-                                ? 1
-                                : 1 - shrinkOffset / maxAppBarHeight,
+                            : animateAlbumImage
+                                ? 1 - shrinkToMaxAppBarHeightRatio
+                                : 1,
                         child: Container(
-                          height:
-                              // albumImageSize ==
-                              //         100
-                              //     ? 100
-                              //     :
-                              albumImageSize,
-                          width:
-                              //  albumImageSize ==
-                              //         100
-                              //     ? 100
-                              //     :
-                              albumImageSize,
+                          height: albumImageSize,
+                          width: albumImageSize,
                           decoration: BoxDecoration(
                             color: Colors.deepPurpleAccent,
                             image: DecorationImage(
@@ -374,36 +374,55 @@ class PageHeader extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.only(top: topPadding),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.arrow_back,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 30),
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: AnimatedOpacity(
-                              opacity: (shrinkOffset / maxAppBarHeight) > 0.6
-                                  ? (shrinkOffset / maxAppBarHeight)
-                                  : 0,
+                  ),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    decoration: BoxDecoration(
+                      gradient: showAppBar
+                          ? const LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                  Color(0xFF816EC1),
+                                  Color(0xFF5E4E95),
+                                ],
+                              stops: [
+                                  0,
+                                  0.5
+                                ])
+                          : null,
+                    ),
+                    child: Padding(
+                      padding: padding,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: double.maxFinite,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.ideographic,
+                          children: [
+                            const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 30),
+                            AnimatedOpacity(
+                              opacity: appBarOpacityDouble.toDouble() < 0
+                                  ? 0
+                                  : appBarOpacityDouble.toDouble(),
                               duration: const Duration(milliseconds: 100),
-                              child: Text("=",
+                              child: const Text("=",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 24,
+                                    fontSize: 32,
                                   )),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
             }));
   }
