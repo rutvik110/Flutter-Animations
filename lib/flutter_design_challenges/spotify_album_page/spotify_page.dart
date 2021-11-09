@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_page/album_info.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_page/album_songs_list.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_page/const.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_page/play_paus_button.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_page/sliver_custom_appbar.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/album_info.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/album_songs_list.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/const.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/play_paus_button.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/sliver_custom_appbar.dart';
 
-class SpotifyPage extends StatefulWidget {
-  const SpotifyPage({Key? key}) : super(key: key);
+class SpotifyAlbumPage extends StatefulWidget {
+  const SpotifyAlbumPage({Key? key}) : super(key: key);
 
   @override
-  _SpotifyPageState createState() => _SpotifyPageState();
+  _SpotifyAlbumPageState createState() => _SpotifyAlbumPageState();
 }
 
-class _SpotifyPageState extends State<SpotifyPage> {
+class _SpotifyAlbumPageState extends State<SpotifyAlbumPage> {
   late ScrollController _scrollController;
 
   late double maxAppBarHeight;
