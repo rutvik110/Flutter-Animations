@@ -18,6 +18,8 @@ class AlbumSongsList extends StatelessWidget {
             color: Colors.black,
           ),
           child: ListTile(
+            onTap: () {},
+            tileColor: Colors.black,
             title: const Text(
               "Tides",
               style: TextStyle(

@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/album_info.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/album_songs_list.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/const.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/play_paus_button.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/sliver_custom_appbar.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/album_info.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/album_songs_list.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/const.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/play_paus_button.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/sliver_custom_appbar.dart';
 
-class SpotifyAlbumPage extends StatefulWidget {
-  const SpotifyAlbumPage({Key? key}) : super(key: key);
+class SpotifyAlbumView extends StatefulWidget {
+  const SpotifyAlbumView({Key? key}) : super(key: key);
 
   @override
-  _SpotifyAlbumPageState createState() => _SpotifyAlbumPageState();
+  _SpotifyAlbumViewState createState() => _SpotifyAlbumViewState();
 }
 
-class _SpotifyAlbumPageState extends State<SpotifyAlbumPage> {
+class _SpotifyAlbumViewState extends State<SpotifyAlbumView> {
   late ScrollController _scrollController;
 
   late double maxAppBarHeight;
@@ -39,8 +39,8 @@ class _SpotifyAlbumPageState extends State<SpotifyAlbumPage> {
         ? 80
         : (MediaQuery.of(context).size.width / 320) * 50;
     infoBoxHeight = 180;
-    return Material(
-      child: DecoratedBox(
+    return Scaffold(
+      body: DecoratedBox(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,

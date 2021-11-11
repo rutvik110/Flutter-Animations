@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_album_page/const.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/const.dart';
 
 class PlayPauseButton extends StatefulWidget {
   const PlayPauseButton({
@@ -43,13 +43,13 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
     if (widget.scrollController.hasClients) {
       double offset = widget.scrollController.offset;
       //When updating position, add/subtract both in isFinalPosition right hand side
-      //And from position below inside if statement
+      //And from position  inside if statement
       final bool isFinalPosition = offset >
-          (position +
+          position +
               widget.infoBoxHeight -
               finalPosition -
               widget.playPauseButtonSize -
-              10);
+              10;
       if (!isFinalPosition) {
         position = position -
             offset +
