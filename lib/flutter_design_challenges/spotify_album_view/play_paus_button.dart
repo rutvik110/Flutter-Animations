@@ -36,26 +36,20 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
     });
   }
 
-  double get getPosition {
+  double get getPositionFromTop {
     double position = widget.maxAppBarHeight;
     double finalPosition =
         widget.minAppBarHeight - widget.playPauseButtonSize / 2;
+
     if (widget.scrollController.hasClients) {
       double offset = widget.scrollController.offset;
-      //When updating position, add/subtract both in isFinalPosition right hand side
-      //And from position  inside if statement
-      final bool isFinalPosition = offset >
-          position +
-              widget.infoBoxHeight -
-              finalPosition -
-              widget.playPauseButtonSize -
-              10;
+      //When adjusting position, add/subtract in addOrSubtractValue
+      double addOrSubtractValue =
+          widget.infoBoxHeight - widget.playPauseButtonSize - 10;
+      final bool isFinalPosition =
+          offset > (position - finalPosition + addOrSubtractValue);
       if (!isFinalPosition) {
-        position = position -
-            offset +
-            widget.infoBoxHeight -
-            widget.playPauseButtonSize -
-            10;
+        position = position - offset + addOrSubtractValue;
       } else {
         position = finalPosition;
       }
@@ -66,7 +60,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: getPosition,
+      top: getPositionFromTop,
       right: 10,
       child: ElevatedButton(
         style: OutlinedButton.styleFrom(

@@ -33,7 +33,7 @@ class AlbumInfo extends StatelessWidget {
         child: SizedBox(
           height: infoBoxHeight,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

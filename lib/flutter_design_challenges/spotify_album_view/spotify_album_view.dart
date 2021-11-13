@@ -7,7 +7,7 @@ import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/
 import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/album_songs_list.dart';
 import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/const.dart';
 import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/play_paus_button.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/sliver_custom_appbar.dart';
+import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/sliver_custom_appbar/sliver_custom_appbar.dart';
 
 class SpotifyAlbumView extends StatefulWidget {
   const SpotifyAlbumView({Key? key}) : super(key: key);
@@ -58,7 +58,6 @@ class _SpotifyAlbumViewState extends State<SpotifyAlbumView> {
           children: [
             CustomScrollView(
               controller: _scrollController,
-              clipBehavior: Clip.none,
               slivers: [
                 SliverCustomeAppBar(
                   maxAppBarHeight: maxAppBarHeight,
