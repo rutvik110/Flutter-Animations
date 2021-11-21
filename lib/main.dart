@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_animations/flutter_design_challenges/audio_visualizer/audio_visualizer.dart';
 import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/spotify_album_view.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
           primaryColor: const Color(0xFF0e7cfe),
           primarySwatch: Colors.blue,
           textTheme: GoogleFonts.rubikTextTheme(Theme.of(context).textTheme)),
-      home: const SpotifyAlbumView(),
+      home: const AudioVisualizer(),
     );
   }
 }
