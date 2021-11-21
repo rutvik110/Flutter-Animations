@@ -35,6 +35,7 @@ List<double> loadparseJson(String jsonBody) {
 
   filteredData.add(0);
   log('filteredData: $filteredData');
+  print(filteredData);
   return filteredData.map<double>((e) => (e * multiplier)).toList();
 }
 
@@ -56,12 +57,13 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
   Future<void> parseData() async {
     final jsonString = await rootBundle.loadString('assets/audio_data.json');
     final dataPoints = await compute(loadparseJson, jsonString);
-    await audioPlayer.load('/audio.mp3');
-    await audioPlayer.play('/audio.mp3');
+    await audioPlayer.load('/dance_monkey.mp3');
+    await audioPlayer.play('/dance_monkey.mp3');
     maxDuration = await audioPlayer.fixedPlayer!.getDuration();
-
+    log(dataPoints.length.toString());
     setState(() {
       data = dataPoints;
+      print(data);
     });
   }
 
@@ -96,33 +98,36 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          AnimatedContainer(
-            duration: Duration(milliseconds: 100),
-            height: data[xAudio] * 250 < 0
-                ? -data[xAudio] * 250
-                : data[xAudio] * 250,
-            width: data[xAudio] * 250 < 0
-                ? -data[xAudio] * 250
-                : data[xAudio] * 250,
-            decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(data[xAudio] * 250 < 0
-                    ? -data[xAudio] * 250 / 2
-                    : data[xAudio] * 250 / 2)),
-          ),
-          // Stack(
-          //   children: [
-          //     CustomPaint(
-          //       size: const Size(400, 100),
-          //       painter:
-          //           AudioVisualizerPainter(samples: data, sliderValue: xAudio),
-          //     ),
-          //     //     // CustomPaint(
-          //     //     //   size: const Size(400, 100),
-          //     //     //   painter: ActiveTrackPainter(samples: data, sliderValue: xAudio),
-          //     //     // ),
-          //   ],
+          // AnimatedContainer(
+          //   duration: Duration(milliseconds: 100),
+          //   height: data[xAudio] * 250 < 0
+          //       ? -data[xAudio] * 250
+          //       : data[xAudio] * 250,
+          //   width: data[xAudio] * 250 < 0
+          //       ? -data[xAudio] * 250
+          //       : data[xAudio] * 250,
+          //   decoration: BoxDecoration(
+          //       color: Colors.blue,
+          //       borderRadius: BorderRadius.circular(data[xAudio] * 250 < 0
+          //           ? -data[xAudio] * 250 / 2
+          //           : data[xAudio] * 250 / 2)),
           // ),
+          if (data.length != 0)
+            Stack(
+              children: [
+                CustomPaint(
+                  size: Size(MediaQuery.of(context).size.width,
+                      MediaQuery.of(context).size.height * 0.2),
+                  painter: AudioVisualizerPainter(
+                      samples: data, sliderValue: xAudio),
+                ),
+                CustomPaint(
+                  size: const Size(400, 100),
+                  painter:
+                      ActiveTrackPainter(samples: data, sliderValue: xAudio),
+                ),
+              ],
+            ),
           // Slider(
           //   value: sliderValue.toDouble(),
           //   min: 0,
@@ -146,7 +151,7 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
               RaisedButton(
                 child: Text('Play'),
                 onPressed: () async {
-                  await audioPlayer.play("/audio.mp3");
+                  await audioPlayer.play("/dance_monkey.mp3");
                 },
               ),
               // SizedBox(
@@ -203,7 +208,7 @@ class ActiveTrackPainter extends CustomPainter {
     path.lineTo(ax, size.height);
     path.close();
     //canvas.drawPath(path, activeTrackPaint);
-    //canvas.drawCircle(Offset(ax, ay), 10, activePaint);
+    canvas.drawCircle(Offset(ax, ay), 10, activePaint);
   }
 
   @override
@@ -254,14 +259,14 @@ class AudioVisualizerPainter extends CustomPainter {
       //bouncycircleswithanimatingradius
       final double radius =
           ((y * 1) * ay / 2) < 0 ? -((y * 1) * ay / 2) : ((y * 1) * ay / 2);
-      canvas.drawCircle(Offset(size.width / 2, 0), radius, paint);
+      //canvas.drawCircle(Offset(size.width / 2, 0), radius / 10, paint);
       //rectangles like soundcloud
       //  canvas.drawRect(Rect.fromLTRB(x, y, x2, y2), paint);
       //curve
 
     }
 
-    //canvas.drawPoints(PointMode.polygon, offsets, paint);
+    canvas.drawPoints(PointMode.polygon, offsets, paint);
   }
 
   @override
