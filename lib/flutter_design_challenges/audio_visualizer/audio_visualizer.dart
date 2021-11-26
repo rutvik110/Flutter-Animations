@@ -23,7 +23,7 @@ List<double> loadparseJson(String jsonBody) {
     for (int j = 0; j < blockSize; j++) {
       sum = sum +
           points[(blockStart + j).toInt()]
-              .toInt(); // find the sum of all the samples in the block
+              .abs(); // find the sum of all the samples in the block
       //.toabs(); will create waves with only positive values
       //toInt() will convert the double to an int with positive/negative values
 
@@ -257,6 +257,7 @@ class ActiveTrackPainter extends CustomPainter {
     final Offset center = Offset(size.width / 2, size.height / 2);
 
     ///Experiment
+    List<Offset> offsets = [];
 
     List<double> movingPointsList = List.generate(
         sliderValue + 1,
@@ -291,7 +292,7 @@ class ActiveTrackPainter extends CustomPainter {
     //         Offset(width * index, movingPointsList[index] * size.height));
     for (var i = 0; i < movingPointsList.length; i++) {
       final double width = size.width / samples.length;
-      final double x = width * i;
+      final double x = i == samples.length - 1 ? size.width : width * i;
       final double y = movingPointsList[i] * size.height;
 
       final double x2 =
@@ -299,14 +300,14 @@ class ActiveTrackPainter extends CustomPainter {
       final double y2 = i + 1 >= movingPointsList.length
           ? movingPointsList[i] * size.height
           : movingPointsList[i + 1] * size.height;
-
+      offsets.add(Offset(x, y));
       //  canvas.drawCircle(Offset(size.width / 2, 0), radius, paint);
 
       //rectangles like soundcloud
 
-      canvas.drawRect(
-          Rect.fromLTRB(x, 0, x2, y2 == 0 ? 1 : y2), activeTrackPaint);
-      // curve
+      // canvas.drawRect(
+      //     Rect.fromLTRB(x, 0, x2, y2 == 0 ? 1 : y2), activeTrackPaint);
+      // // curve
     }
 
     //End of experiment
@@ -316,7 +317,7 @@ class ActiveTrackPainter extends CustomPainter {
     // path.lineTo(ax, -size.height);
     // path.lineTo(ax, size.height);
     // path.close();
-    // canvas.drawPoints(PointMode.polygon, offsets, activeTrackPaint);
+    canvas.drawPoints(PointMode.polygon, offsets, activeTrackPaint);
 
     // canvas.drawPath(path, activeTrackPaint);
     //canvas.drawCircle(Offset(ax, ay), 10, activePaint);
@@ -368,9 +369,10 @@ class AudioVisualizerPainter extends CustomPainter {
     //  final double ay = samples[sliderValue] * size.height;
 
     List<Offset> offsets = [];
+    final double width = size.width / samples.length;
+
     for (var i = 0; i < samples.length; i++) {
-      final double width = size.width / samples.length;
-      final double x = width * i;
+      final double x = i == samples.length - 1 ? size.width : width * i;
       final double y = samples[i] * size.height;
       // final double x2 =
       //     i + 1 == samples.length ? width * (i * 2) : width * (i + 1);
