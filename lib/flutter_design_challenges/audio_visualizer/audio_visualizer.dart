@@ -23,7 +23,10 @@ List<double> loadparseJson(String jsonBody) {
     for (int j = 0; j < blockSize; j++) {
       sum = sum +
           points[(blockStart + j).toInt()]
-              .abs(); // find the sum of all the samples in the block
+              .toInt(); // find the sum of all the samples in the block
+      //.toabs(); will create waves with only positive values
+      //toInt() will convert the double to an int with positive/negative values
+
     }
     filteredData.add((sum / blockSize)
         .round() // take the average of the block and add it to the filtered data
@@ -32,8 +35,6 @@ List<double> loadparseJson(String jsonBody) {
   final maxNum = filteredData.reduce(math.max);
 
   final double multiplier = math.pow(maxNum, -1).toDouble();
-
-  //filteredData.add(0);
 
   return filteredData.map<double>((e) => (e * multiplier)).toList();
 }
@@ -54,10 +55,11 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
   int xAudio = 0;
 
   Future<void> parseData() async {
-    final jsonString = await rootBundle.loadString('assets/dm.json');
+    final jsonString = await rootBundle.loadString('assets/soy.json');
     final dataPoints = await compute(loadparseJson, jsonString);
-    await audioPlayer.load('/dance_monkey.mp3');
-    await audioPlayer.play('/dance_monkey.mp3');
+    await audioPlayer.load('/shape_of_you.mp3');
+    // await audioPlayer.fixedPlayer!.setUrl('/audio.mp3', isLocal: true);
+    await audioPlayer.play('/shape_of_you.mp3');
     maxDuration = await audioPlayer.fixedPlayer!.getDuration();
 
     setState(() {
@@ -75,11 +77,17 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
     );
     data = [];
     parseData();
-    // audioPlayer.fixedPlayer!.onPlayerStateChanged.listen((state) {
-    //   if (state == PlayerState.PLAYING) {
-    //     print('playing');
-    //   }
-    // });
+    audioPlayer.fixedPlayer!.onPlayerStateChanged.listen((state) {
+      if (state == PlayerState.COMPLETED) {
+        setState(() {
+          sliderValue = 1;
+          audioPlayer.play('/shape_of_you.mp3');
+
+          ///Fix for incomplettion on audio complete
+          //  audioPlayer.fixedPlayer!.seek(Duration(milliseconds: (maxDuration)));
+        });
+      }
+    });
     audioPlayer.fixedPlayer!.onAudioPositionChanged.listen((Duration p) {
       setState(() {
         if (p.inMilliseconds == 0) {
@@ -92,8 +100,6 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
 
           xAudio = (data.length * sliderValue).toInt();
         }
-
-        print(p.inMilliseconds);
       });
     });
   }
@@ -124,30 +130,31 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
           //           ? -data[xAudio] * 250 / 2
           //           : data[xAudio] * 250 / 2)),
           // ),
-          if (data.length != 0)
+
+          if (data.isNotEmpty)
             Transform(
               transform: Matrix4.rotationX(180),
               origin: Offset(0, 62),
               child: Column(
                 children: [
-                  Stack(
-                    children: [
-                      CustomPaint(
-                        size: Size(MediaQuery.of(context).size.width, 100),
-                        painter: AudioVisualizerPainter(
-                            samples: data, sliderValue: xAudio),
-                      ),
-                      CustomPaint(
-                        size: Size(MediaQuery.of(context).size.width, 100),
-                        painter: ActiveTrackPainter(
-                            samples: data, sliderValue: xAudio),
-                      ),
-                    ],
-                  ),
+                  // Stack(
+                  //   children: [
+                  //     CustomPaint(
+                  //       size: Size(MediaQuery.of(context).size.width, 100),
+                  //       painter: AudioVisualizerPainter(
+                  //           samples: data, sliderValue: xAudio),
+                  //     ),
+                  //     CustomPaint(
+                  //       size: Size(MediaQuery.of(context).size.width, 100),
+                  //       painter: ActiveTrackPainter(
+                  //           samples: data, sliderValue: xAudio),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
-          if (data.length != 0)
+          if (data.isNotEmpty)
             Stack(
               children: [
                 CustomPaint(
@@ -177,32 +184,32 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
             },
           ),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RaisedButton(
-                child: Text('Play'),
-                onPressed: () async {
-                  await audioPlayer.play("/dance_monkey.mp3");
-                },
-              ),
-              // SizedBox(
-              //   width: 20,
-              // ),
-              RaisedButton(
-                child: Text('Pause'),
-                onPressed: () {
-                  audioPlayer.fixedPlayer!.pause();
-                },
-              ),
-              RaisedButton(
-                child: Text('Stop'),
-                onPressed: () {
-                  audioPlayer.fixedPlayer!.stop();
-                },
-              ),
-            ],
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          RaisedButton(
+            child: Text('Play'),
+            onPressed: () async {
+              await audioPlayer.play("/shape_of_you.mp3");
+            },
           ),
+          // SizedBox(
+          //   width: 20,
+          //     // ),
+          RaisedButton(
+            child: Text('Pause'),
+            onPressed: () {
+              audioPlayer.fixedPlayer!.pause();
+            },
+          ),
+          //     RaisedButton(
+          //       child: Text('Stop'),
+          //       onPressed: () {
+          //         audioPlayer.fixedPlayer!.stop();
+          //       },
+          //     ),
+          //   ],
+          // ),
           //   ],
           // ),
         ],
@@ -222,7 +229,7 @@ class ActiveTrackPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final activeTrackPaint = Paint()
       ..style = PaintingStyle.fill
-      ..strokeWidth = 5
+      ..strokeWidth = 1
       ..shader = const LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -246,16 +253,47 @@ class ActiveTrackPainter extends CustomPainter {
     final path = Path();
 
     final double ax = (size.width / samples.length) * sliderValue;
+    //Center for circle
+    final Offset center = Offset(size.width / 2, size.height / 2);
 
     ///Experiment
+
     List<double> movingPointsList = List.generate(
         sliderValue + 1,
         (index) =>
             samples[index >= samples.length ? samples.length - 1 : index]);
+
+    // for (int i = 1; i < movingPointsList.length; i++) {
+    //   final double barHeight = i + 1 >= movingPointsList.length
+    //       ? movingPointsList[i]
+    //       : movingPointsList[i + 1];
+    //   final x = center.dx + math.cos(math.pi * (i / 180)) * 100;
+    //   final y = center.dy + math.sin(math.pi * (i / 180)) * 100;
+
+    //   final double x1 = center.dx + math.cos(math.pi * (i / 180)) * 140;
+    //   final double y1 = center.dy + math.sin(math.pi * (i / 180)) * 140;
+    //   final x2 = center.dx +
+    //       math.cos(math.pi * (i / 180)) * 150 +
+    //       (math.cos(math.pi * (i / 180)) * barHeight * 25);
+    //   final y2 = center.dy +
+    //       math.sin(math.pi * (i / 180)) * 150 +
+    //       (math.sin(math.pi * (i / 180)) * barHeight * 25);
+
+    //   // canvas.drawCircle(Offset(x, y), 5, activeTrackPaint);
+    //   // canvas.drawCircle(Offset(x1, y1), 5, activeTrackPaint);
+    //   // canvas.drawCircle(Offset(x2, y2), 5, activeTrackPaint);
+    //   canvas.drawLine(Offset(x1, y1), Offset(x2, y2), activeTrackPaint);
+    // }
+    // final double width = size.width / samples.length;
+    // List<Offset> offsets = List.generate(
+    //     sliderValue + 1,
+    //     (index) =>
+    //         Offset(width * index, movingPointsList[index] * size.height));
     for (var i = 0; i < movingPointsList.length; i++) {
       final double width = size.width / samples.length;
       final double x = width * i;
       final double y = movingPointsList[i] * size.height;
+
       final double x2 =
           i + 1 >= movingPointsList.length ? width * i : width * (i + 1);
       final double y2 = i + 1 >= movingPointsList.length
@@ -265,9 +303,10 @@ class ActiveTrackPainter extends CustomPainter {
       //  canvas.drawCircle(Offset(size.width / 2, 0), radius, paint);
 
       //rectangles like soundcloud
-      canvas.drawRect(Rect.fromLTRB(x, 0, x2, y2), activeTrackPaint);
-      //curve
 
+      canvas.drawRect(
+          Rect.fromLTRB(x, 0, x2, y2 == 0 ? 1 : y2), activeTrackPaint);
+      // curve
     }
 
     //End of experiment
@@ -277,13 +316,15 @@ class ActiveTrackPainter extends CustomPainter {
     // path.lineTo(ax, -size.height);
     // path.lineTo(ax, size.height);
     // path.close();
+    // canvas.drawPoints(PointMode.polygon, offsets, activeTrackPaint);
+
     // canvas.drawPath(path, activeTrackPaint);
     //canvas.drawCircle(Offset(ax, ay), 10, activePaint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+    return false;
   }
 }
 
@@ -331,11 +372,11 @@ class AudioVisualizerPainter extends CustomPainter {
       final double width = size.width / samples.length;
       final double x = width * i;
       final double y = samples[i] * size.height;
-      final double x2 =
-          i + 1 == samples.length ? width * (i * 2) : width * (i + 1);
-      final double y2 = i + 1 == samples.length
-          ? samples[i] * size.height
-          : samples[i + 1] * size.height;
+      // final double x2 =
+      //     i + 1 == samples.length ? width * (i * 2) : width * (i + 1);
+      // final double y2 = i + 1 == samples.length
+      //     ? samples[i] * size.height
+      //     : samples[i + 1] * size.height;
       offsets.add(Offset(x, y));
       //bouncycircleswithanimatingradius
       // final double radius =
@@ -343,14 +384,14 @@ class AudioVisualizerPainter extends CustomPainter {
       // //  canvas.drawCircle(Offset(size.width / 2, 0), radius, paint);
 
       //rectangles like soundcloud
-      canvas.drawRect(Rect.fromLTRB(x, 0, x2, y2), paint);
-      canvas.drawRect(Rect.fromLTRB(x, 0, x2, y2), strokePaint);
+      // canvas.drawRect(Rect.fromLTRB(x, 0, x2, y2 == 0 ? 1 : y2), paint);
+      // canvas.drawRect(Rect.fromLTRB(x, 0, x2, y2 == 0 ? 1 : y2), strokePaint);
 
       //curve
 
     }
 
-    // canvas.drawPoints(PointMode.polygon, offsets, paint);
+    canvas.drawPoints(PointMode.polygon, offsets, paint);
   }
 
   @override
