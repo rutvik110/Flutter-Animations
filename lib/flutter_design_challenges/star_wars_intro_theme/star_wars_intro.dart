@@ -30,10 +30,10 @@ While the Congress of the Republic endlessly debates this alarming chain of even
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 60),
     );
 
-    crawlTextposition = Tween(begin: Offset(0, 250), end: Offset(0, -0))
+    crawlTextposition = Tween(begin: Offset(0, 700), end: Offset(0, -0))
         .animate(_animationController);
 
     _animationController.forward();
@@ -63,43 +63,43 @@ While the Congress of the Republic endlessly debates this alarming chain of even
               fit: BoxFit.cover,
               width: double.maxFinite,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 50,
-                ),
-                AnimatedBuilder(
-                    animation: _animationController,
-                    child: Text(
-                      crawlText,
-                      overflow: TextOverflow.visible,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontFamily: "Crawl",
-                      ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: SizedBox(
+                width: 370,
+                height: 500,
+                // padding: const EdgeInsets.symmetric(horizontal: 500),
+                child: Transform(
+                  origin: Offset(
+                    MediaQuery.of(context).size.width / 2 - 540,
+                    50,
+                  ),
+                  transform: Matrix4.identity()
+                    ..setRotationX(pi / 2.5)
+                    ..setEntry(
+                      3,
+                      1,
+                      -0.001,
                     ),
-                    builder: (context, child) {
-                      return Transform(
-                        origin: Offset(
-                          MediaQuery.of(context).size.width / 2,
-                          0,
+                  child: AnimatedBuilder(
+                      animation: _animationController,
+                      child: Text(
+                        crawlText,
+                        overflow: TextOverflow.visible,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          color: Color(0xffc7890a),
+                          fontFamily: "Crawl",
                         ),
-                        transform: Matrix4.identity()
-                          ..setRotationX(pi / 2.5)
-                          ..setEntry(
-                            3,
-                            1,
-                            -0.003,
-                          ),
-                        child: Transform.translate(
+                      ),
+                      builder: (context, child) {
+                        return Transform.translate(
                           offset: crawlTextposition.value,
                           child: child,
-                        ),
-                      );
-                    }),
-              ],
+                        );
+                      }),
+                ),
+              ),
             ),
           ],
         ));
