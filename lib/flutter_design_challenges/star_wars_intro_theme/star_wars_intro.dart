@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/flutter_render_objects/custom_proxy.dart';
 
 class StarWardsIntro extends StatefulWidget {
   const StarWardsIntro({Key? key}) : super(key: key);
@@ -23,17 +23,23 @@ While the Congress of the Republic endlessly debates this alarming chain of even
 
   late final Animation<Offset> crawlTextposition;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  late final Animation<double> disappearCrawlText;
 
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 60),
-    );
+  late AudioCache audioPlayer = AudioCache();
 
-    crawlTextposition = Tween(begin: Offset(0, 700), end: Offset(0, -0))
+  void playAnimation() {
+    final height = MediaQuery.of(context).size.height;
+    final topOffset = height + 100;
+    final bottomOffset = -height / 2;
+    crawlTextposition =
+        Tween(begin: Offset(0, topOffset), end: Offset(0, bottomOffset))
+            .animate(_animationController);
+    disappearCrawlText = Tween<double>(begin: 1.0, end: 0)
+        .chain(
+          CurveTween(
+            curve: Interval(0.9, 0.95),
+          ),
+        )
         .animate(_animationController);
 
     _animationController.forward();
@@ -44,6 +50,32 @@ While the Congress of the Republic endlessly debates this alarming chain of even
         _animationController.forward();
       }
     });
+  }
+
+  Future<void> playTrack() async {
+    await audioPlayer.load("star_wars_intro.mp3");
+    await audioPlayer.play("star_wars_intro.mp3");
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 30),
+    );
+    // playAnimation();
+    playTrack();
+  }
+
+  @override
+  void didChangeDependencies() {
+    playAnimation();
+
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
   }
 
   @override
@@ -58,24 +90,27 @@ While the Congress of the Republic endlessly debates this alarming chain of even
         backgroundColor: Colors.black,
         body: Stack(
           children: [
-            Image.asset(
-              'assets/images/galaxy.jpeg',
-              fit: BoxFit.cover,
-              width: double.maxFinite,
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/galaxy.png',
+                fit: BoxFit.cover,
+              ),
             ),
             Align(
               alignment: Alignment.topCenter,
               child: SizedBox(
-                width: 370,
+                width: MediaQuery.of(context).size.width * 0.3, //370,
                 height: 500,
-                // padding: const EdgeInsets.symmetric(horizontal: 500),
                 child: Transform(
                   origin: Offset(
-                    MediaQuery.of(context).size.width / 2 - 540,
-                    50,
+                    MediaQuery.of(context).size.width / 2 -
+                        MediaQuery.of(context).size.width * 0.37, //540,
+                    150,
                   ),
                   transform: Matrix4.identity()
-                    ..setRotationX(pi / 2.5)
+                    ..setRotationX(
+                      pi / 2.5, //2.8, //2.5,
+                    )
                     ..setEntry(
                       3,
                       1,
@@ -95,7 +130,10 @@ While the Congress of the Republic endlessly debates this alarming chain of even
                       builder: (context, child) {
                         return Transform.translate(
                           offset: crawlTextposition.value,
-                          child: child,
+                          child: Opacity(
+                            opacity: disappearCrawlText.value,
+                            child: child,
+                          ),
                         );
                       }),
                 ),
