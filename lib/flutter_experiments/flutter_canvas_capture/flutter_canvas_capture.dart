@@ -1,11 +1,9 @@
-import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:path_provider/path_provider.dart';
 
 const starWarsCrawlTextColor = Color(0xffc7890a);
 
@@ -79,21 +77,21 @@ While the Congress of the Republic endlessly debates this alarming chain of even
     );
 
     _animationController.addListener(() async {
-      final RenderRepaintBoundary boundary = scaffoldKey.currentContext!
-          .findRenderObject() as RenderRepaintBoundary;
-      var image = await boundary.toImage();
-      var byteData = await image.toByteData(format: ImageByteFormat.png);
-      var pngBytes = byteData!.buffer.asUint8List();
-      print(pngBytes);
+      // final RenderRepaintBoundary boundary = scaffoldKey.currentContext!
+      //     .findRenderObject() as RenderRepaintBoundary;
+      // var image = await boundary.toImage();
+      // var byteData = await image.toByteData(format: ImageByteFormat.png);
+      // var pngBytes = byteData!.buffer.asUint8List();
+      // print(pngBytes);
 
-      final Directory appDocDir = await getApplicationDocumentsDirectory();
+      // final Directory appDocDir = await getApplicationDocumentsDirectory();
 
-      final Directory directory = Directory("${appDocDir.path}/canvas_images");
+      // final Directory directory = Directory("${appDocDir.path}/canvas_images");
 
-      final File file =
-          File("${directory.path}/${math.Random().nextInt(1000)}.png");
+      // final File file =
+      //     File("${directory.path}/${math.Random().nextInt(1000)}.png");
 
-      file.writeAsBytes(pngBytes);
+      // file.writeAsBytes(pngBytes);
     });
     playTrack();
   }
