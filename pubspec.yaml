@@ -37,6 +37,7 @@ dependencies:
   google_fonts: ^2.1.0
   audioplayers: ^0.20.1
   path_provider: ^2.0.8
+  rive: ^0.8.1
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +66,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/audio/
+    - assets/rive/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

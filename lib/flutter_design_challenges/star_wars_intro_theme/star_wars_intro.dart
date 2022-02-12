@@ -1,22 +1,20 @@
-import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:path_provider/path_provider.dart';
 
 const starWarsCrawlTextColor = Color(0xffc7890a);
 
-class StarWardsIntro extends StatefulWidget {
-  const StarWardsIntro({Key? key}) : super(key: key);
+class StarWarsIntro extends StatefulWidget {
+  const StarWarsIntro({Key? key}) : super(key: key);
 
   @override
-  State<StarWardsIntro> createState() => _StarWardsIntroState();
+  State<StarWarsIntro> createState() => _StarWarsIntroState();
 }
 
-class _StarWardsIntroState extends State<StarWardsIntro>
+class _StarWarsIntroState extends State<StarWarsIntro>
     with SingleTickerProviderStateMixin {
   final String crawlText =
       '''Turmoil has engulfed the Galactic Republic. The taxation of trade routes to outlying star systems is in dispute.
@@ -27,9 +25,9 @@ While the Congress of the Republic endlessly debates this alarming chain of even
 
   late final AnimationController _animationController;
 
-  late final Animation<Offset> crawlTextposition;
+  late Animation<Offset> crawlTextposition;
 
-  late final Animation<double> disappearCrawlText;
+  late Animation<double> disappearCrawlText;
 
   late AudioCache audioPlayer = AudioCache(
     fixedPlayer: AudioPlayer(),
@@ -38,19 +36,6 @@ While the Congress of the Republic endlessly debates this alarming chain of even
   final scaffoldKey = GlobalKey();
 
   void playAnimation() async {
-    final height = MediaQuery.of(context).size.height;
-    final topOffset = height;
-    final bottomOffset = -height * 0.8;
-    crawlTextposition =
-        Tween(begin: Offset(0, topOffset), end: Offset(0, bottomOffset))
-            .animate(_animationController);
-    disappearCrawlText = Tween<double>(begin: 1.0, end: 0)
-        .chain(
-          CurveTween(
-            curve: const Interval(0.95, 1.0),
-          ),
-        )
-        .animate(_animationController);
     _animationController.forward();
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -64,7 +49,7 @@ While the Congress of the Republic endlessly debates this alarming chain of even
   Future<void> playTrack() async {
     await Future.delayed(const Duration(milliseconds: 500));
     // await audioPlayer.play(
-    //   "audio/about_music.mp3",
+    //   "audio/star_wars_intro.mp3",
     // );
   }
 
@@ -76,30 +61,28 @@ While the Congress of the Republic endlessly debates this alarming chain of even
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 60),
-    );
+    )..repeat();
 
-    _animationController.addListener(() async {
-      final RenderRepaintBoundary boundary = scaffoldKey.currentContext!
-          .findRenderObject() as RenderRepaintBoundary;
-      var image = await boundary.toImage();
-      var byteData = await image.toByteData(format: ImageByteFormat.png);
-      var pngBytes = byteData!.buffer.asUint8List();
-      print(pngBytes);
+    disappearCrawlText = Tween<double>(begin: 1.0, end: 0)
+        .chain(
+          CurveTween(
+            curve: const Interval(0.95, 1.0),
+          ),
+        )
+        .animate(_animationController);
 
-      final Directory appDocDir = await getApplicationDocumentsDirectory();
+    //restart animation if completed
 
-      final Directory directory = Directory("${appDocDir.path}/canvas_images");
-
-      final File file =
-          File("${directory.path}/${math.Random().nextInt(1000)}.png");
-
-      file.writeAsBytes(pngBytes);
-    });
     playTrack();
   }
 
   @override
   void didChangeDependencies() {
+    final height = MediaQuery.of(context).size.height;
+    final bottomOffset = -height * 0.8;
+    crawlTextposition =
+        Tween(begin: Offset(0, height), end: Offset(0, bottomOffset))
+            .animate(_animationController);
     playAnimation();
 
     // TODO: implement didChangeDependencies
@@ -166,7 +149,7 @@ class CrawlText extends StatelessWidget {
         child: Transform(
           origin: Offset(
             MediaQuery.of(context).size.width / 2, //540,
-            150,
+            0,
           ),
           transform: Matrix4.identity()
             ..setRotationX(
@@ -303,6 +286,20 @@ class CrawlContributions extends StatelessWidget {
                 ),
               ]),
             ),
+            GridView.count(
+              crossAxisCount: MediaQuery.of(context).size.width <= 480 ? 2 : 3,
+              shrinkWrap: true,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 5,
+              children: const [
+                CustomAvatar(name: "Michaielawd", link: "Michaielawd"),
+                CustomAvatar(name: "Rutvik", link: "Rutvik"),
+                CustomAvatar(name: "awd", link: "wadaw"),
+                CustomAvatar(name: "awd", link: "wadaw"),
+                CustomAvatar(name: "awd", link: "wadaw"),
+                CustomAvatar(name: "awd", link: "wadaw"),
+              ],
+            ),
             const Divider(
               height: 10,
             ),
@@ -339,55 +336,37 @@ class CustomAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: GestureDetector(
-        onTap: () {},
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircleAvatar(
-              backgroundColor: starWarsCrawlTextColor,
-              child: Text(
-                name.characters.first.toUpperCase(),
+    return GestureDetector(
+      onTap: () {},
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            backgroundColor: starWarsCrawlTextColor,
+            child: Text(
+              name.characters.first.toUpperCase(),
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Chip(
+            backgroundColor: Colors.white.withOpacity(
+              0.6,
+            ),
+            avatar: const Icon(
+              Icons.link,
+              color: starWarsCrawlTextColor,
+            ),
+            label: Text(
+              name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
               ),
             ),
-            Chip(
-              backgroundColor: Colors.white.withOpacity(
-                0.6,
-              ),
-              avatar: const Icon(
-                Icons.link,
-                color: starWarsCrawlTextColor,
-              ),
-              label: Text(
-                name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
-
-
-//  savePicture: (picture) async {
-//             final Directory appDocDir =
-//                 await getApplicationDocumentsDirectory();
-
-//             final Directory directory =
-//                 Directory("${appDocDir.path}/canvas_images");
-
-//             final File file =
-//                 File("${directory.path}/${math.Random().nextInt(1000)}.png");
-
-//             picture.toImage(400, 400).then((image) async {
-//               final bytesData =
-//                   await image.toByteData(format: ImageByteFormat.png);
-//               final bytesList = bytesData!.buffer.asUint8List();
-//             });
-//           },

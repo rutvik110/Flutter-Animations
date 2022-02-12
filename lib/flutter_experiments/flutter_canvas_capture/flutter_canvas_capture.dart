@@ -7,14 +7,14 @@ import 'package:flutter/rendering.dart';
 
 const starWarsCrawlTextColor = Color(0xffc7890a);
 
-class StarWardsIntro extends StatefulWidget {
-  const StarWardsIntro({Key? key}) : super(key: key);
+class CanvasCapture extends StatefulWidget {
+  const CanvasCapture({Key? key}) : super(key: key);
 
   @override
-  State<StarWardsIntro> createState() => _StarWardsIntroState();
+  State<CanvasCapture> createState() => _CanvasCaptureState();
 }
 
-class _StarWardsIntroState extends State<StarWardsIntro>
+class _CanvasCaptureState extends State<CanvasCapture>
     with SingleTickerProviderStateMixin {
   final String crawlText =
       '''Turmoil has engulfed the Galactic Republic. The taxation of trade routes to outlying star systems is in dispute.

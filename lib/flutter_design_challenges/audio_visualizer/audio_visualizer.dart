@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
+//This was the earliest implementation of audio waveforms in flutter.
+// The final result is the package 👇 "Flutter Audio Waveforms" which is now available on pub.dev
+//https://pub.dev/packages?q=flutter+audio+waveforms
+
 List<double> loadparseJson(String jsonBody) {
   final data = jsonDecode(jsonBody);
   final List<int> points = List.castFrom<dynamic, int>(data['data']);
@@ -107,7 +111,7 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFb1cad5),
+      backgroundColor: const Color(0xFFb1cad5),
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: const Text('Audio Visualizer'),
@@ -134,9 +138,9 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
           if (data.isNotEmpty)
             Transform(
               transform: Matrix4.rotationX(180),
-              origin: Offset(0, 62),
+              origin: const Offset(0, 62),
               child: Column(
-                children: [
+                children: const [
                   // Stack(
                   //   children: [
                   //     CustomPaint(
@@ -188,7 +192,7 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
           //   mainAxisAlignment: MainAxisAlignment.center,
           //   children: [
           RaisedButton(
-            child: Text('Play'),
+            child: const Text('Play'),
             onPressed: () async {
               await audioPlayer.play("/shape_of_you.mp3");
             },
@@ -197,7 +201,7 @@ class _AudioVisualizerState extends State<AudioVisualizer> {
           //   width: 20,
           //     // ),
           RaisedButton(
-            child: Text('Pause'),
+            child: const Text('Pause'),
             onPressed: () {
               audioPlayer.fixedPlayer!.pause();
             },
@@ -362,7 +366,7 @@ class AudioVisualizerPainter extends CustomPainter {
       );
     final strokePaint = Paint()
       ..style = PaintingStyle.stroke
-      ..color = Color(0xFFb1cad5)
+      ..color = const Color(0xFFb1cad5)
       ..strokeWidth = 0.2;
 
     ///for bouncycircleswithanimatingradius
