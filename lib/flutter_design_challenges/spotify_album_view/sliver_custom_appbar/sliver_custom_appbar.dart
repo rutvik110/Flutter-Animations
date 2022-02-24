@@ -33,6 +33,9 @@ class SliverCustomeAppBar extends StatelessWidget {
             maxHeight: maxAppBarHeight,
             minHeight: minAppBarHeight,
             builder: (context, shrinkOffset) {
+              final appBarVisible =
+                  shrinkOffset >= (maxAppBarHeight - minAppBarHeight);
+              print(appBarVisible);
               final double shrinkToMaxAppBarHeightRatio =
                   shrinkOffset / maxAppBarHeight;
               const double animatAlbumImageFromPoint = 0.4;
@@ -49,7 +52,6 @@ class SliverCustomeAppBar extends StatelessWidget {
               final double titleOpacity = showFixedAppBar
                   ? 1 - (maxAppBarHeight - shrinkOffset) / minAppBarHeight
                   : 0;
-              print(titleOpacity);
 
               return Stack(
                 alignment: Alignment.topCenter,
