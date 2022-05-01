@@ -68,8 +68,8 @@ class ClockWorkPainter extends CustomPainter {
     const double innerLines = 6;
     const double radius = 20.0;
     final Offset center = Offset(size.width / 2, size.height / 2);
-
-    for (var i = 1; i <= 12; i++) {
+    const circles = 24;
+    for (var i = 1; i <= circles; i++) {
       final circleBrush = Paint()
         ..shader = RadialGradient(colors: [
           Colors.blue.withOpacity(0.1 * animationValue),
@@ -89,7 +89,7 @@ class ClockWorkPainter extends CustomPainter {
 
       final angle = (pi * 2) / (innerLines * i);
       // final updatedAngle = angle + angle * 0.1;
-      if (i < 12) {
+      if (i < circles) {
         for (var j = 1; j <= innerLines * i; j++) {
           // final cosAngle = cos(angle * j + animationValue * i);
           // final sinAngle = sin(angle * j + animationValue * i);
