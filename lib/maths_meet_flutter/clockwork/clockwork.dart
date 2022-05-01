@@ -13,7 +13,6 @@ class ClockWork extends StatefulWidget {
 class _ClockWorkState extends State<ClockWork>
     with SingleTickerProviderStateMixin {
   late final AnimationController animationController;
-  late final Animation animation;
   @override
   void initState() {
     // TODO: implement initState
@@ -27,12 +26,6 @@ class _ClockWorkState extends State<ClockWork>
     animationController.addListener(() {
       setState(() {});
     });
-
-    animation = Tween<double>(begin: 0, end: 1)
-        .chain(CurveTween(
-          curve: Curves.easeInOutExpo,
-        ))
-        .animate(animationController);
   }
 
   @override
@@ -49,7 +42,6 @@ class _ClockWorkState extends State<ClockWork>
                     curve: Curves.easeInOutExpo,
                   )))
                   .value,
-              colorValue: animation.value,
             ),
             size: Size(
               MediaQuery.of(context).size.width,
@@ -65,10 +57,8 @@ class _ClockWorkState extends State<ClockWork>
 class ClockWorkPainter extends CustomPainter {
   ClockWorkPainter({
     required this.animationValue,
-    required this.colorValue,
   });
   final double animationValue;
-  final double colorValue;
   @override
   void paint(Canvas canvas, Size size) {
     final paint2 = Paint()
