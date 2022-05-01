@@ -58,19 +58,20 @@ class _FloatingCardState extends State<FloatingCard>
                     width: 300,
                     foregroundDecoration: BoxDecoration(
                       gradient: LinearGradient(
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
-                          tileMode: TileMode.mirror,
-                          colors: [
-                            Colors.red.withOpacity(0.3),
-                            Colors.white.withOpacity(0.5),
-                            Colors.red.withOpacity(0.3),
-                          ],
-                          stops: [
-                            0.0,
-                            gradientStopAnimation.value,
-                            1.0,
-                          ]),
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        tileMode: TileMode.mirror,
+                        colors: [
+                          Colors.red.withOpacity(0.3),
+                          Colors.white.withOpacity(0.5),
+                          Colors.red.withOpacity(0.3),
+                        ],
+                        stops: [
+                          0.0,
+                          gradientStopAnimation.value,
+                          1.0,
+                        ],
+                      ),
                     ),
                     decoration: BoxDecoration(
                       image: DecorationImage(
