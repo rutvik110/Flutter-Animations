@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_animations/flutter_design_challenges/spotify_notifications_chips/spotify_notifications_chips.dart';
+import 'package:flutter_animations/maths_meet_flutter/clockwork_circle/clockwork_circle.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           primaryColor: const Color(0xFF0e7cfe),
           primarySwatch: Colors.blue,
           textTheme: GoogleFonts.rubikTextTheme(Theme.of(context).textTheme)),
-      home: const SpotifyNotificationsChips(),
+      home: const ClockWorkCircle(),
     );
   }
 }
