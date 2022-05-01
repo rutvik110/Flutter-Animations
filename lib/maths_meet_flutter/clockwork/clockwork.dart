@@ -3,14 +3,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class ClockWorkCircle extends StatefulWidget {
-  const ClockWorkCircle({Key? key}) : super(key: key);
+class ClockWork extends StatefulWidget {
+  const ClockWork({Key? key}) : super(key: key);
 
   @override
-  State<ClockWorkCircle> createState() => _ClockWorkCircleState();
+  State<ClockWork> createState() => _ClockWorkState();
 }
 
-class _ClockWorkCircleState extends State<ClockWorkCircle>
+class _ClockWorkState extends State<ClockWork>
     with SingleTickerProviderStateMixin {
   late final AnimationController animationController;
   late final Animation animation;
@@ -42,7 +42,7 @@ class _ClockWorkCircleState extends State<ClockWorkCircle>
       body: Stack(
         children: [
           CustomPaint(
-            painter: ClockWorkCirclePainter(
+            painter: ClockWorkPainter(
               animationValue: animationController
                   .drive<double>(
                       Tween<double>(begin: 0, end: 1).chain(CurveTween(
@@ -62,8 +62,8 @@ class _ClockWorkCircleState extends State<ClockWorkCircle>
   }
 }
 
-class ClockWorkCirclePainter extends CustomPainter {
-  ClockWorkCirclePainter({
+class ClockWorkPainter extends CustomPainter {
+  ClockWorkPainter({
     required this.animationValue,
     required this.colorValue,
   });
