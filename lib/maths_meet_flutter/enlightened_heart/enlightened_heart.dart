@@ -57,15 +57,18 @@ class EnlightenedHeartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.translate(size.width / 2, size.height / 2);
 
-    final angle = calculateAngleBasedOnPoints(360);
-    final visibleArc = angle * 45;
-    final edgeCaseAngle = 360 * angle - visibleArc;
+    const baseAngle = pi * 2 / 360;
+    const visibleArc = baseAngle * 45;
+    const edgeCaseAngle = 360 * baseAngle - visibleArc;
     double startAngle = angleValue;
 
     double endAngle = angleValue + visibleArc;
     const double heartRadius = 15;
 
     // Drawing group of circles which represent the  visible portion of hearts arc as animation progresses
+
+    final angle = calculateAngleBasedOnPoints(360);
+
     final circlesGroup1 = Paint()
       ..style = PaintingStyle.fill
       ..color = Colors.white;
