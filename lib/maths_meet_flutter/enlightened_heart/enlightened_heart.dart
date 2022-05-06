@@ -63,7 +63,7 @@ class EnlightenedHeartPainter extends CustomPainter {
     double startAngle = angleValue;
 
     double endAngle = angleValue + visibleArc;
-    const double heartRadius = 15;
+    const double heartRadius = 10;
 
     // Drawing group of circles which represent the  visible portion of hearts arc as animation progresses
 

@@ -66,7 +66,7 @@ class ClockWorkPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
     const double innerLines = 6;
-    const double radius = 20.0;
+    const double radius = 15.0;
     final Offset center = Offset(size.width / 2, size.height / 2);
     const circles = 12;
     for (var i = 1; i <= circles; i++) {
