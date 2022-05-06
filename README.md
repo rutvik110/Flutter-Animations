@@ -1,20 +1,6 @@
-# flutter_animations
+# FLutter Animations
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference. 
-
+🏠 Home for animations and design challeges 🖌 I created inspired by micro-macro interactions from different apps, musics, movies, games and sometimes just for fun with Flutter 💙
 
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/star_wars_intro_theme"><img src="https://media3.giphy.com/media/zeXhCh9eL9LzoaOdzL/giphy.gif" width="33%"></a>
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/spotify_notifications_chips"><img src="https://media3.giphy.com/media/8WzFkyoYYHPVD1BHEx/giphy.gif" width="33%"></a>
