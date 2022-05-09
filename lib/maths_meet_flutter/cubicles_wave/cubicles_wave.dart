@@ -2,14 +2,15 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 
-class Waves extends StatefulWidget {
-  const Waves({Key? key}) : super(key: key);
+class CubiclesWave extends StatefulWidget {
+  const CubiclesWave({Key? key}) : super(key: key);
 
   @override
-  State<Waves> createState() => _WavesState();
+  State<CubiclesWave> createState() => _CubiclesWaveState();
 }
 
-class _WavesState extends State<Waves> with SingleTickerProviderStateMixin {
+class _CubiclesWaveState extends State<CubiclesWave>
+    with SingleTickerProviderStateMixin {
   late Offset offset;
 
   late final AnimationController animationController;
@@ -50,7 +51,7 @@ class _WavesState extends State<Waves> with SingleTickerProviderStateMixin {
           });
         },
         child: CustomPaint(
-          painter: WavesPainter(
+          painter: CubiclesWavePainter(
             // offset: offset,
             animationValue: Tween<double>(begin: 0.0, end: 1.0)
                 .chain(
@@ -71,9 +72,9 @@ class _WavesState extends State<Waves> with SingleTickerProviderStateMixin {
   }
 }
 
-class WavesPainter extends CustomPainter {
+class CubiclesWavePainter extends CustomPainter {
   final double animationValue;
-  WavesPainter({
+  CubiclesWavePainter({
     required this.animationValue,
   });
   @override
@@ -129,8 +130,8 @@ class WavesPainter extends CustomPainter {
   }
 }
 
-// class WavesPainter extends CustomPainter {
-//   WavesPainter({
+// class CubiclesWavePainter extends CustomPainter {
+//   CubiclesWavePainter({
 //     required this.offset,
 //     required this.animationValue,
 //   });
