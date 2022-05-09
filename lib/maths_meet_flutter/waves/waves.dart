@@ -78,8 +78,11 @@ class WavesPainter extends CustomPainter {
   });
   @override
   void paint(Canvas canvas, Size size) {
-    final horizontalBlocks = size.width ~/ 24;
-    final verticalBlocks = size.height ~/ 24;
+    const imaginarySizeOfCubic = 20;
+    final horizontalBlocks = size.width ~/ imaginarySizeOfCubic;
+    final verticalBlocks = size.height ~/ imaginarySizeOfCubic;
+    const maxWaveHeight = 100;
+    const baseCubicSize = 10;
 
     for (var i = 0; i < horizontalBlocks; i++) {
       final itemValue = i / horizontalBlocks;
@@ -91,7 +94,7 @@ class WavesPainter extends CustomPainter {
       final isBehind = itemValue <= animationValue;
 
       final blockValueWithinCircle =
-          (animationValue + circleDiameter / 2) - itemValue;
+          (animationValue + (circleDiameter / 2)) - itemValue;
       final highValue = !isAhead
           ? 1.0 - (blockValueWithinCircle / circleDiameter)
           : !isBehind
@@ -99,7 +102,6 @@ class WavesPainter extends CustomPainter {
               : itemValue == animationValue
                   ? 1.0
                   : 0.0;
-
       for (var j = 0; j < verticalBlocks; j++) {
         final randomValue = (i) / (horizontalBlocks);
         final paint = Paint()
@@ -107,10 +109,11 @@ class WavesPainter extends CustomPainter {
             (255 * randomValue).toInt(),
           );
         final rect = Rect.fromLTWH(
-          i * 24,
-          j * 24 - (isInRange ? highValue * 50 : 0),
-          10 * highValue,
-          10 * highValue,
+          i * imaginarySizeOfCubic.toDouble(),
+          j * imaginarySizeOfCubic -
+              (isInRange ? highValue * maxWaveHeight : 0),
+          baseCubicSize * highValue,
+          baseCubicSize * highValue,
         );
         canvas.drawRect(
           rect,
