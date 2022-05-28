@@ -1,10 +1,4 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_animations/maths_meet_flutter/cubicles_wave/cubicles_wave.dart';
 import 'package:google_fonts/google_fonts.dart';
 
