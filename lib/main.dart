@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/maths_meet_flutter/cubicles_wave/cubicles_wave.dart';
+import 'package:flutter_animations/flutter_shaders/checking_out/checking_out.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
           primaryColor: const Color(0xFF0e7cfe),
           primarySwatch: Colors.blue,
           textTheme: GoogleFonts.rubikTextTheme(Theme.of(context).textTheme)),
-      home: const CubiclesWave(),
+      home: const CheckingOut(),
     );
   }
 }

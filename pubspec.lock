@@ -294,6 +294,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.1"
+  umbra_flutter:
+    dependency: "direct main"
+    description:
+      name: umbra_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0-dev.1"
   uuid:
     dependency: transitive
     description:
