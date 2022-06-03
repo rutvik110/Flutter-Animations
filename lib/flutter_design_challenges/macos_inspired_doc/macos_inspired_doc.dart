@@ -11,10 +11,12 @@ class MacOsInspiredDoc extends StatefulWidget {
 
 class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
   late int? hoveredIndex;
+  late double baseItemHeight;
+  late double verticlItemsPadding;
 
   double getScaledSize(int index) {
     if (hoveredIndex == null) {
-      return 40;
+      return baseItemHeight;
     }
 
     late final double hoveredSize;
@@ -27,9 +29,9 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
     } else if (difference <= itemsAffected) {
       final scaleRatio = (items.length - difference) / itemsAffected;
 
-      hoveredSize = lerpDouble(40, 50, scaleRatio)!;
+      hoveredSize = lerpDouble(baseItemHeight, 50, scaleRatio)!;
     } else {
-      hoveredSize = 40;
+      hoveredSize = baseItemHeight;
     }
 
     return hoveredSize;
@@ -64,6 +66,8 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
     // TODO: implement initState
     super.initState();
     hoveredIndex = null;
+    baseItemHeight = 40;
+    verticlItemsPadding = 10;
   }
 
   @override
@@ -76,7 +80,7 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
             Positioned.fill(
               child: Center(
                 child: SizedBox(
-                  height: 40,
+                  height: baseItemHeight + verticlItemsPadding,
                   width: double.infinity,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
@@ -92,52 +96,56 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
               ),
             ),
             IntrinsicWidth(
-              child: Row(
-                  children: List.generate(items.length, (index) {
-                return MouseRegion(
-                  onEnter: ((event) {
-                    setState(() {
-                      hoveredIndex = index;
-                    });
-                  }),
-                  onExit: (event) {
-                    setState(() {
-                      hoveredIndex = null;
-                    });
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(
-                      milliseconds: 300,
-                    ),
-                    transform: Matrix4.identity()
-                      ..translate(
-                        0.0,
-                        getTranslationY(index),
-                        0.0,
+              child: Padding(
+                padding: EdgeInsets.all(verticlItemsPadding),
+                child: Row(
+                    children: List.generate(items.length, (index) {
+                  return MouseRegion(
+                    onEnter: ((event) {
+                      setState(() {
+                        hoveredIndex = index;
+                      });
+                    }),
+                    onExit: (event) {
+                      setState(() {
+                        hoveredIndex = null;
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(
+                        milliseconds: 300,
                       ),
-                    height: getScaledSize(index),
-                    width: getScaledSize(index),
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                    ),
-                    alignment: AlignmentDirectional.bottomCenter,
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: AnimatedDefaultTextStyle(
-                        duration: const Duration(
-                          milliseconds: 300,
+                      transform: Matrix4.identity()
+                        ..translate(
+                          0.0,
+                          getTranslationY(index),
+                          0.0,
                         ),
-                        style: TextStyle(
-                          fontSize: getScaledSize(index),
-                        ),
-                        child: Text(
-                          items[index],
+                      height: getScaledSize(index),
+                      width: getScaledSize(index),
+                      color: Colors.green,
+                      alignment: AlignmentDirectional.bottomCenter,
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: AnimatedDefaultTextStyle(
+                          duration: const Duration(
+                            milliseconds: 300,
+                          ),
+                          style: TextStyle(
+                            fontSize: getScaledSize(index),
+                          ),
+                          child: Text(
+                            items[index],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              }).toList()),
+                  );
+                }).toList()),
+              ),
             ),
           ],
         ),
@@ -153,3 +161,70 @@ List<String> items = [
   '👋',
   '🙀',
 ];
+
+
+// Center(
+//         child: DecoratedBox(
+//           decoration: BoxDecoration(
+//             color: const Color.fromARGB(115, 100, 100, 100),
+//             borderRadius: BorderRadius.circular(8),
+//             gradient: const LinearGradient(colors: [
+//               Colors.blueAccent,
+//               Colors.greenAccent,
+//             ]),
+//           ),
+//           child: SizedOverflowBox(
+//             size: const Size(350, 50),
+//             child: IntrinsicWidth(
+//               child: Row(
+//                   children: List.generate(items.length, (index) {
+//                 return MouseRegion(
+//                   onEnter: ((event) {
+//                     setState(() {
+//                       hoveredIndex = index;
+//                     });
+//                   }),
+//                   onExit: (event) {
+//                     setState(() {
+//                       hoveredIndex = null;
+//                     });
+//                   },
+//                   child: AnimatedContainer(
+//                     duration: const Duration(
+//                       milliseconds: 300,
+//                     ),
+//                     transform: Matrix4.identity()
+//                       ..translate(
+//                         0.0,
+//                         getTranslationY(index),
+//                         0.0,
+//                       ),
+//                     height: getScaledSize(index),
+//                     width: getScaledSize(index),
+//                     // color: Colors.green,
+//                     margin: const EdgeInsets.symmetric(
+//                       horizontal: 5,
+//                       vertical: 5,
+//                     ),
+//                     alignment: AlignmentDirectional.bottomCenter,
+//                     child: FittedBox(
+//                       fit: BoxFit.contain,
+//                       child: AnimatedDefaultTextStyle(
+//                         duration: const Duration(
+//                           milliseconds: 300,
+//                         ),
+//                         style: TextStyle(
+//                           fontSize: getScaledSize(index),
+//                         ),
+//                         child: Text(
+//                           items[index],
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 );
+//               }).toList()),
+//             ),
+//           ),
+//         ),
+//       )
