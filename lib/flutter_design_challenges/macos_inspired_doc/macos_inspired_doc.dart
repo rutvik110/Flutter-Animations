@@ -19,10 +19,13 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
 
     late final double hoveredSize;
     final difference = (hoveredIndex! - index).abs();
+    // deciedes how many items from the currently hovered index will be affected
+    // if changing also adjust hoveredSize accordingly values
+    final itemsAffected = items.length;
     if (difference == 0) {
       hoveredSize = 70;
-    } else if (difference <= 5) {
-      final scaleRatio = (5 - difference) / 5;
+    } else if (difference <= itemsAffected) {
+      final scaleRatio = (items.length - difference) / itemsAffected;
 
       hoveredSize = lerpDouble(40, 50, scaleRatio)!;
     } else {
@@ -40,10 +43,13 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
     late final double translationY;
 
     final difference = (hoveredIndex! - index).abs();
+    // deciedes how many items from the currently hovered index will be affected
+    // if changing also adjust translation accordingly
+    final itemsAffected = items.length;
     if (difference == 0) {
       translationY = -22;
-    } else if (difference <= 5) {
-      final scaleRatio = (5 - difference) / 5;
+    } else if (difference <= itemsAffected) {
+      final scaleRatio = (items.length - difference) / itemsAffected;
 
       translationY = lerpDouble(0, -14, scaleRatio)!;
     } else {
