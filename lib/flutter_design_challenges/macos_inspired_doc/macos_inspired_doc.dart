@@ -64,87 +64,77 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Stack(
-              fit: StackFit.loose,
-              alignment: Alignment.bottomCenter,
-              children: [
-                Positioned.fill(
-                  bottom: 0,
-                  child: Center(
-                    child: SizedBox(
-                      height: 40,
-                      width: double.infinity,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(115, 100, 100, 100),
-                          borderRadius: BorderRadius.circular(8),
-                          gradient: const LinearGradient(colors: [
-                            Colors.blueAccent,
-                            Colors.greenAccent,
-                          ]),
+      body: Center(
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Center(
+                child: SizedBox(
+                  height: 40,
+                  width: double.infinity,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(115, 100, 100, 100),
+                      borderRadius: BorderRadius.circular(8),
+                      gradient: const LinearGradient(colors: [
+                        Colors.blueAccent,
+                        Colors.greenAccent,
+                      ]),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            IntrinsicWidth(
+              child: Row(
+                  children: List.generate(items.length, (index) {
+                return MouseRegion(
+                  onEnter: ((event) {
+                    setState(() {
+                      hoveredIndex = index;
+                    });
+                  }),
+                  onExit: (event) {
+                    setState(() {
+                      hoveredIndex = null;
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(
+                      milliseconds: 300,
+                    ),
+                    transform: Matrix4.identity()
+                      ..translate(
+                        0.0,
+                        getTranslationY(index),
+                        0.0,
+                      ),
+                    height: getScaledSize(index),
+                    width: getScaledSize(index),
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                    ),
+                    alignment: AlignmentDirectional.bottomCenter,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: AnimatedDefaultTextStyle(
+                        duration: const Duration(
+                          milliseconds: 300,
+                        ),
+                        style: TextStyle(
+                          fontSize: getScaledSize(index),
+                        ),
+                        child: Text(
+                          items[index],
                         ),
                       ),
                     ),
                   ),
-                ),
-                IntrinsicWidth(
-                  child: Row(
-                      children: List.generate(items.length, (index) {
-                    return MouseRegion(
-                      onEnter: ((event) {
-                        setState(() {
-                          hoveredIndex = index;
-                        });
-                      }),
-                      onExit: (event) {
-                        setState(() {
-                          hoveredIndex = null;
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(
-                          milliseconds: 300,
-                        ),
-                        transform: Matrix4.identity()
-                          ..translate(
-                            0.0,
-                            getTranslationY(index),
-                            0.0,
-                          ),
-                        height: getScaledSize(index),
-                        width: getScaledSize(index),
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                        ),
-                        alignment: AlignmentDirectional.bottomCenter,
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          child: AnimatedDefaultTextStyle(
-                            duration: const Duration(
-                              milliseconds: 300,
-                            ),
-                            style: TextStyle(
-                              fontSize: getScaledSize(index),
-                            ),
-                            child: Text(
-                              items[index],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList()),
-                ),
-              ],
+                );
+              }).toList()),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
