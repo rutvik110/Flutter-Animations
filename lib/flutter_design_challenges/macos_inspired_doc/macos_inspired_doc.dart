@@ -75,16 +75,21 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
+        //explain how stack sizes it self
         child: Stack(
+          alignment: Alignment.center,
           children: [
+            // constraintes passed down by positioned.fill
             Positioned.fill(
-              child: Center(
+              //TODO: explain why we had to use align
+              // and what's difference between center and align
+              //could referance the positioned widget video on the docs page for Positioned
+              child: Align(
                 child: SizedBox(
-                  height: baseItemHeight + verticlItemsPadding,
-                  width: double.infinity,
+                  height: baseItemHeight,
+                  width: double.maxFinite,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(115, 100, 100, 100),
                       borderRadius: BorderRadius.circular(8),
                       gradient: const LinearGradient(colors: [
                         Colors.blueAccent,
@@ -95,9 +100,12 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
                 ),
               ),
             ),
-            IntrinsicWidth(
-              child: Padding(
-                padding: EdgeInsets.all(verticlItemsPadding),
+            Padding(
+              padding: EdgeInsets.all(verticlItemsPadding),
+              //explain use of intrinsic width and why it's expensive
+              // as layout is calculated in advance to know the child size
+              // and this not one pass and expensive
+              child: IntrinsicWidth(
                 child: Row(
                     children: List.generate(items.length, (index) {
                   return MouseRegion(
@@ -123,11 +131,12 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
                         ),
                       height: getScaledSize(index),
                       width: getScaledSize(index),
-                      color: Colors.green,
+                      // color: Colors.green,
                       alignment: AlignmentDirectional.bottomCenter,
                       margin: const EdgeInsets.symmetric(
                         horizontal: 10,
                       ),
+                      //explain the use of fittedbox
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: AnimatedDefaultTextStyle(
