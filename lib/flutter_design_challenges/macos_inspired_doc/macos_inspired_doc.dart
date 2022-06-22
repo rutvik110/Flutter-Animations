@@ -14,6 +14,7 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
   late double baseItemHeight;
   late double baseTranslationY;
   late double verticlItemsPadding;
+
   double getScaledSize(int index) {
     return getPropertyValue(
       index: index,
@@ -38,12 +39,13 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
     required double maxValue,
     required double nonHoveredMaxValue,
   }) {
+    late final double propertyValue;
+
     // 1.
     if (hoveredIndex == null) {
       return baseValue;
     }
 
-    late final double propertyValue;
     // 2.
     final difference = (hoveredIndex! - index).abs();
 
@@ -74,8 +76,9 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
     super.initState();
     hoveredIndex = null;
     baseItemHeight = 40;
-    baseTranslationY = 0;
+
     verticlItemsPadding = 10;
+    baseTranslationY = 0.0;
   }
 
   @override
@@ -86,8 +89,6 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // constraintes passed down by positioned.fill
-              //doesnt know where to put its children
               Positioned(
                 height: baseItemHeight,
                 left: 0,
@@ -102,12 +103,15 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
                   ),
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.all(verticlItemsPadding),
+// 1.
                 child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(items.length, (index) {
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                    items.length,
+                    (index) {
+                      // 2.
                       return MouseRegion(
                         cursor: SystemMouseCursors.click,
                         onEnter: ((event) {
@@ -120,6 +124,7 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
                             hoveredIndex = null;
                           });
                         },
+                        // 3.
                         child: AnimatedContainer(
                           duration: const Duration(
                             milliseconds: 300,
@@ -137,8 +142,10 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
                           margin: const EdgeInsets.symmetric(
                             horizontal: 10,
                           ),
-                          //explain the use of fittedbox
+                          // 4.
                           child: FittedBox(
+                            fit: BoxFit.contain,
+                            // 5.
                             child: AnimatedDefaultTextStyle(
                               duration: const Duration(
                                 milliseconds: 300,
@@ -153,7 +160,9 @@ class _MacOsInspiredDocState extends State<MacOsInspiredDoc> {
                           ),
                         ),
                       );
-                    }).toList()),
+                    },
+                  ).toList(),
+                ),
               ),
             ],
           ),
