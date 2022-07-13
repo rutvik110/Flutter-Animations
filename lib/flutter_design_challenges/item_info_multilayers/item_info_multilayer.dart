@@ -90,7 +90,15 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
   @override
   Widget build(BuildContext context) {
     final animation = widget.animation;
+    final double expandedHeight = MediaQuery.of(context).size.height * 0.2 < 200
+        ? 200
+        : MediaQuery.of(context).size.height * 0.2;
 
+    final double collapsedHeight =
+        MediaQuery.of(context).size.height * 0.3 < 250
+            ? 250
+            : MediaQuery.of(context).size.height * 0.3;
+    final double finalHeight = isExpanded ? expandedHeight : collapsedHeight;
     return Scaffold(
         body: Stack(
       fit: StackFit.expand,
@@ -99,7 +107,7 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
           alignment: Alignment.topCenter,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            height: isExpanded ? 200 : 250,
+            height: finalHeight,
             child: Hero(
               tag: "HeroImage",
               child: Image.asset(
@@ -165,14 +173,14 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
 }
 
 class InfoCardsStack extends StatefulWidget {
-  InfoCardsStack({
+  const InfoCardsStack({
     Key? key,
     required this.animation,
     required this.onExpanded,
   }) : super(key: key);
 
   final Animation<double> animation;
-  Function(bool isExpanded) onExpanded;
+  final Function(bool isExpanded) onExpanded;
 
   @override
   State<InfoCardsStack> createState() => _InfoCardsStackState();
@@ -182,12 +190,27 @@ class _InfoCardsStackState extends State<InfoCardsStack> {
   int? activeIndex;
   @override
   Widget build(BuildContext context) {
+    final double expandedHeight = MediaQuery.of(context).size.height * 0.2 < 200
+        ? 200
+        : MediaQuery.of(context).size.height * 0.2;
+
+    final double collapsedHeight =
+        MediaQuery.of(context).size.height * 0.3 < 250
+            ? 250
+            : MediaQuery.of(context).size.height * 0.3;
+    final double finalHeight =
+        activeIndex != null ? expandedHeight : collapsedHeight;
     return Material(
       color: Colors.transparent,
       child: Stack(
+        fit: StackFit.expand,
         children: List.generate(3, (index) {
-          return Positioned.fill(
-            top: 120,
+          return AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            top: finalHeight / 2,
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: SlideTransition(
               position: Tween<Offset>(
                 begin: Offset(
