@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class InfoMultilayerItem extends StatelessWidget {
@@ -7,17 +9,44 @@ class InfoMultilayerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: GestureDetector(
-          onTap: () => navigateToInfo(context),
-          child: Hero(
-            tag: "HeroImage",
-            child: Image.asset(
-              'assets/images/parallax.jpeg',
-              height: 200,
-              width: 200,
-              fit: BoxFit.cover,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Center(
+              child: GestureDetector(
+                onTap: () => navigateToInfo(context),
+                child: Hero(
+                  tag: "HeroImage",
+                  child: Image.asset(
+                    'assets/images/parallax.jpeg',
+                    height: 200,
+                    width: 200,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ),
-          ),
+            SlideTransition(
+              position: const AlwaysStoppedAnimation(Offset(-1.0, 1.0)),
+              child: Hero(
+                  tag: "Cards",
+                  flightShuttleBuilder:
+                      (context, animation, direction, fromContext, toContext) {
+                    return InfoCardsStack(
+                      animation: animation,
+                      onExpanded: (value) {
+                        // setState(() {
+                        //   isExpanded = value;
+                        // });
+                      },
+                    );
+                  },
+                  child: const SizedBox(
+                    height: double.infinity,
+                    width: double.infinity,
+                  )),
+            )
+          ],
         ),
       ),
     );
@@ -27,23 +56,27 @@ class InfoMultilayerItem extends StatelessWidget {
 void navigateToInfo(BuildContext context) {
   Navigator.of(context).push(
     PageRouteBuilder(
+      reverseTransitionDuration: const Duration(milliseconds: 1000),
+      transitionDuration: const Duration(milliseconds: 1000),
       pageBuilder: ((context, animation, secondaryAnimation) {
+        secondaryAnimation.addListener(
+          () {
+            log(secondaryAnimation.value.toString());
+          },
+        );
         return ItemsMultilayerInfo(animation: animation);
       }),
-      // transitionsBuilder: ((context, animation, secondaryAnimation, child) {
-      //   return const ItemsMultilayerInfo();
-      // }),
     ),
   );
 }
 
 class ItemsMultilayerInfo extends StatefulWidget {
-  ItemsMultilayerInfo({
+  const ItemsMultilayerInfo({
     Key? key,
     required this.animation,
   }) : super(key: key);
 
-  Animation<double> animation;
+  final Animation<double> animation;
 
   @override
   State<ItemsMultilayerInfo> createState() => _ItemsMultilayerInfoState();
@@ -51,6 +84,8 @@ class ItemsMultilayerInfo extends StatefulWidget {
 
 class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
   bool isExpanded = false;
+
+  ValueNotifier<int?> activeIndexNotifier = ValueNotifier<int?>(null);
 
   @override
   Widget build(BuildContext context) {
@@ -75,29 +110,55 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
             ),
           ),
         ),
-        InfoCardsStack(
-          animation: animation,
-          onExpanded: (value) {
-            setState(() {
-              isExpanded = value;
-            });
-          },
-        ),
-        Align(
-          alignment: Alignment.topLeft,
-          child: AnimatedPadding(
-            duration: const Duration(milliseconds: 300),
-            padding: EdgeInsets.only(top: isExpanded ? 25 : 50),
-            child: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                )),
+        Hero(
+          tag: "Cards",
+          child: InfoCardsStack(
+            animation: animation,
+            onExpanded: (value) {
+              setState(() {
+                isExpanded = value;
+              });
+            },
           ),
         ),
+        AnimatedBuilder(
+            animation: animation,
+            builder: (context, child) {
+              if (!animation.isCompleted) {
+                return const SizedBox();
+              }
+              return TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 150),
+                  builder: (context, animation, child) {
+                    return Align(
+                      alignment: Alignment.topLeft,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        opacity: animation,
+                        child: AnimatedPadding(
+                          duration: const Duration(milliseconds: 300),
+                          padding: EdgeInsets.only(top: isExpanded ? 25 : 50),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: const CircleBorder()),
+                              onPressed: () async {
+                                setState(() {
+                                  isExpanded = false;
+                                  activeIndexNotifier.value = null;
+                                });
+                                //   await Future<void>.delayed(const Duration(milliseconds: 400));
+                                Navigator.of(context).pop();
+                              },
+                              child: const Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                              )),
+                        ),
+                      ),
+                    );
+                  });
+            }),
       ],
     ));
   }
@@ -119,46 +180,46 @@ class InfoCardsStack extends StatefulWidget {
 
 class _InfoCardsStackState extends State<InfoCardsStack> {
   int? activeIndex;
-
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-    return Stack(
-      children: List.generate(3, (index) {
-        return Positioned.fill(
-          top: 120,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: Offset(
-                -widget.animation.value - 0.5 * index,
-                widget.animation.value + 0.5 * index,
+    return Material(
+      color: Colors.transparent,
+      child: Stack(
+        children: List.generate(3, (index) {
+          return Positioned.fill(
+            top: 120,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: Offset(
+                  -widget.animation.value - 0.5 * index,
+                  widget.animation.value + 0.5 * index,
+                ),
+                end: const Offset(0, 0),
+              ).animate(widget.animation),
+              child: InfoCard(
+                isActive: index == activeIndex,
+                color: colors[index],
+                acitveIndex: activeIndex,
+                index: index,
+                onIndexUpdate: (index) {
+                  setState(() {
+                    activeIndex = activeIndex == index
+                        ? (index - 1) >= 0
+                            ? index - 1
+                            : null
+                        : index;
+                    if (activeIndex == null) {
+                      widget.onExpanded(false);
+                    } else {
+                      widget.onExpanded(true);
+                    }
+                  });
+                },
               ),
-              end: const Offset(0, 0),
-            ).animate(widget.animation),
-            child: InfoCard(
-              isActive: index == activeIndex,
-              color: colors[index],
-              acitveIndex: activeIndex,
-              index: index,
-              onIndexUpdate: (index) {
-                setState(() {
-                  activeIndex = activeIndex == index
-                      ? (index - 1) >= 0
-                          ? index - 1
-                          : null
-                      : index;
-                  if (activeIndex == null) {
-                    widget.onExpanded(false);
-                  } else {
-                    widget.onExpanded(true);
-                  }
-                });
-              },
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }
