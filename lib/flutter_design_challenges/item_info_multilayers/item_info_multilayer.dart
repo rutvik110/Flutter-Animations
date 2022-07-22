@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animations/flutter_design_challenges/item_info_multilayers/parts/items_multilayer_info.dart';
 
@@ -30,11 +28,12 @@ class InfoMultilayerItem extends StatelessWidget {
             FractionalTranslation(
               translation: const Offset(-1.0, 1.0),
               child: Hero(
-                  tag: "Cards",
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                  )),
+                tag: "Cards",
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                ),
+              ),
             )
           ],
         ),
@@ -49,11 +48,6 @@ void navigateToInfo(BuildContext context) {
       reverseTransitionDuration: const Duration(milliseconds: 1000),
       transitionDuration: const Duration(milliseconds: 1000),
       pageBuilder: ((context, animation, secondaryAnimation) {
-        secondaryAnimation.addListener(
-          () {
-            log(secondaryAnimation.value.toString());
-          },
-        );
         return ItemsMultilayerInfo(animation: animation);
       }),
     ),

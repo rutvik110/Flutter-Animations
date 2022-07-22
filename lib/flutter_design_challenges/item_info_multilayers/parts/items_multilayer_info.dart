@@ -26,35 +26,49 @@ class ItemsMultilayerInfo extends StatefulWidget {
 }
 
 class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
-  bool isExpanded = false;
+  late ValueNotifier<int?> activeIndexNotifier;
 
-  int? activeIndex;
+  late ScrollController controller1;
+  late ScrollController controller2;
+  late ScrollController controller3;
 
-  void onIndexUpdate(int index) {
-    activeIndex = activeIndex == index
-        ? (index - 1) >= 0
-            ? index - 1
-            : null
-        : index;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller1 = ScrollController();
+    controller2 = ScrollController();
+    controller3 = ScrollController();
+    activeIndexNotifier = ValueNotifier<int?>(null);
+  }
 
-    isExpanded = activeIndex != null;
+  double get getFinalHeight {
+    return activeIndexNotifier.value != null
+        ? getHeightExpanded(context)
+        : getHeightCollapsed(context);
+  }
 
-    setState(() {});
+  double get getBottomPadding {
+    //get the bottom padding of the card depending on the number of cards on top of it
+    // such that its content is fully visible when scrolled to bottom of the card
+
+    return activeIndexNotifier.value == null
+        ? 0
+        : MediaQuery.of(context).size.height * 0.08 * 3;
   }
 
   @override
   Widget build(BuildContext context) {
     final animation = widget.animation;
 
-    final double finalHeight =
-        isExpanded ? getHeightExpanded(context) : getHeightCollapsed(context);
-
-    final child = InfoCardsStack(
+    final infoCardsStack = InfoCardsStack(
+      activeIndexNotifier: activeIndexNotifier,
       animation: animation,
-      activeIndex: activeIndex,
-      onIndexUpdate: onIndexUpdate,
+      itemsCount: 3,
       childrens: [
         ListView.builder(
+          controller: controller1,
+          padding: EdgeInsets.only(bottom: getBottomPadding),
           itemCount: 20,
           itemBuilder: ((context, index) {
             return ListTile(
@@ -65,7 +79,9 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
           }),
         ),
         GridView.builder(
+          controller: controller2,
           itemCount: 20,
+          padding: EdgeInsets.only(bottom: getBottomPadding),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 150,
             childAspectRatio: 1,
@@ -81,7 +97,9 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
           },
         ),
         GridView.builder(
+          controller: controller3,
           itemCount: 20,
+          padding: EdgeInsets.only(bottom: getBottomPadding),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 200,
             childAspectRatio: 1,
@@ -105,26 +123,32 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
       children: [
         Align(
           alignment: Alignment.topCenter,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: finalHeight,
-            child: Hero(
-              tag: "HeroImage",
-              child: AnimatedScale(
-                duration: const Duration(milliseconds: 300),
-                scale: isExpanded ? 1 : 1.2,
-                child: Image.asset(
-                  'assets/images/person.jpeg',
-                  fit: BoxFit.cover,
-                  width: MediaQuery.of(context).size.width,
-                ),
+          child: ValueListenableBuilder<int?>(
+              valueListenable: activeIndexNotifier,
+              child: Image.asset(
+                'assets/images/person.jpeg',
+                fit: BoxFit.cover,
+                width: MediaQuery.of(context).size.width,
               ),
-            ),
-          ),
+              builder: (context, activeIndex, child) {
+                final isExpanded = activeIndex != null;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  height: getFinalHeight,
+                  child: Hero(
+                    tag: "HeroImage",
+                    child: AnimatedScale(
+                      duration: const Duration(milliseconds: 300),
+                      scale: isExpanded ? 1 : 1.2,
+                      child: child,
+                    ),
+                  ),
+                );
+              }),
         ),
         AnimatedPositioned(
           duration: const Duration(milliseconds: 300),
-          top: finalHeight * 0.6,
+          top: getFinalHeight * 0.6,
           bottom: 0,
           left: 0,
           right: 0,
@@ -132,50 +156,52 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
             tag: "Cards",
             flightShuttleBuilder:
                 (context, animation, direction, fromContext, toContext) {
-              return child;
+              return infoCardsStack;
             },
-            child: child,
+            child: infoCardsStack,
           ),
         ),
-        AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              if (!animation.isCompleted) {
-                return const SizedBox();
-              }
-              return TweenAnimationBuilder<double>(
-                  tween: Tween<double>(begin: 0.0, end: 1.0),
-                  duration: const Duration(milliseconds: 150),
-                  builder: (context, animation, child) {
-                    return Align(
-                      alignment: Alignment.topLeft,
-                      child: AnimatedOpacity(
+        Align(
+          alignment: Alignment.topLeft,
+          child: AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) {
+                if (!animation.isCompleted) {
+                  return const SizedBox();
+                }
+                return TweenAnimationBuilder<double>(
+                    tween: Tween<double>(begin: 0.0, end: 1.0),
+                    duration: const Duration(milliseconds: 150),
+                    child: ValueListenableBuilder<int?>(
+                        valueListenable: activeIndexNotifier,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder()),
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            )),
+                        builder: (context, activeIndex, child) {
+                          final isExpanded = activeIndex != null;
+
+                          return AnimatedPadding(
+                            duration: const Duration(milliseconds: 300),
+                            padding: EdgeInsets.only(top: isExpanded ? 25 : 50),
+                            child: child,
+                          );
+                        }),
+                    builder: (context, animation, child) {
+                      return AnimatedOpacity(
                         duration: const Duration(milliseconds: 300),
                         opacity: animation,
-                        child: AnimatedPadding(
-                          duration: const Duration(milliseconds: 300),
-                          padding: EdgeInsets.only(top: isExpanded ? 25 : 50),
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  shape: const CircleBorder()),
-                              onPressed: () async {
-                                setState(() {
-                                  // isExpanded = false;
-                                  // activeIndex = null;
-                                });
-                                // await Future<void>.delayed(
-                                //     const Duration(milliseconds: 400));
-                                Navigator.of(context).pop();
-                              },
-                              child: const Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                              )),
-                        ),
-                      ),
-                    );
-                  });
-            }),
+                        child: child,
+                      );
+                    });
+              }),
+        ),
       ],
     ));
   }
