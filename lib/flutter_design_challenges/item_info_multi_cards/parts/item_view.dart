@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/flutter_design_challenges/item_info_multilayers/parts/info_cards_stack.dart';
+import 'package:flutter_animations/flutter_design_challenges/item_info_multi_cards/parts/info_cards_stack.dart';
 
 double getHeightExpanded(BuildContext context) {
   return MediaQuery.of(context).size.height * 0.23 < 230
@@ -13,8 +13,8 @@ double getHeightCollapsed(BuildContext context) {
       : MediaQuery.of(context).size.height * 0.3;
 }
 
-class ItemsMultilayerInfo extends StatefulWidget {
-  const ItemsMultilayerInfo({
+class ItemView extends StatefulWidget {
+  const ItemView({
     Key? key,
     required this.animation,
   }) : super(key: key);
@@ -22,10 +22,10 @@ class ItemsMultilayerInfo extends StatefulWidget {
   final Animation<double> animation;
 
   @override
-  State<ItemsMultilayerInfo> createState() => _ItemsMultilayerInfoState();
+  State<ItemView> createState() => _ItemsMultilayerInfoState();
 }
 
-class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
+class _ItemsMultilayerInfoState extends State<ItemView> {
   late ValueNotifier<int?> activeIndexNotifier;
 
   late ScrollController controller1;

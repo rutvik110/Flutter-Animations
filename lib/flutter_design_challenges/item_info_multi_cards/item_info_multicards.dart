@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/flutter_design_challenges/item_info_multilayers/parts/items_multilayer_info.dart';
+import 'package:flutter_animations/flutter_design_challenges/item_info_multi_cards/parts/item_view.dart';
 
-class InfoMultilayerItem extends StatelessWidget {
-  const InfoMultilayerItem({Key? key}) : super(key: key);
+class ItemInfoMultiCards extends StatelessWidget {
+  const ItemInfoMultiCards({Key? key}) : super(key: key);
 
   void navigateToInfo(BuildContext context) {
     Navigator.of(context).push(
@@ -10,7 +10,7 @@ class InfoMultilayerItem extends StatelessWidget {
         reverseTransitionDuration: const Duration(milliseconds: 1000),
         transitionDuration: const Duration(milliseconds: 1000),
         pageBuilder: ((context, animation, secondaryAnimation) {
-          return ItemsMultilayerInfo(animation: animation);
+          return ItemView(animation: animation);
         }),
       ),
     );

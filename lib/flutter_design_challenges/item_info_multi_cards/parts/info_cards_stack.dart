@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/flutter_design_challenges/item_info_multilayers/parts/info_card.dart';
+import 'package:flutter_animations/flutter_design_challenges/item_info_multi_cards/parts/info_card.dart';
 
 List<Color> colors = [
   Colors.red,
