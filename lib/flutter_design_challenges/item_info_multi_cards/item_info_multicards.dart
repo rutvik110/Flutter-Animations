@@ -1,3 +1,5 @@
+// Inspiration : https://dribbble.com/shots/12114793-Challenge-App-Interactions-Choosing-Coach
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animations/flutter_design_challenges/item_info_multi_cards/parts/item_view.dart';
 
