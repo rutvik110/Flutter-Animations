@@ -72,7 +72,7 @@ class _InfoCardsStackState extends State<InfoCardsStack> {
 
     return activeIndex == null
         ? 0
-        : MediaQuery.of(context).size.height * 0.08 * widget.itemsCount;
+        : MediaQuery.of(context).size.height * 0.1 * widget.itemsCount;
   }
 
   @override
