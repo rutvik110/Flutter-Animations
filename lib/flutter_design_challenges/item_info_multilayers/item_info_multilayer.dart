@@ -4,6 +4,18 @@ import 'package:flutter_animations/flutter_design_challenges/item_info_multilaye
 class InfoMultilayerItem extends StatelessWidget {
   const InfoMultilayerItem({Key? key}) : super(key: key);
 
+  void navigateToInfo(BuildContext context) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        reverseTransitionDuration: const Duration(milliseconds: 1000),
+        transitionDuration: const Duration(milliseconds: 1000),
+        pageBuilder: ((context, animation, secondaryAnimation) {
+          return ItemsMultilayerInfo(animation: animation);
+        }),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,16 +52,4 @@ class InfoMultilayerItem extends StatelessWidget {
       ),
     );
   }
-}
-
-void navigateToInfo(BuildContext context) {
-  Navigator.of(context).push(
-    PageRouteBuilder(
-      reverseTransitionDuration: const Duration(milliseconds: 1000),
-      transitionDuration: const Duration(milliseconds: 1000),
-      pageBuilder: ((context, animation, secondaryAnimation) {
-        return ItemsMultilayerInfo(animation: animation);
-      }),
-    ),
-  );
 }
