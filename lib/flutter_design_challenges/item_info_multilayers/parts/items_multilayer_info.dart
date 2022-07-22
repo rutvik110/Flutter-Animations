@@ -31,6 +31,7 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
   late ScrollController controller1;
   late ScrollController controller2;
   late ScrollController controller3;
+  late int itemsCount;
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
     controller2 = ScrollController();
     controller3 = ScrollController();
     activeIndexNotifier = ValueNotifier<int?>(null);
+    itemsCount = 3;
   }
 
   double get getFinalHeight {
@@ -54,7 +56,7 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
 
     return activeIndexNotifier.value == null
         ? 0
-        : MediaQuery.of(context).size.height * 0.08 * 3;
+        : MediaQuery.of(context).size.height * 0.08 * itemsCount;
   }
 
   @override
@@ -64,7 +66,7 @@ class _ItemsMultilayerInfoState extends State<ItemsMultilayerInfo> {
     final infoCardsStack = InfoCardsStack(
       activeIndexNotifier: activeIndexNotifier,
       animation: animation,
-      itemsCount: 3,
+      itemsCount: itemsCount,
       childrens: [
         ListView.builder(
           controller: controller1,
