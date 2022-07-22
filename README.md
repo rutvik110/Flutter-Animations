@@ -14,6 +14,6 @@
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/maths_meet_flutter/enlightened_heart"><img src="https://media3.giphy.com/media/fzoM7S1sKxTJGJF694/giphy.gif" width="49%"></a>
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/maths_meet_flutter/clockwork"><img src="https://media3.giphy.com/media/d5GF90fNm83SFsQC0B/giphy.gif" width="49%"></a>
 
-<a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/item_info_multilayers"><img src="https://media.giphy.com/media/y06TfpDdjp1pCoBgsN/giphy.gif" width="49%"></a>
+<a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/item_info_multi_cards"><img src="https://media.giphy.com/media/y06TfpDdjp1pCoBgsN/giphy.gif" width="49%"></a>
 
 
