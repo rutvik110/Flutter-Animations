@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animations/flutter_design_challenges/item_info_multilayers/parts/info_card.dart';
 
+List<Color> colors = [
+  Colors.red,
+  Colors.green,
+  Colors.blue,
+  Colors.yellow,
+  Colors.orange,
+];
+List<String> titles = [
+  "Sarah",
+  "About",
+  "Photos",
+  "Travel",
+  "Friends",
+];
+
 class InfoCardsStack extends StatefulWidget {
   const InfoCardsStack({
     Key? key,
@@ -99,18 +114,3 @@ class _InfoCardsStackState extends State<InfoCardsStack> {
         });
   }
 }
-
-List<Color> colors = [
-  Colors.red,
-  Colors.green,
-  Colors.blue,
-  Colors.yellow,
-  Colors.orange,
-];
-List<String> titles = [
-  "Sarah",
-  "About",
-  "Photos",
-  "Travel",
-  "Friends",
-];
