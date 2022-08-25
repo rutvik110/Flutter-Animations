@@ -85,6 +85,15 @@ class LyricsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lyricsBox = SizedBox(
+      width: double.maxFinite,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.yellow.shade700,
+          borderRadius: BorderRadius.circular(0),
+        ),
+      ),
+    );
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
@@ -107,28 +116,9 @@ class LyricsView extends StatelessWidget {
                   tag: "Lyrics",
                   flightShuttleBuilder: ((flightContext, animation,
                       flightDirection, fromHeroContext, toHeroContext) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Colors.yellow.shade700,
-                            borderRadius: BorderRadius.circular(0),
-                          ),
-                        ),
-                      ),
-                    );
+                    return FadeTransition(opacity: animation, child: lyricsBox);
                   }),
-                  child: SizedBox(
-                    width: double.maxFinite,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.yellow.shade700,
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                    ),
-                  ),
+                  child: lyricsBox,
                 ),
                 builder: (context, child) {
                   return FadeTransition(
