@@ -31,36 +31,72 @@ class _PiecesScrollingState extends State<PiecesScrolling> {
           itemBuilder: ((context, index) {
             return AnimatedBuilder(
                 animation: scrollController,
-                child: CircleAvatar(
-                  radius: 30,
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: [
+                        0,
+                        0.5,
+                        0.5,
+                        1,
+                      ],
+                      colors: [
+                        Colors.transparent,
+                        Colors.red,
+                        Colors.blue,
+                        Colors.transparent,
+                      ],
+                    ),
+                    color: Colors.blue,
+                  ),
                   child: Image.asset(
                     "assets/images/pokemons/${index + 1}.png",
+                    height: 200,
+                    width: 200,
                   ),
                 ),
                 builder: (context, child) {
                   final baseWidth = MediaQuery.of(context).size.width / 2;
-                  final maxScrollWidth =
-                      scrollController.position.maxScrollExtent;
+
+                  late double maxScrollWidth;
+
+                  if (scrollController.hasClients &&
+                      scrollController.position.haveDimensions) {
+                    maxScrollWidth = scrollController.position.maxScrollExtent;
+                  } else {
+                    final storageContext =
+                        scrollController.position.context.storageContext;
+                    final double? previousSavedPosition =
+                        PageStorage.of(storageContext)
+                            ?.readState(storageContext) as double?;
+                    if (previousSavedPosition != null) {
+                      maxScrollWidth = previousSavedPosition - index.toDouble();
+                    } else {
+                      maxScrollWidth = scrollController.initialScrollOffset -
+                          index.toDouble();
+                    }
+                  }
                   final individualItemWidth =
                       (maxScrollWidth + baseWidth * 2) / 12;
-                  final itemsInView = baseWidth * 2 / individualItemWidth;
+                  final itemsInView = (baseWidth * 2 / individualItemWidth);
                   final itemOnEdge = (scrollController.offset + baseWidth * 2) /
                       individualItemWidth;
                   final difference = index - (itemOnEdge - itemsInView / 2);
                   final ratio = (itemsInView - difference.abs()) / itemsInView;
-                  final numerator = (itemsInView.round() - itemOnEdge - index) *
-                      individualItemWidth;
-                  final denominator = baseWidth;
-                  final widthRatio = numerator / denominator;
-                  log(itemsInView.toString());
+
                   log(itemOnEdge.toString());
-                  // log(index.toString());
+                  log(itemsInView.toString());
 
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Transform.scale(
-                      scale: ratio,
-                      child: child,
+                    child: Opacity(
+                      opacity: ratio.abs().clamp(0, 1),
+                      child: Transform.scale(
+                        scale: ratio,
+                        child: child,
+                      ),
                     ),
                   );
                 });

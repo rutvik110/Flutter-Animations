@@ -15,5 +15,8 @@
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/maths_meet_flutter/clockwork"><img src="https://media3.giphy.com/media/d5GF90fNm83SFsQC0B/giphy.gif" width="49%"></a>
 
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/item_info_multi_cards"><img src="https://media.giphy.com/media/y06TfpDdjp1pCoBgsN/giphy.gif" width="49%"></a>
+<a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/spotify_lyrics_hero_animation"><img src="https://media.giphy.com/media/uco6P6mZixFtZs9D16/giphy.gif" width="49%"></a>
+
+<a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/twitter_profile_scroll"><img src="https://media.giphy.com/media/EP4iS4RT411qqoIAY1/giphy.gif" width="49%"></a>
 
 

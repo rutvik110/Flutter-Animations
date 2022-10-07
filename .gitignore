@@ -49,3 +49,5 @@ app.*.map.json
 /videos
 /gifs
 /macos_older_dir
+
+.vscode

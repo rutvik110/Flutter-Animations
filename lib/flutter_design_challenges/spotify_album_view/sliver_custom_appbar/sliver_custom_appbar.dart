@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/const.dart';
 import 'package:flutter_animations/flutter_design_challenges/spotify_album_view/sliver_custom_appbar/custom_flexible_space.dart';
