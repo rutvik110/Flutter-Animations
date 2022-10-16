@@ -73,7 +73,9 @@ class _MyShaderState extends State<StripesShaderView> {
                           },
                         ),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(
+                        width: 20,
+                      ),
                       Expanded(
                         child: ShaderMask(
                           child: Container(
@@ -156,6 +158,9 @@ class _MyShaderState extends State<StripesShaderView> {
                       ),
                     ],
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   CustomPaint(
                     painter: MyPainter(
                       snapshot.data!.shader(
@@ -169,13 +174,13 @@ class _MyShaderState extends State<StripesShaderView> {
                       ),
                     ),
                     size: const Size(
-                      300,
-                      300,
+                      250,
+                      250,
                     ),
                   ),
                   const SizedBox(
-                    height: 100,
-                  )
+                    height: 50,
+                  ),
                 ],
               ),
             );
