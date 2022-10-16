@@ -8,6 +8,14 @@
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/spotify_album_view"><img src="https://media3.giphy.com/media/n72MSudBc2KLkQu0yz/giphy.gif" width="49%"></a>
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/marching_ants"><img src="https://media3.giphy.com/media/Y4zLMeIEul7dViJGrd/giphy.gif" width="49%"></a>
 
+
+
+[Stripes Shader](https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_shaders/stripes_shader)
+
+https://user-images.githubusercontent.com/65209850/196029076-c6548842-cbab-4632-b79f-fc3b2cde9150.mov
+
+
+
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/logIn_concept"><img src="https://media3.giphy.com/media/5YQikLdRni4gC1OmcI/giphy.gif" width="49%"></a>
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/floating_card"><img src="https://media3.giphy.com/media/iHdf2ZiGbpDdI5sztC/giphy.gif" width="49%"></a>
 
