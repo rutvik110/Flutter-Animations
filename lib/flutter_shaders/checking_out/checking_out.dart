@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/shaders/hello_world.dart';
+import 'package:flutter_animations/flutter_shaders/checking_out/hello_world.dart';
 
 class CheckingOut extends StatefulWidget {
   const CheckingOut({Key? key}) : super(key: key);

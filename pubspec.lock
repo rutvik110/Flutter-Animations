@@ -328,7 +328,7 @@ packages:
       name: umbra_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0-dev.1"
+    version: "0.1.0-dev.4"
   uuid:
     dependency: transitive
     description:
