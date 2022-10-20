@@ -5,6 +5,8 @@ uniform float speed;
 uniform float direction;
 uniform float warpScale;
 uniform float warpTiling;
+uniform vec3 color1;
+uniform vec3 color2;
 
 vec2 rotatePoint(vec2 pt,vec2 center,float angle){
     float sinAngle=sin(angle);
@@ -33,7 +35,7 @@ vec4 fragment(in vec2 uv,in vec2 fragCoord){
     
     float st=floor(fract(uv2.x)+.5);
     
-    vec3 color=mix(vec3(0.,.032,1.),vec3(1.,.003,.449),st);
+    vec3 color=mix(color1,color2,st);
     
     return vec4(color,1.);
 }

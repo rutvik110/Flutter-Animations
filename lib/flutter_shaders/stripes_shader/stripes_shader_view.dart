@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animations/flutter_shaders/stripes_shader/stripes.dart';
+import 'package:flutter_animations/util/extensions/colot_to_vector.dart';
 
 class StripesShaderView extends StatefulWidget {
   const StripesShaderView({Key? key}) : super(key: key);
@@ -69,6 +70,8 @@ class _MyShaderState extends State<StripesShaderView> {
                               direction: -.8, // -1 to 1
                               warpScale: 0.5,
                               warpTiling: 0.8,
+                              color1: Colors.red.toColorVector(),
+                              color2: Colors.blue.toColorVector(),
                             );
                           },
                         ),
@@ -94,6 +97,8 @@ class _MyShaderState extends State<StripesShaderView> {
                               direction: .5, // -1 to 1
                               warpScale: 0.5,
                               warpTiling: 0.8,
+                              color1: Colors.red.toColorVector(),
+                              color2: Colors.blue.toColorVector(),
                             );
                           },
                         ),
@@ -122,7 +127,8 @@ class _MyShaderState extends State<StripesShaderView> {
                               speed: delta / 3,
                               direction: -0.5, // -1 to 1
                               warpScale: 0.5,
-                              warpTiling: 0,
+                              warpTiling: 0, color1: Colors.red.toColorVector(),
+                              color2: Colors.blue.toColorVector(),
                             );
                           },
                         ),
@@ -151,6 +157,8 @@ class _MyShaderState extends State<StripesShaderView> {
                                 direction: -.8, // -1 to 1
                                 warpScale: 0.5,
                                 warpTiling: 0.3,
+                                color1: Colors.red.toColorVector(),
+                                color2: Colors.blue.toColorVector(),
                               );
                             },
                           ),
@@ -170,7 +178,8 @@ class _MyShaderState extends State<StripesShaderView> {
                         speed: delta / 20,
                         direction: 0.7, // -1 to 1
                         warpScale: 0.5,
-                        warpTiling: 0.5,
+                        warpTiling: 0.5, color1: Colors.red.toColorVector(),
+                        color2: Colors.blue.toColorVector(),
                       ),
                     ),
                     size: const Size(
