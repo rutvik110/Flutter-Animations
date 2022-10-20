@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/flutter_design_challenges/images_stacker/images_stacker.dart';
+import 'package:flutter_animations/flutter_design_challenges/pictures_stack/pictures_stack.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
