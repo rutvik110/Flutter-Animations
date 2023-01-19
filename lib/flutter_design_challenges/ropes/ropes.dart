@@ -3,6 +3,9 @@ import 'dart:math' as math;
 
 import 'package:dart_numerics/dart_numerics.dart' as numerics;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_animations/flutter_shaders/stripes_shader/stripes.dart';
+import 'package:flutter_animations/util/extensions/colot_to_vector.dart';
 import 'package:scidart/numdart.dart';
 
 const EPSILON = 1e-6;
@@ -16,42 +19,363 @@ class RopesView extends StatefulWidget {
 
 class _RopesViewState extends State<RopesView> {
   Offset dragPoint = Offset.zero;
+  Offset dragPoint2 = Offset.zero;
+  Offset dragPoint3 = Offset.zero;
+
+  late Future<Stripes> helloWorld;
+
+  late Ticker ticker;
+
+  late double delta;
+
+  final answer1Key = GlobalKey();
+  final answer2Key = GlobalKey();
+  final answer3Key = GlobalKey();
+  bool isConnected = false;
+  bool isConnected2 = false;
+  bool isConnected3 = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    helloWorld = Stripes.compile();
+    delta = 0;
+    ticker = Ticker((elapsedTime) {
+      setState(() {
+        delta += 1 / 60;
+      });
+    })
+      ..start();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    final size = MediaQuery.of(context).size;
+    dragPoint = Offset(size.width / 2 - 50, 200);
+    dragPoint2 = Offset(size.width / 2, 300);
+    dragPoint3 = Offset(size.width / 2 + 50, 400);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    ticker.dispose();
+    super.dispose();
+  }
+
+  bool isConnectedPowere(GlobalKey stationKey, Offset pointer) {
+    final renderBox =
+        stationKey.currentContext!.findRenderObject() as RenderBox;
+    final offset = renderBox.localToGlobal(renderBox.paintBounds.topLeft);
+    final size = renderBox.size;
+    return pointer.dx > offset.dx &&
+        pointer.dy > offset.dy &&
+        pointer.dx < offset.dx + size.width &&
+        pointer.dy < offset.dy + size.height;
+  }
+
   @override
   Widget build(BuildContext context) {
+    const topPadding = 100.0;
     return Scaffold(
-      body: GestureDetector(
-        onPanUpdate: ((details) {
-          dragPoint = details.localPosition;
-          dev.log(dragPoint.dx.toString());
-          setState(() {});
-        }),
-        child: CustomPaint(
-          painter: RopesPainter(
-            dragPoint,
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          Positioned(
+            top: dragPoint.dy - 48 / 1.2,
+            left: dragPoint.dx - 48 / 2,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.grab,
+              child: Draggable(
+                  onDragUpdate: ((details) {
+                    dragPoint = details.localPosition;
+                    isConnected = isConnectedPowere(answer1Key, dragPoint);
+                    setState(() {});
+                  }),
+                  feedback: const SizedBox.shrink(),
+                  child: const Icon(
+                    Icons.power,
+                    size: 48,
+                    color: Colors.yellowAccent,
+                  )),
+            ),
           ),
-          size: Size.infinite,
-        ),
+          Positioned(
+            top: dragPoint2.dy - 48 / 1.2,
+            left: dragPoint2.dx - 48 / 2,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.grab,
+              child: Draggable(
+                onDragUpdate: ((details) {
+                  dragPoint2 = details.localPosition;
+                  isConnected2 = isConnectedPowere(answer2Key, dragPoint2);
+                  setState(() {});
+                }),
+                feedback: const SizedBox.shrink(),
+                child: const Icon(
+                  Icons.power,
+                  size: 48,
+                  color: Colors.greenAccent,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: dragPoint3.dy - 48 / 1.2,
+            left: dragPoint3.dx - 48 / 2,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.grab,
+              child: Draggable(
+                onDragUpdate: ((details) {
+                  dragPoint3 = details.localPosition;
+                  isConnected3 = isConnectedPowere(answer3Key, dragPoint3);
+                  dev.log(isConnected3.toString());
+                  setState(() {});
+                }),
+                feedback: const SizedBox.shrink(),
+                child: const Icon(
+                  Icons.power,
+                  size: 48,
+                  color: Colors.redAccent,
+                ),
+              ),
+            ),
+          ),
+          IgnorePointer(
+            ignoring: true,
+            child: FutureBuilder<Stripes>(
+              future: helloWorld,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Stack(
+                    children: [
+                      CustomPaint(
+                        painter: RopesPainter(
+                          const Offset(50, 100 + topPadding),
+                          dragPoint,
+                          snapshot.data!.shader(
+                            resolution: MediaQuery.of(context).size,
+                            uTime: delta,
+                            tiles: 20.0,
+                            speed: !isConnected ? 0 : delta / 10,
+                            direction: 0.5, // -1 to 1
+                            warpScale: 0,
+                            warpTiling: 0,
+                            color1: isConnected
+                                ? Colors.yellow.toColorVector()
+                                : Colors.grey.toColorVector(),
+                            color2: isConnected
+                                ? Colors.amber.toColorVector()
+                                : Colors.blueGrey.toColorVector(),
+                          ),
+                          delta,
+                        ),
+                        size: Size.infinite,
+                      ),
+                      CustomPaint(
+                        painter: RopesPainter(
+                          const Offset(50, 250 + topPadding),
+                          dragPoint2,
+                          snapshot.data!.shader(
+                            resolution: MediaQuery.of(context).size,
+                            uTime: delta,
+                            tiles: 20.0,
+                            speed: !isConnected2 ? 0 : delta / 10,
+                            direction: 0.5, // -1 to 1
+                            warpScale: 0,
+                            warpTiling: 0,
+                            color1: isConnected2
+                                ? Colors.greenAccent.toColorVector()
+                                : Colors.grey.toColorVector(),
+                            color2: isConnected2
+                                ? Colors.green.toColorVector()
+                                : Colors.blueGrey.toColorVector(),
+                          ),
+                          delta,
+                        ),
+                        size: Size.infinite,
+                      ),
+                      CustomPaint(
+                        painter: RopesPainter(
+                          const Offset(50, 400 + topPadding),
+                          dragPoint3,
+                          snapshot.data!.shader(
+                            resolution: MediaQuery.of(context).size,
+                            uTime: delta,
+                            tiles: 20.0,
+                            speed: !isConnected3 ? 0 : delta / 10,
+                            direction: 0.5, // -1 to 1
+                            warpScale: 0,
+                            warpTiling: 0,
+                            color1: isConnected3
+                                ? Colors.redAccent.toColorVector()
+                                : Colors.grey.toColorVector(),
+                            color2: isConnected3
+                                ? Colors.red.toColorVector()
+                                : Colors.blueGrey.toColorVector(),
+                          ),
+                          delta,
+                        ),
+                        size: Size.infinite,
+                      ),
+                    ],
+                  );
+                }
+                return Container();
+              },
+            ),
+          ),
+          IgnorePointer(
+            ignoring: true,
+            child: Padding(
+              padding: const EdgeInsets.only(top: topPadding),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 40, 40, 40),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: const Icon(
+                          Icons.charging_station_outlined,
+                          size: 48,
+                          color: Colors.amber,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 40, 40, 40),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: const Icon(
+                          Icons.charging_station_outlined,
+                          size: 48,
+                          color: Colors.greenAccent,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 40, 40, 40),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: const Icon(
+                          Icons.charging_station_outlined,
+                          size: 48,
+                          color: Colors.redAccent,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        key: answer1Key,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 40, 40, 40),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Icon(
+                          Icons.drive_eta_rounded,
+                          size: 48,
+                          color: isConnected ? Colors.amber : Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Container(
+                        height: 100,
+                        width: 100,
+                        key: answer2Key,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 40, 40, 40),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Icon(
+                          Icons.drive_eta_rounded,
+                          size: 48,
+                          color:
+                              isConnected2 ? Colors.greenAccent : Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Container(
+                        height: 100,
+                        width: 100,
+                        key: answer3Key,
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 40, 40, 40),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Icon(
+                          Icons.drive_eta_rounded,
+                          size: 48,
+                          color: isConnected3 ? Colors.redAccent : Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
 class RopesPainter extends CustomPainter {
-  RopesPainter(this.endPoint);
+  RopesPainter(
+    this.startPoint,
+    this.endPoint,
+    this.stripes,
+    this.delta,
+  );
 
   final Offset endPoint;
+  final Offset startPoint;
+  final Shader stripes;
+  final double delta;
   @override
   void paint(Canvas canvas, Size size) {
     // TODO: implement paint
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 2.0
+    Paint paint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 10.0
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round
+      ..shader = stripes
       ..style = PaintingStyle.stroke;
-    const startingPoint = math.Point(0.1, 0.5);
+
+    final startingPoint =
+        math.Point(startPoint.dx / size.width, startPoint.dy / size.height);
     final finalendPoint =
         math.Point(endPoint.dx / size.width, endPoint.dy / size.height);
+    final radius = math.sqrt(math.pow(endPoint.dx - startPoint.dx, 2.0) +
+        math.pow(endPoint.dy - startPoint.dy, 2.0));
     final curvePoints = getCaternaryCurve(startingPoint, finalendPoint, 1);
     final points = curvePoints
         .map((e) => Offset(e.x * size.width, (e.y) * size.height))
@@ -68,9 +392,9 @@ class RopesPainter extends CustomPainter {
   }
 
   List<math.Point> getCaternaryCurve(
-      math.Point point1, math.Point point2, int chainLength) {
-    const segments = 25;
-    const iterationLimit = 6;
+      math.Point point1, math.Point point2, double chainLength) {
+    const segments = 40;
+    const iterationLimit = 11;
     // The curves are reversed
     final isFlipped = point1.x > point2.x;
 
@@ -80,8 +404,12 @@ class RopesPainter extends CustomPainter {
     final h = p2.x - p1.x;
     final v = p2.y - p1.y;
 
-    final a = -getCatenaryParameter(
-        h.toDouble(), v.toDouble(), chainLength, iterationLimit);
+    final a = -getCatenaryParameter(h.toDouble(), v.toDouble(), chainLength,
+        iterationLimit, point1, point2);
+
+    // if (a.isNaN) {
+    //   return [point1, point2];
+    // }
     final x = (a * math.log((chainLength + v) / (chainLength - v)) - h) * 0.5;
     final y = a * cosh(x / a);
 
@@ -150,8 +478,10 @@ math.Point getDifferenceTo(math.Point p1, math.Point p2) {
 double getCatenaryParameter(
   double h,
   double v,
-  int length,
+  double length,
   int limit,
+  math.Point point,
+  math.Point point2,
 ) {
   final m = math.sqrt(length * length - v * v) / h;
   double x = numerics.acosh(m) + 1;
