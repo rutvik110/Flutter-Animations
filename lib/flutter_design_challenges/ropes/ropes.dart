@@ -1,3 +1,8 @@
+// An example of simulating a simple rope. For, the construction of rope, catenary algorithm(https://en.wikipedia.org/wiki/Catenary) is used.
+// The catenary is a curve that describes the shape of a hanging chain or cable, or the curve described by a freely hanging chain or cable.
+// The implementation of catenary algorithm is based on the following js implementation : https://github.com/dulnan/catenary-curve/blob/9cb7e53e2db4bd5c499f5051abde8bfd853d946a/src/main.ts#L254
+// Catenary dart algorithm gist : https://gist.github.com/rutvik110/56f4626c95b92b8cf2c95283d4682331
+
 import 'dart:developer' as dev;
 import 'dart:math' as math;
 
@@ -28,9 +33,9 @@ class _RopesViewState extends State<RopesView> {
 
   late double delta;
 
-  final answer1Key = GlobalKey();
-  final answer2Key = GlobalKey();
-  final answer3Key = GlobalKey();
+  final station1Key = GlobalKey();
+  final station2Key = GlobalKey();
+  final station3Key = GlobalKey();
   bool isConnected = false;
   bool isConnected2 = false;
   bool isConnected3 = false;
@@ -84,6 +89,7 @@ class _RopesViewState extends State<RopesView> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
+          // DragPoint 1
           Positioned(
             top: dragPoint.dy - 48 / 1.2,
             left: dragPoint.dx - 48 / 2,
@@ -92,7 +98,7 @@ class _RopesViewState extends State<RopesView> {
               child: Draggable(
                   onDragUpdate: ((details) {
                     dragPoint = details.localPosition;
-                    isConnected = isConnectedPowere(answer1Key, dragPoint);
+                    isConnected = isConnectedPowere(station1Key, dragPoint);
                     setState(() {});
                   }),
                   feedback: const SizedBox.shrink(),
@@ -103,6 +109,7 @@ class _RopesViewState extends State<RopesView> {
                   )),
             ),
           ),
+          // DragPoint 2
           Positioned(
             top: dragPoint2.dy - 48 / 1.2,
             left: dragPoint2.dx - 48 / 2,
@@ -111,7 +118,7 @@ class _RopesViewState extends State<RopesView> {
               child: Draggable(
                 onDragUpdate: ((details) {
                   dragPoint2 = details.localPosition;
-                  isConnected2 = isConnectedPowere(answer2Key, dragPoint2);
+                  isConnected2 = isConnectedPowere(station2Key, dragPoint2);
                   setState(() {});
                 }),
                 feedback: const SizedBox.shrink(),
@@ -123,6 +130,7 @@ class _RopesViewState extends State<RopesView> {
               ),
             ),
           ),
+          // DragPoint 3
           Positioned(
             top: dragPoint3.dy - 48 / 1.2,
             left: dragPoint3.dx - 48 / 2,
@@ -131,7 +139,7 @@ class _RopesViewState extends State<RopesView> {
               child: Draggable(
                 onDragUpdate: ((details) {
                   dragPoint3 = details.localPosition;
-                  isConnected3 = isConnectedPowere(answer3Key, dragPoint3);
+                  isConnected3 = isConnectedPowere(station3Key, dragPoint3);
                   dev.log(isConnected3.toString());
                   setState(() {});
                 }),
@@ -144,6 +152,7 @@ class _RopesViewState extends State<RopesView> {
               ),
             ),
           ),
+          // Cars
           IgnorePointer(
             ignoring: true,
             child: FutureBuilder<Stripes>(
@@ -171,7 +180,6 @@ class _RopesViewState extends State<RopesView> {
                                 ? Colors.amber.toColorVector()
                                 : Colors.blueGrey.toColorVector(),
                           ),
-                          delta,
                         ),
                         size: Size.infinite,
                       ),
@@ -194,7 +202,6 @@ class _RopesViewState extends State<RopesView> {
                                 ? Colors.green.toColorVector()
                                 : Colors.blueGrey.toColorVector(),
                           ),
-                          delta,
                         ),
                         size: Size.infinite,
                       ),
@@ -217,7 +224,6 @@ class _RopesViewState extends State<RopesView> {
                                 ? Colors.red.toColorVector()
                                 : Colors.blueGrey.toColorVector(),
                           ),
-                          delta,
                         ),
                         size: Size.infinite,
                       ),
@@ -228,6 +234,7 @@ class _RopesViewState extends State<RopesView> {
               },
             ),
           ),
+          // Changing Stations
           IgnorePointer(
             ignoring: true,
             child: Padding(
@@ -289,7 +296,7 @@ class _RopesViewState extends State<RopesView> {
                       Container(
                         height: 100,
                         width: 100,
-                        key: answer1Key,
+                        key: station1Key,
                         decoration: BoxDecoration(
                           color: const Color.fromARGB(255, 40, 40, 40),
                           borderRadius: BorderRadius.circular(10.0),
@@ -306,7 +313,7 @@ class _RopesViewState extends State<RopesView> {
                       Container(
                         height: 100,
                         width: 100,
-                        key: answer2Key,
+                        key: station2Key,
                         decoration: BoxDecoration(
                           color: const Color.fromARGB(255, 40, 40, 40),
                           borderRadius: BorderRadius.circular(10.0),
@@ -324,7 +331,7 @@ class _RopesViewState extends State<RopesView> {
                       Container(
                         height: 100,
                         width: 100,
-                        key: answer3Key,
+                        key: station3Key,
                         decoration: BoxDecoration(
                           color: const Color.fromARGB(255, 40, 40, 40),
                           borderRadius: BorderRadius.circular(10.0),
@@ -352,13 +359,12 @@ class RopesPainter extends CustomPainter {
     this.startPoint,
     this.endPoint,
     this.stripes,
-    this.delta,
   );
 
   final Offset endPoint;
   final Offset startPoint;
   final Shader stripes;
-  final double delta;
+
   @override
   void paint(Canvas canvas, Size size) {
     // TODO: implement paint
@@ -374,8 +380,7 @@ class RopesPainter extends CustomPainter {
         math.Point(startPoint.dx / size.width, startPoint.dy / size.height);
     final finalendPoint =
         math.Point(endPoint.dx / size.width, endPoint.dy / size.height);
-    final radius = math.sqrt(math.pow(endPoint.dx - startPoint.dx, 2.0) +
-        math.pow(endPoint.dy - startPoint.dy, 2.0));
+
     final curvePoints = getCaternaryCurve(startingPoint, finalendPoint, 1);
     final points = curvePoints
         .map((e) => Offset(e.x * size.width, (e.y) * size.height))
@@ -406,10 +411,10 @@ class RopesPainter extends CustomPainter {
 
     final a = -getCatenaryParameter(h.toDouble(), v.toDouble(), chainLength,
         iterationLimit, point1, point2);
-
-    // if (a.isNaN) {
-    //   return [point1, point2];
-    // }
+    // Handle NAN/rope being stretched than its original length case
+    if (a.isNaN) {
+      return [point1, point2];
+    }
     final x = (a * math.log((chainLength + v) / (chainLength - v)) - h) * 0.5;
     final y = a * cosh(x / a);
 
