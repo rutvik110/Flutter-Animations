@@ -381,7 +381,7 @@ class RopesPainter extends CustomPainter {
     final finalendPoint =
         math.Point(endPoint.dx / size.width, endPoint.dy / size.height);
 
-    final curvePoints = getCaternaryCurve(startingPoint, finalendPoint, 1);
+    final curvePoints = getCaternaryCurve(startingPoint, finalendPoint, 0.7);
     final points = curvePoints
         .map((e) => Offset(e.x * size.width, (e.y) * size.height))
         .toList();
