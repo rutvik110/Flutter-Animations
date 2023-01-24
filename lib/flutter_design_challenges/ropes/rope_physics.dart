@@ -3,9 +3,11 @@
 // The implementation of catenary algorithm is based on the following js implementation : https://github.com/dulnan/catenary-curve/blob/9cb7e53e2db4bd5c499f5051abde8bfd853d946a/src/main.ts#L254
 // Catenary dart algorithm gist : https://gist.github.com/rutvik110/56f4626c95b92b8cf2c95283d4682331
 
+import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animations/flutter_shaders/stripes_shader/stripes.dart';
@@ -21,7 +23,12 @@ class RopesPhysics extends StatefulWidget {
 }
 
 class _RopesViewState extends State<RopesPhysics> {
+  Offset ropeStartPoint = Offset.zero;
+  Offset ropeEndPoint = Offset.zero;
   Offset dragPoint = Offset.zero;
+  Offset endPoint = Offset.zero;
+  double elapsedDelta = 0;
+  Duration elapsedDuration = Duration.zero;
 
   late Future<Stripes> helloWorld;
 
@@ -32,61 +39,83 @@ class _RopesViewState extends State<RopesPhysics> {
   final station1Key = GlobalKey();
 
   bool isConnected = false;
+  int segmentLength = 35;
+  double ropeSegmentLength = 0.01;
+  late List<Offset> ropeSegments;
+  late List<Offset> oldSegments;
 
-  late List<Offset> originalPoints;
-  late List<Offset> updatedPoints;
-
-  void updatePoints(Size size) {
-    const NormalLength = 3.0;
-    const Gravity = 10.0;
-
-    for (var i = 1; i < 99; i++) {
-      double xvector1 = originalPoints[i - 1].dx - originalPoints[i].dx;
-      double yvector1 = originalPoints[i - 1].dy - originalPoints[i].dy;
-      double Magnitude1 = math.sqrt(math.pow(xvector1, 2) +
-          math.pow(yvector1, 2)); //LengthOf (X_Vector1, Y_Vector1)
-      double Extension1 = Magnitude1 - NormalLength;
-
-      double XVector2 = originalPoints[i + 1].dx - originalPoints[i].dx;
-      double YVector2 = originalPoints[i + 1].dy - originalPoints[i].dy;
-      double Magnitude2 = math.sqrt(
-        math.pow(XVector2, 2) +
-            math.pow(
-              YVector2,
-              2,
-            ),
-      ); // LengthOf(X_Vector2, Y_Vector2)
-      double Extension2 = Magnitude2 - NormalLength;
-
-      double xv = ((xvector1 / Magnitude1) * Extension1) +
-          ((XVector2 / Magnitude2) * Extension2);
-      double yv = ((yvector1 / Magnitude1) * Extension1) +
-          ((YVector2 / Magnitude2) * Extension2) +
-          Gravity;
-
-      updatedPoints[i] = Offset(
-          originalPoints[i].dx + (xv * .01), originalPoints[i].dy + (yv * .01));
-
-      //(Note you can use what ever value you like instead of .01)
+  void addPoints(Size size) {
+    for (var i = 0; i < segmentLength; i++) {
+      ropeSegments[i] = ropeStartPoint;
+      ropeStartPoint =
+          Offset(ropeStartPoint.dx, ropeStartPoint.dy + ropeSegmentLength);
     }
-    originalPoints = updatedPoints;
+    oldSegments = ropeSegments;
+  }
 
-    //  originalPoints.last = Offset(dragPoint.dx, dragPoint.dy);
+  void simulate(Size size) {
+    Vector2 forceGravity = Vector2(0, 1);
+    double isPositive = math.Random().nextBool() ? 1 : -1;
+    double xWind = math.Random().nextDouble();
+    for (var i = 0; i < segmentLength; i++) {
+      Offset firstSegment = ropeSegments[i];
+      Vector2 velocity = firstSegment.posNow - oldSegments[i].posNow;
+      oldSegments[i] = firstSegment;
+      Vector2 latestPosition = firstSegment.posNow + velocity;
+      Vector2 wind =
+          Vector2(xWind / (math.Random().nextInt(segmentLength) + 1), 0) *
+              isPositive;
+
+      latestPosition += (wind + forceGravity) * (1 / 60);
+      firstSegment = Offset(latestPosition.x, latestPosition.y);
+      ropeSegments[i] = firstSegment;
+    }
+
+    for (var i = 0; i < 50; i++) {
+      applyConstraints(size);
+    }
+  }
+
+  void applyConstraints(Size size) {
+    ropeSegments[0] =
+        Offset(dragPoint.dx / size.width, dragPoint.dy / size.height);
+    for (var i = 0; i < segmentLength - 1; i++) {
+      Vector2 firstSegment = ropeSegments[i].posNow;
+      Vector2 secondSegment = ropeSegments[i + 1].posNow;
+      final dist = (firstSegment).distanceTo(secondSegment);
+      double error = (dist - ropeSegmentLength).abs();
+      Vector2 changeDir = Vector2.zero();
+      if (dist > ropeSegmentLength) {
+        changeDir = (firstSegment - secondSegment).normalized();
+      } else if (dist < ropeSegmentLength) {
+        changeDir = (secondSegment - firstSegment).normalized();
+      }
+
+      Vector2 changedAmount = changeDir * error;
+      if (i != 0) {
+        firstSegment -= changedAmount * error;
+        ropeSegments[i] = Offset(firstSegment.x, firstSegment.y);
+        secondSegment += (changedAmount * 0.5);
+        ropeSegments[i + 1] = Offset(secondSegment.x, secondSegment.y);
+      } else {
+        secondSegment += changedAmount;
+        ropeSegments[i + 1] = Offset(secondSegment.x, secondSegment.y);
+      }
+    }
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    originalPoints = List.generate(
-      100,
+    ropeSegments = List.generate(
+      segmentLength,
       (index) => Offset(
         0,
         index.toDouble(),
       ),
     );
-    originalPoints.last = dragPoint;
-    updatedPoints = List.generate(100, (index) => Offset.zero);
+    oldSegments = List.generate(segmentLength, (index) => Offset.zero);
     helloWorld = Stripes.compile();
     delta = 0;
   }
@@ -96,14 +125,28 @@ class _RopesViewState extends State<RopesPhysics> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     final size = MediaQuery.of(context).size;
-    ticker = Ticker((elapsedTime) {
+    dragPoint = Offset(size.width / 2, 200);
+    endPoint = Offset(size.width / 1.5, 200);
+    ropeStartPoint = Offset(
+      dragPoint.dx / size.width,
+      dragPoint.dy / size.height,
+    );
+    ropeEndPoint = Offset(
+      dragPoint.dx / size.width,
+      dragPoint.dy / size.height,
+    );
+    addPoints(size);
+    log(ropeSegments.toString());
+    ticker = Ticker((value) {
+      elapsedDelta = (value - elapsedDuration).inMilliseconds.toDouble();
+      log(elapsedDelta.toString());
+      elapsedDuration = value;
       setState(() {
         delta += 1 / 60;
-        updatePoints(size);
+        simulate(size);
       });
     })
       ..start();
-    dragPoint = Offset(size.width / 2, 200);
   }
 
   @override
@@ -113,20 +156,10 @@ class _RopesViewState extends State<RopesPhysics> {
     super.dispose();
   }
 
-  bool isConnectedPowere(GlobalKey stationKey, Offset pointer) {
-    final renderBox =
-        stationKey.currentContext!.findRenderObject() as RenderBox;
-    final offset = renderBox.localToGlobal(renderBox.paintBounds.topLeft);
-    final size = renderBox.size;
-    return pointer.dx > offset.dx &&
-        pointer.dy > offset.dy &&
-        pointer.dx < offset.dx + size.width &&
-        pointer.dy < offset.dy + size.height;
-  }
-
   @override
   Widget build(BuildContext context) {
     const topPadding = 100.0;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -139,7 +172,38 @@ class _RopesViewState extends State<RopesPhysics> {
               cursor: SystemMouseCursors.grab,
               child: Draggable(
                   onDragUpdate: ((details) {
-                    dragPoint = details.localPosition;
+                    dragPoint = details.globalPosition;
+                    ropeStartPoint = Offset(
+                      dragPoint.dx / size.width,
+                      dragPoint.dy / size.height,
+                    );
+                    addPoints(size);
+                    setState(() {});
+                  }),
+                  feedback: const SizedBox.shrink(),
+                  child: Container(
+                    height: 48,
+                    width: 48,
+                    decoration: const BoxDecoration(
+                      color: Colors.yellowAccent,
+                      shape: BoxShape.circle,
+                    ),
+                  )),
+            ),
+          ),
+          Positioned(
+            top: endPoint.dy - 48 / 1.2,
+            left: endPoint.dx - 48 / 2,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.grab,
+              child: Draggable(
+                  onDragUpdate: ((details) {
+                    endPoint = details.globalPosition;
+                    // ropeStartPoint = Offset(
+                    //   dragPoint.dx / size.width,
+                    //   dragPoint.dy / size.height,
+                    // );
+
                     setState(() {});
                   }),
                   feedback: const SizedBox.shrink(),
@@ -169,7 +233,7 @@ class _RopesViewState extends State<RopesPhysics> {
                             MediaQuery.of(context).size.width / 2,
                             100 + topPadding,
                           ),
-                          dragPoint,
+                          ropeStartPoint,
                           snapshot.data!.shader(
                             resolution: MediaQuery.of(context).size,
                             uTime: delta,
@@ -185,7 +249,7 @@ class _RopesViewState extends State<RopesPhysics> {
                                 ? Colors.amber.toColorVector()
                                 : Colors.blueGrey.toColorVector(),
                           ),
-                          originalPoints,
+                          ropeSegments,
                         ),
                         size: Size.infinite,
                       ),
@@ -208,17 +272,16 @@ class StringsPainter extends CustomPainter {
     this.startPoint,
     this.endPoint,
     this.stripes,
-    this.originalPoints,
+    this.segments,
   );
 
   final Offset endPoint;
   final Offset startPoint;
   final Shader stripes;
-  final List<Offset> originalPoints;
+  List<Offset> segments;
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.translate(size.width / 2, size.height / 2);
     // TODO: implement paint
     Paint paint = Paint()
       ..color = Colors.white
@@ -227,12 +290,23 @@ class StringsPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..shader = stripes
       ..style = PaintingStyle.stroke;
+    Paint paint2 = Paint()
+      ..color = Colors.red
+      ..strokeWidth = 5.0
+      ..strokeJoin = StrokeJoin.round
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
 
     final path = Path();
-    path.moveTo(originalPoints.first.dx, originalPoints.first.dy);
-    final adjustableList = List<Offset>.from(originalPoints);
-    adjustableList.removeLast();
-    for (var point in adjustableList) {
+    segments = segments
+        .map((e) => Offset(e.dx * size.width, e.dy * size.height))
+        .toList();
+    path.moveTo(
+      segments.first.dx,
+      segments.first.dy,
+    );
+
+    for (var point in segments) {
       path.lineTo(
         point.dx,
         point.dy,
@@ -240,16 +314,17 @@ class StringsPainter extends CustomPainter {
     }
 
     canvas.drawPath(path, paint);
-    canvas.drawPoints(
-        PointMode.points,
-        adjustableList,
-        Paint()
-          ..color = Colors.red
-          ..strokeWidth = 10.0);
+    canvas.drawPoints(PointMode.points, segments, paint2);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
+  }
+}
+
+extension GetVelocity on Offset {
+  Vector2 get posNow {
+    return Vector2(dx, dy);
   }
 }
