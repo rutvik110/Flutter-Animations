@@ -4,7 +4,6 @@
 // Catenary dart algorithm gist : https://gist.github.com/rutvik110/56f4626c95b92b8cf2c95283d4682331
 
 import 'dart:developer';
-import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flame/extensions.dart';
@@ -23,6 +22,7 @@ class RopesPhysics extends StatefulWidget {
 }
 
 class _RopesViewState extends State<RopesPhysics> {
+  Vector2 dragVelocity = Vector2.zero();
   Offset ropeStartPoint = Offset.zero;
   Offset ropeEndPoint = Offset.zero;
   Offset dragPoint = Offset.zero;
@@ -40,7 +40,7 @@ class _RopesViewState extends State<RopesPhysics> {
 
   bool isConnected = false;
   int segmentLength = 35;
-  double ropeSegmentLength = 0.01;
+  double ropeSegmentLength = 0.02;
   late List<Offset> ropeSegments;
   late List<Offset> oldSegments;
 
@@ -48,25 +48,23 @@ class _RopesViewState extends State<RopesPhysics> {
     for (var i = 0; i < segmentLength; i++) {
       ropeSegments[i] = ropeStartPoint;
       ropeStartPoint =
-          Offset(ropeStartPoint.dx, ropeStartPoint.dy + ropeSegmentLength);
+          Offset(ropeStartPoint.dx + ropeSegmentLength, ropeStartPoint.dy);
     }
     oldSegments = ropeSegments;
   }
 
   void simulate(Size size) {
     Vector2 forceGravity = Vector2(0, 1);
-    double isPositive = math.Random().nextBool() ? 1 : -1;
-    double xWind = math.Random().nextDouble();
+    Vector2 wind = Vector2(dragVelocity.x / 100, 0);
     for (var i = 0; i < segmentLength; i++) {
       Offset firstSegment = ropeSegments[i];
       Vector2 velocity = firstSegment.posNow - oldSegments[i].posNow;
+
       oldSegments[i] = firstSegment;
       Vector2 latestPosition = firstSegment.posNow + velocity;
-      Vector2 wind =
-          Vector2(xWind / (math.Random().nextInt(segmentLength) + 1), 0) *
-              isPositive;
+      latestPosition += wind * (1 / 60);
+      latestPosition += forceGravity * (1 / 60);
 
-      latestPosition += (wind + forceGravity) * (1 / 60);
       firstSegment = Offset(latestPosition.x, latestPosition.y);
       ropeSegments[i] = firstSegment;
     }
@@ -173,12 +171,13 @@ class _RopesViewState extends State<RopesPhysics> {
               child: Draggable(
                   onDragUpdate: ((details) {
                     dragPoint = details.globalPosition;
+                    dragVelocity = details.delta.toVector2();
+
                     ropeStartPoint = Offset(
                       dragPoint.dx / size.width,
                       dragPoint.dy / size.height,
                     );
-                    addPoints(size);
-                    setState(() {});
+                    //addPoints(size);
                   }),
                   feedback: const SizedBox.shrink(),
                   child: Container(
