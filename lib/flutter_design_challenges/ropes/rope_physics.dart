@@ -22,6 +22,7 @@ class RopesPhysics extends StatefulWidget {
 }
 
 class _RopesViewState extends State<RopesPhysics> {
+  //double springK = 1;
   Vector2 dragVelocity = Vector2.zero();
   Offset ropeStartPoint = Offset.zero;
   Offset ropeEndPoint = Offset.zero;
@@ -40,7 +41,7 @@ class _RopesViewState extends State<RopesPhysics> {
 
   bool isConnected = false;
   int segmentLength = 35;
-  double ropeSegmentLength = 0.02;
+  double ropeSegmentLength = 0.01;
   late List<Offset> ropeSegments;
   late List<Offset> oldSegments;
 
@@ -62,8 +63,19 @@ class _RopesViewState extends State<RopesPhysics> {
 
       oldSegments[i] = firstSegment;
       Vector2 latestPosition = firstSegment.posNow + velocity;
+      // Vector2 extension = Vector2.zero();
+      // Vector2 springForce = Vector2.zero();
+      // if (i != segmentLength - 1) {
+      //   extension = (ropeSegments[i + 1].posNow - ropeSegments[i].posNow);
+      //   springForce = Vector2(extension.x * springK, extension.y * springK);
+      // } else {
+      //   extension = ropeSegments[i].posNow - ropeSegments[i - 1].posNow;
+      //   springForce = Vector2(extension.x * springK, extension.y * springK);
+      // }
       latestPosition += wind * (1 / 60);
       latestPosition += forceGravity * (1 / 60);
+      // latestPosition += springForce;
+      // log(springForce.toString());
 
       firstSegment = Offset(latestPosition.x, latestPosition.y);
       ropeSegments[i] = firstSegment;
@@ -75,8 +87,9 @@ class _RopesViewState extends State<RopesPhysics> {
   }
 
   void applyConstraints(Size size) {
-    ropeSegments[0] =
-        Offset(dragPoint.dx / size.width, dragPoint.dy / size.height);
+    ropeSegments[0] = ropeStartPoint;
+    ropeSegments[segmentLength - 1] = ropeEndPoint;
+
     for (var i = 0; i < segmentLength - 1; i++) {
       Vector2 firstSegment = ropeSegments[i].posNow;
       Vector2 secondSegment = ropeSegments[i + 1].posNow;
@@ -91,7 +104,8 @@ class _RopesViewState extends State<RopesPhysics> {
 
       Vector2 changedAmount = changeDir * error;
       if (i != 0) {
-        firstSegment -= changedAmount * error;
+        firstSegment -= changedAmount *
+            0.5; // multiply by error for proper single point hanging and by 0.5 for bridge;
         ropeSegments[i] = Offset(firstSegment.x, firstSegment.y);
         secondSegment += (changedAmount * 0.5);
         ropeSegments[i + 1] = Offset(secondSegment.x, secondSegment.y);
@@ -198,10 +212,10 @@ class _RopesViewState extends State<RopesPhysics> {
               child: Draggable(
                   onDragUpdate: ((details) {
                     endPoint = details.globalPosition;
-                    // ropeStartPoint = Offset(
-                    //   dragPoint.dx / size.width,
-                    //   dragPoint.dy / size.height,
-                    // );
+                    ropeEndPoint = Offset(
+                      endPoint.dx / size.width,
+                      endPoint.dy / size.height,
+                    );
 
                     setState(() {});
                   }),
