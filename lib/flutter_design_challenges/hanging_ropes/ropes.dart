@@ -15,14 +15,14 @@ import 'package:scidart/numdart.dart';
 
 const EPSILON = 1e-6;
 
-class RopesView extends StatefulWidget {
-  const RopesView({Key? key}) : super(key: key);
+class HangingRopesView extends StatefulWidget {
+  const HangingRopesView({Key? key}) : super(key: key);
 
   @override
-  State<RopesView> createState() => _RopesViewState();
+  State<HangingRopesView> createState() => _RopesViewState();
 }
 
-class _RopesViewState extends State<RopesView> {
+class _RopesViewState extends State<HangingRopesView> {
   Offset dragPoint = Offset.zero;
   Offset dragPoint2 = Offset.zero;
   Offset dragPoint3 = Offset.zero;
