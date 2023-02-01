@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/flutter_design_challenges/hanging_ropes/ropes.dart';
+import 'package:flutter_animations/flutter_design_challenges/ropes_playground/ropes_playground.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
           primaryColor: const Color(0xFF0e7cfe),
           primarySwatch: Colors.blue,
           textTheme: GoogleFonts.rubikTextTheme(Theme.of(context).textTheme)),
-      home: const HangingRopesView(),
+      home: const RopesPlayground(),
     );
   }
 }
