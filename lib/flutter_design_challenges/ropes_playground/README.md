@@ -1,19 +1,12 @@
-## **Hanging Rope implementation in Flutter using Caternary algorithm**
+## **Realtime ropes simulation(WIP)**
 
-An example of simulating a simple rope. For, the construction of rope, [catenary algorithm](https://en.wikipedia.org/wiki/Catenary) is used.<br>
-The catenary is a curve that describes the shape of a hanging chain or cable, or the curve described by a freely hanging chain or cable.
-The implementation of catenary algorithm is based on the following [js implementation](https://github.com/dulnan/catenary-curve/blob/9cb7e53e2db4bd5c499f5051abde8bfd853d946a/src/main.ts#L254).
-<br>
+Rope simulation algorithm ported to dart from unity(c++) version as described [here](https://www.youtube.com/watch?v=FcnvwtyxLds)
 
-Catenary dart algorithm [gist](https://gist.github.com/rutvik110/56f4626c95b92b8cf2c95283d4682331). The dart port isn't perfect yet and has some bugs but for majority of the part it works fine and is usable.
+Resources to learn about basics of ropes simulation, [TheCodingTrain](https://www.youtube.com/watch?v=Rr-5HiXquhw&t=929s)
+[Unity implementation tutorial series](https://www.youtube.com/watch?v=FcnvwtyxLds)
 
 ## Supporting Article : Coming Soon...
 
-
-https://user-images.githubusercontent.com/65209850/213538511-acd527f0-27c2-4584-ad23-9e675b676b54.mov
-
-
-
-https://user-images.githubusercontent.com/65209850/213538569-5147a20b-65cf-48c5-bf14-d02279a860bb.mov
+https://user-images.githubusercontent.com/65209850/216127486-5d37385a-c02e-4dd4-bd69-5e8f9af110a2.mov
 
 
