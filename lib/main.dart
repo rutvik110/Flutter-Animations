@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/flutter_design_challenges/ropes/rope_physics.dart';
+import 'package:flutter_animations/flutter_design_challenges/ropes_playground/ropes_playground.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
