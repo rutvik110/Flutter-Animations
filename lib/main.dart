@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
           primaryColor: const Color(0xFF0e7cfe),
           primarySwatch: Colors.blue,
           textTheme: GoogleFonts.rubikTextTheme(Theme.of(context).textTheme)),
-      home: const RopesPhysics(),
+      home: const RopesPlayground(),
     );
   }
 }

@@ -4,7 +4,6 @@
 // Catenary dart algorithm gist : https://gist.github.com/rutvik110/56f4626c95b92b8cf2c95283d4682331
 
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
@@ -14,22 +13,101 @@ import 'package:flutter_animations/util/extensions/colot_to_vector.dart';
 
 const EPSILON = 1e-6;
 
+class RopesPlayground extends StatelessWidget {
+  const RopesPlayground({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 233, 233, 233),
+      body: Stack(children: [
+        RopeBridge(
+          startPoint: Offset(size.width * 0.3, 200),
+          endPoint: Offset(size.width * 0.7, 300),
+        ),
+        SinglePointRope(
+          startPoint: Offset(size.width * 0.2, 300),
+        ),
+      ]),
+    );
+  }
+}
+
+class RopeBridge extends StatelessWidget {
+  const RopeBridge({
+    Key? key,
+    required this.startPoint,
+    required this.endPoint,
+    this.ropeSegmentLength = 1,
+    this.segments = 100,
+  }) : super(key: key);
+
+  final Offset startPoint;
+  final Offset endPoint;
+  final int ropeSegmentLength;
+  final int segments;
+  @override
+  Widget build(BuildContext context) {
+    return RopesPhysics(
+      isBridge: true,
+      startPoint: startPoint,
+      endPoint: endPoint,
+      ropeSegmentLength: ropeSegmentLength,
+      segments: segments,
+    );
+  }
+}
+
+class SinglePointRope extends StatelessWidget {
+  const SinglePointRope({
+    Key? key,
+    required this.startPoint,
+    this.ropeSegmentLength = 1,
+    this.segments = 100,
+  }) : super(key: key);
+
+  final Offset startPoint;
+  final int ropeSegmentLength;
+  final int segments;
+  @override
+  Widget build(BuildContext context) {
+    return RopesPhysics(
+      isBridge: false,
+      startPoint: startPoint,
+      ropeSegmentLength: ropeSegmentLength,
+      segments: segments,
+    );
+  }
+}
+
 class RopesPhysics extends StatefulWidget {
-  const RopesPhysics({Key? key}) : super(key: key);
+  const RopesPhysics({
+    Key? key,
+    required this.isBridge,
+    required this.startPoint,
+    this.endPoint = const Offset(0, 0),
+    this.ropeSegmentLength = 1,
+    this.segments = 100,
+  }) : super(key: key);
+
+  final bool isBridge;
+  final Offset startPoint;
+  final Offset endPoint;
+  final int ropeSegmentLength;
+  final int segments;
 
   @override
   State<RopesPhysics> createState() => _RopesViewState();
 }
 
 class _RopesViewState extends State<RopesPhysics> {
-  //double springK = 1;
-  Vector2 dragVelocity = Vector2.zero();
-  Offset ropeStartPoint = Offset.zero;
-  Offset ropeEndPoint = Offset.zero;
-  Offset dragPoint = Offset.zero;
-  Offset endPoint = Offset.zero;
+  Vector2 wind = Vector2.zero();
+  late Offset ropeStartPoint;
+  late Offset ropeEndPoint;
   double elapsedDelta = 0;
   Duration elapsedDuration = Duration.zero;
+  late bool isBridge;
 
   late Future<Stripes> helloWorld;
 
@@ -37,60 +115,49 @@ class _RopesViewState extends State<RopesPhysics> {
 
   late double delta;
 
-  final station1Key = GlobalKey();
-
-  bool isConnected = false;
-  int segmentLength = 35;
-  double ropeSegmentLength = 0.01;
+  late int segments;
+  late double ropeSegmentLength;
   late List<Offset> ropeSegments;
   late List<Offset> oldSegments;
 
-  void addPoints(Size size) {
+  void addPoints() {
     Offset startPoint = ropeStartPoint;
-    for (var i = 0; i < segmentLength; i++) {
+    for (var i = 0; i < segments; i++) {
       ropeSegments[i] = startPoint;
       startPoint = Offset(startPoint.dx + ropeSegmentLength, startPoint.dy);
     }
     oldSegments = ropeSegments;
   }
 
-  void simulate(Size size) {
+  void simulate() {
     Vector2 forceGravity = Vector2(0, 1);
-    Vector2 wind = Vector2(dragVelocity.x / 100, 0);
-    for (var i = 0; i < segmentLength; i++) {
+
+    for (var i = 0; i < segments; i++) {
       Offset firstSegment = ropeSegments[i];
       Vector2 velocity = firstSegment.posNow - oldSegments[i].posNow;
 
       oldSegments[i] = firstSegment;
       Vector2 latestPosition = firstSegment.posNow + velocity;
-      // Vector2 extension = Vector2.zero();
-      // Vector2 springForce = Vector2.zero();
-      // if (i != segmentLength - 1) {
-      //   extension = (ropeSegments[i + 1].posNow - ropeSegments[i].posNow);
-      //   springForce = Vector2(extension.x * springK, extension.y * springK);
-      // } else {
-      //   extension = ropeSegments[i].posNow - ropeSegments[i - 1].posNow;
-      //   springForce = Vector2(extension.x * springK, extension.y * springK);
-      // }
-      latestPosition += wind * (1 / 60);
-      latestPosition += forceGravity * (1 / 60);
-      // latestPosition += springForce;
-      // log(springForce.toString());
+
+      latestPosition += wind;
+      latestPosition += forceGravity;
 
       firstSegment = Offset(latestPosition.x, latestPosition.y);
       ropeSegments[i] = firstSegment;
     }
 
     for (var i = 0; i < 50; i++) {
-      applyConstraints(size);
+      applyConstraints();
     }
   }
 
-  void applyConstraints(Size size) {
+  void applyConstraints() {
     ropeSegments[0] = ropeStartPoint;
-    ropeSegments[segmentLength - 1] = ropeEndPoint;
+    if (isBridge) {
+      ropeSegments[segments - 1] = ropeEndPoint;
+    }
 
-    for (var i = 0; i < segmentLength - 1; i++) {
+    for (var i = 0; i < segments - 1; i++) {
       Vector2 firstSegment = ropeSegments[i].posNow;
       Vector2 secondSegment = ropeSegments[i + 1].posNow;
       final dist = (firstSegment).distanceTo(secondSegment);
@@ -120,45 +187,32 @@ class _RopesViewState extends State<RopesPhysics> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    isBridge = widget.isBridge;
+    ropeStartPoint = widget.startPoint;
+    ropeEndPoint = widget.endPoint;
+    ropeSegmentLength = widget.ropeSegmentLength.toDouble();
+    segments = widget.segments;
     ropeSegments = List.generate(
-      segmentLength,
+      segments,
       (index) => Offset(
         0,
         index.toDouble(),
       ),
     );
-    oldSegments = List.generate(segmentLength, (index) => Offset.zero);
-    helloWorld = Stripes.compile();
+    oldSegments = List.generate(segments, (index) => Offset.zero);
+    addPoints();
     delta = 0;
-  }
-
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    final size = MediaQuery.of(context).size;
-    dragPoint = Offset(size.width * 0.5, 200);
-    endPoint = const Offset(100, 200);
-    ropeStartPoint = Offset(
-      dragPoint.dx / size.width,
-      dragPoint.dy / size.height,
-    );
-    ropeEndPoint = Offset(
-      endPoint.dx / size.width,
-      endPoint.dy / size.height,
-    );
-    addPoints(size);
-    log(ropeSegments.toString());
     ticker = Ticker((value) {
       elapsedDelta = (value - elapsedDuration).inMilliseconds.toDouble();
       log(elapsedDelta.toString());
       elapsedDuration = value;
       setState(() {
         delta += 1 / 60;
-        simulate(size);
+        simulate();
       });
     })
       ..start();
+    helloWorld = Stripes.compile();
   }
 
   @override
@@ -171,126 +225,112 @@ class _RopesViewState extends State<RopesPhysics> {
   @override
   Widget build(BuildContext context) {
     const topPadding = 100.0;
-    final size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          // DragPoint 1
-          Positioned(
-            top: dragPoint.dy - 48 / 1.2,
-            left: dragPoint.dx - 48 / 2,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.grab,
-              child: Draggable(
-                onDragUpdate: ((details) {
-                  dragPoint = details.globalPosition;
-                  dragVelocity = details.delta.toVector2();
-
-                  ropeStartPoint = Offset(
-                    dragPoint.dx / size.width,
-                    dragPoint.dy / size.height,
-                  );
-                  //addPoints(size);
-                }),
-                feedback: const SizedBox.shrink(),
-                child: Container(
-                  height: 48,
-                  width: 48,
-                  decoration: const BoxDecoration(
-                    color: Colors.yellowAccent,
-                    shape: BoxShape.circle,
-                  ),
+    return Stack(
+      children: [
+        // DragPoint 1
+        Positioned(
+          top: ropeStartPoint.dy - 48 / 1.2,
+          left: ropeStartPoint.dx - 48 / 2,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.grab,
+            child: Draggable(
+              onDragUpdate: ((details) {
+                ropeStartPoint = details.globalPosition;
+                //  wind = details.delta.toVector2();
+              }),
+              feedback: const SizedBox.shrink(),
+              child: Container(
+                height: 48,
+                width: 48,
+                decoration: const BoxDecoration(
+                  color: Colors.indigo,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.indigoAccent,
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                      offset: Offset(0, 0),
+                    )
+                  ],
+                  shape: BoxShape.circle,
                 ),
               ),
             ),
           ),
+        ),
+        if (isBridge)
           Positioned(
-            top: endPoint.dy - 48 / 1.2,
-            left: endPoint.dx - 48 / 2,
+            top: ropeEndPoint.dy - 48 / 1.2,
+            left: ropeEndPoint.dx - 48 / 2,
             child: MouseRegion(
               cursor: SystemMouseCursors.grab,
               child: Draggable(
                   onDragUpdate: ((details) {
-                    endPoint = details.globalPosition;
-                    ropeEndPoint = Offset(
-                      endPoint.dx / size.width,
-                      endPoint.dy / size.height,
-                    );
-
-                    setState(() {});
+                    ropeEndPoint = details.globalPosition;
                   }),
                   feedback: const SizedBox.shrink(),
                   child: Container(
                     height: 48,
                     width: 48,
                     decoration: const BoxDecoration(
-                      color: Colors.yellowAccent,
+                      color: Colors.indigo,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.indigoAccent,
+                          blurRadius: 30,
+                          spreadRadius: 5,
+                          offset: Offset(0, 0),
+                        )
+                      ],
                       shape: BoxShape.circle,
                     ),
                   )),
             ),
           ),
 
-          // Cars
-          IgnorePointer(
-            ignoring: true,
-            child: FutureBuilder<Stripes>(
-              future: helloWorld,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Stack(
-                    children: [
-                      CustomPaint(
-                        painter: StringsPainter(
-                          Offset(
-                            MediaQuery.of(context).size.width / 2,
-                            100 + topPadding,
-                          ),
-                          ropeStartPoint,
-                          snapshot.data!.shader(
-                            resolution: MediaQuery.of(context).size,
-                            uTime: delta,
-                            tiles: 20.0,
-                            speed: !isConnected ? 0 : delta / 10,
-                            direction: 0.5, // -1 to 1
-                            warpScale: 0,
-                            warpTiling: 0,
-                            color1: isConnected
-                                ? Colors.yellow.toColorVector()
-                                : Colors.grey.toColorVector(),
-                            color2: isConnected
-                                ? Colors.amber.toColorVector()
-                                : Colors.blueGrey.toColorVector(),
-                          ),
-                          ropeSegments,
+        IgnorePointer(
+          ignoring: true,
+          child: FutureBuilder<Stripes>(
+            future: helloWorld,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Stack(
+                  children: [
+                    CustomPaint(
+                      painter: StringsPainter(
+                        snapshot.data!.shader(
+                          resolution: MediaQuery.of(context).size,
+                          uTime: delta,
+                          tiles: 2.0,
+                          speed: delta / 15,
+                          direction: 0.5, // -1 to 1
+                          warpScale: 1,
+                          warpTiling: 5,
+                          color1: Colors.amber.toColorVector(),
+                          color2: Colors.blue.toColorVector(),
                         ),
-                        size: Size.infinite,
+                        ropeSegments,
                       ),
-                    ],
-                  );
-                }
-                return Container();
-              },
-            ),
+                      size: Size.infinite,
+                    ),
+                  ],
+                );
+              }
+              return Container();
+            },
           ),
-          // Changing Stations
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
 class StringsPainter extends CustomPainter {
   StringsPainter(
-    this.startPoint,
-    this.endPoint,
     this.stripes,
     this.segments,
   );
 
-  final Offset endPoint;
-  final Offset startPoint;
   final Shader stripes;
   List<Offset> segments;
 
@@ -298,23 +338,14 @@ class StringsPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // TODO: implement paint
     Paint paint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 2.0
+      ..color = Colors.red
+      ..strokeWidth = 10.0
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round
       ..shader = stripes
       ..style = PaintingStyle.stroke;
-    Paint paint2 = Paint()
-      ..color = Colors.red
-      ..strokeWidth = 5.0
-      ..strokeJoin = StrokeJoin.round
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
 
     final path = Path();
-    segments = segments
-        .map((e) => Offset(e.dx * size.width, e.dy * size.height))
-        .toList();
     path.moveTo(
       segments.first.dx,
       segments.first.dy,
@@ -328,7 +359,6 @@ class StringsPainter extends CustomPainter {
     }
 
     canvas.drawPath(path, paint);
-    canvas.drawPoints(PointMode.points, segments, paint2);
   }
 
   @override
