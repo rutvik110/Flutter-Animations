@@ -46,10 +46,10 @@ class _RopesViewState extends State<RopesPhysics> {
   late List<Offset> oldSegments;
 
   void addPoints(Size size) {
+    Offset startPoint = ropeStartPoint;
     for (var i = 0; i < segmentLength; i++) {
-      ropeSegments[i] = ropeStartPoint;
-      ropeStartPoint =
-          Offset(ropeStartPoint.dx + ropeSegmentLength, ropeStartPoint.dy);
+      ropeSegments[i] = startPoint;
+      startPoint = Offset(startPoint.dx + ropeSegmentLength, startPoint.dy);
     }
     oldSegments = ropeSegments;
   }
@@ -137,15 +137,15 @@ class _RopesViewState extends State<RopesPhysics> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     final size = MediaQuery.of(context).size;
-    dragPoint = Offset(size.width / 2, 200);
-    endPoint = Offset(size.width / 1.5, 200);
+    dragPoint = Offset(size.width * 0.5, 200);
+    endPoint = const Offset(100, 200);
     ropeStartPoint = Offset(
       dragPoint.dx / size.width,
       dragPoint.dy / size.height,
     );
     ropeEndPoint = Offset(
-      dragPoint.dx / size.width,
-      dragPoint.dy / size.height,
+      endPoint.dx / size.width,
+      endPoint.dy / size.height,
     );
     addPoints(size);
     log(ropeSegments.toString());
@@ -183,25 +183,26 @@ class _RopesViewState extends State<RopesPhysics> {
             child: MouseRegion(
               cursor: SystemMouseCursors.grab,
               child: Draggable(
-                  onDragUpdate: ((details) {
-                    dragPoint = details.globalPosition;
-                    dragVelocity = details.delta.toVector2();
+                onDragUpdate: ((details) {
+                  dragPoint = details.globalPosition;
+                  dragVelocity = details.delta.toVector2();
 
-                    ropeStartPoint = Offset(
-                      dragPoint.dx / size.width,
-                      dragPoint.dy / size.height,
-                    );
-                    //addPoints(size);
-                  }),
-                  feedback: const SizedBox.shrink(),
-                  child: Container(
-                    height: 48,
-                    width: 48,
-                    decoration: const BoxDecoration(
-                      color: Colors.yellowAccent,
-                      shape: BoxShape.circle,
-                    ),
-                  )),
+                  ropeStartPoint = Offset(
+                    dragPoint.dx / size.width,
+                    dragPoint.dy / size.height,
+                  );
+                  //addPoints(size);
+                }),
+                feedback: const SizedBox.shrink(),
+                child: Container(
+                  height: 48,
+                  width: 48,
+                  decoration: const BoxDecoration(
+                    color: Colors.yellowAccent,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
             ),
           ),
           Positioned(
