@@ -10,6 +10,7 @@ import 'package:dart_numerics/dart_numerics.dart' as numerics;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animations/flutter_shaders/stripes_shader/stripes.dart';
+import 'package:flutter_animations/flutter_shaders/stripes_shader/stripes_shader_builder.dart';
 import 'package:flutter_animations/util/extensions/colot_to_vector.dart';
 import 'package:scidart/numdart.dart';
 
@@ -27,8 +28,6 @@ class _RopesViewState extends State<HangingRopesView> {
   Offset dragPoint2 = Offset.zero;
   Offset dragPoint3 = Offset.zero;
 
-  late Future<Stripes> helloWorld;
-
   late Ticker ticker;
 
   late double delta;
@@ -44,7 +43,6 @@ class _RopesViewState extends State<HangingRopesView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    helloWorld = Stripes.compile();
     delta = 0;
     ticker = Ticker((elapsedTime) {
       setState(() {
@@ -155,84 +153,97 @@ class _RopesViewState extends State<HangingRopesView> {
           // Cars
           IgnorePointer(
             ignoring: true,
-            child: FutureBuilder<Stripes>(
-              future: helloWorld,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Stack(
-                    children: [
-                      CustomPaint(
-                        painter: RopesPainter(
-                          const Offset(50, 100 + topPadding),
-                          dragPoint,
-                          snapshot.data!.shader(
-                            resolution: MediaQuery.of(context).size,
-                            uTime: delta,
-                            tiles: 20.0,
-                            speed: !isConnected ? 0 : delta / 10,
-                            direction: 0.5, // -1 to 1
-                            warpScale: 0,
-                            warpTiling: 0,
-                            color1: isConnected
-                                ? Colors.yellow.toColorVector()
-                                : Colors.grey.toColorVector(),
-                            color2: isConnected
-                                ? Colors.amber.toColorVector()
-                                : Colors.blueGrey.toColorVector(),
-                          ),
-                        ),
-                        size: Size.infinite,
+            child: LayoutBuilder(builder: (context, constraints) {
+              return Stack(
+                children: [
+                  StripesShaderBuilder(builder: (shader, delta) {
+                    shader.shader(
+                      floatUniforms: StripesShaderArguments(
+                        size: Size(constraints.maxWidth, constraints.maxHeight),
+                        delta: delta,
+                        tiles: 20.0,
+                        speed: !isConnected ? 0 : delta / 10,
+                        direction: 0.5, // -1 to 1
+                        warpScale: 0,
+                        warpTiling: 0,
+                        color1: isConnected
+                            ? Colors.yellow.toColorVector()
+                            : Colors.grey.toColorVector(),
+                        color2: isConnected
+                            ? Colors.amber.toColorVector()
+                            : Colors.blueGrey.toColorVector(),
+                      ).uniforms,
+                      samplerUniforms: [],
+                    );
+                    return CustomPaint(
+                      painter: RopesPainter(
+                        const Offset(50, 100 + topPadding),
+                        dragPoint,
+                        shader,
                       ),
-                      CustomPaint(
-                        painter: RopesPainter(
-                          const Offset(50, 250 + topPadding),
-                          dragPoint2,
-                          snapshot.data!.shader(
-                            resolution: MediaQuery.of(context).size,
-                            uTime: delta,
-                            tiles: 20.0,
-                            speed: !isConnected2 ? 0 : delta / 10,
-                            direction: 0.5, // -1 to 1
-                            warpScale: 0,
-                            warpTiling: 0,
-                            color1: isConnected2
-                                ? Colors.greenAccent.toColorVector()
-                                : Colors.grey.toColorVector(),
-                            color2: isConnected2
-                                ? Colors.green.toColorVector()
-                                : Colors.blueGrey.toColorVector(),
-                          ),
-                        ),
-                        size: Size.infinite,
+                      size: Size.infinite,
+                    );
+                  }),
+                  StripesShaderBuilder(builder: (shader, delta) {
+                    shader.shader(
+                      floatUniforms: StripesShaderArguments(
+                        size: Size(constraints.maxWidth, constraints.maxHeight),
+
+                        delta: delta,
+                        tiles: 20.0,
+                        speed: !isConnected2 ? 0 : delta / 10,
+                        direction: 0.5, // -1 to 1
+                        warpScale: 0,
+                        warpTiling: 0,
+                        color1: isConnected2
+                            ? Colors.greenAccent.toColorVector()
+                            : Colors.grey.toColorVector(),
+                        color2: isConnected2
+                            ? Colors.green.toColorVector()
+                            : Colors.blueGrey.toColorVector(),
+                      ).uniforms,
+                      samplerUniforms: [],
+                    );
+                    return CustomPaint(
+                      painter: RopesPainter(
+                        const Offset(50, 250 + topPadding),
+                        dragPoint2,
+                        shader,
                       ),
-                      CustomPaint(
-                        painter: RopesPainter(
-                          const Offset(50, 400 + topPadding),
-                          dragPoint3,
-                          snapshot.data!.shader(
-                            resolution: MediaQuery.of(context).size,
-                            uTime: delta,
-                            tiles: 20.0,
-                            speed: !isConnected3 ? 0 : delta / 10,
-                            direction: 0.5, // -1 to 1
-                            warpScale: 0,
-                            warpTiling: 0,
-                            color1: isConnected3
-                                ? Colors.redAccent.toColorVector()
-                                : Colors.grey.toColorVector(),
-                            color2: isConnected3
-                                ? Colors.red.toColorVector()
-                                : Colors.blueGrey.toColorVector(),
-                          ),
-                        ),
-                        size: Size.infinite,
+                      size: Size.infinite,
+                    );
+                  }),
+                  StripesShaderBuilder(builder: (shader, delta) {
+                    shader.shader(
+                      floatUniforms: StripesShaderArguments(
+                        size: Size(constraints.maxWidth, constraints.maxHeight),
+                        delta: delta,
+                        tiles: 20.0,
+                        speed: !isConnected3 ? 0 : delta / 10,
+                        direction: 0.5, // -1 to 1
+                        warpScale: 0,
+                        warpTiling: 0,
+                        color1: isConnected3
+                            ? Colors.redAccent.toColorVector()
+                            : Colors.grey.toColorVector(),
+                        color2: isConnected3
+                            ? Colors.red.toColorVector()
+                            : Colors.blueGrey.toColorVector(),
+                      ).uniforms,
+                      samplerUniforms: [],
+                    );
+                    return CustomPaint(
+                      painter: RopesPainter(
+                        const Offset(50, 400 + topPadding),
+                        dragPoint3,
+                        shader,
                       ),
-                    ],
-                  );
-                }
-                return Container();
-              },
-            ),
+                      size: Size.infinite,
+                    );
+                  }),
+                ],
+              );
+            }),
           ),
           // Changing Stations
           IgnorePointer(

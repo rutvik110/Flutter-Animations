@@ -1,5 +1,7 @@
-uniform float u_time;
 #define PI 3.14159265359
+uniform float width;
+uniform float height;
+uniform float u_time;
 uniform float tiles;
 uniform float speed;
 uniform float direction;
@@ -7,6 +9,10 @@ uniform float warpScale;
 uniform float warpTiling;
 uniform vec3 color1;
 uniform vec3 color2;
+
+vec2 iResolution=vec2(width,height);
+
+out vec4 fragColor;
 
 vec2 rotatePoint(vec2 pt,vec2 center,float angle){
     float sinAngle=sin(angle);
@@ -19,8 +25,8 @@ vec2 rotatePoint(vec2 pt,vec2 center,float angle){
     return r;
 }
 
-vec4 fragment(in vec2 uv,in vec2 fragCoord){
-    // vec2 uv=gl_FragCoord.xy/u_resolution.xy;
+void main(){
+    vec2 uv=gl_FragCoord.xy/iResolution.xy;
     
     // float tiles=tiles;
     
@@ -37,5 +43,5 @@ vec4 fragment(in vec2 uv,in vec2 fragCoord){
     
     vec3 color=mix(color1,color2,st);
     
-    return vec4(color,1.);
+    fragColor=vec4(color,1.);
 }

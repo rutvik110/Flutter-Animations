@@ -9,6 +9,7 @@ import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animations/flutter_shaders/stripes_shader/stripes.dart';
+import 'package:flutter_animations/flutter_shaders/stripes_shader/stripes_shader_builder.dart';
 import 'package:flutter_animations/util/extensions/colot_to_vector.dart';
 
 const EPSILON = 1e-6;
@@ -108,8 +109,6 @@ class _RopesViewState extends State<RopesPhysics> {
   double elapsedDelta = 0;
   Duration elapsedDuration = Duration.zero;
   late bool isBridge;
-
-  late Future<Stripes> helloWorld;
 
   late Ticker ticker;
 
@@ -212,7 +211,6 @@ class _RopesViewState extends State<RopesPhysics> {
       });
     })
       ..start();
-    helloWorld = Stripes.compile();
   }
 
   @override
@@ -225,103 +223,108 @@ class _RopesViewState extends State<RopesPhysics> {
   @override
   Widget build(BuildContext context) {
     const topPadding = 100.0;
-    return Stack(
-      children: [
-        // DragPoint 1
-        Positioned(
-          top: ropeStartPoint.dy - 48 / 1.2,
-          left: ropeStartPoint.dx - 48 / 2,
-          child: MouseRegion(
-            cursor: SystemMouseCursors.grab,
-            child: Draggable(
-              onDragUpdate: ((details) {
-                ropeStartPoint = details.globalPosition;
-                //  wind = details.delta.toVector2();
-              }),
-              feedback: const SizedBox.shrink(),
-              child: Container(
-                height: 48,
-                width: 48,
-                decoration: const BoxDecoration(
-                  color: Colors.indigo,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.indigoAccent,
-                      blurRadius: 30,
-                      spreadRadius: 5,
-                      offset: Offset(0, 0),
-                    )
-                  ],
-                  shape: BoxShape.circle,
+    return LayoutBuilder(builder: (context, constraints) {
+      return Stack(
+        children: [
+          // DragPoint 1
+          Positioned(
+            top: ropeStartPoint.dy - 48 / 1.2,
+            left: ropeStartPoint.dx - 48 / 2,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.grab,
+              child: Draggable(
+                onDragUpdate: ((details) {
+                  ropeStartPoint = details.globalPosition;
+                  //  wind = details.delta.toVector2();
+                }),
+                feedback: const SizedBox.shrink(),
+                child: Container(
+                  height: 48,
+                  width: 48,
+                  decoration: const BoxDecoration(
+                    color: Colors.indigo,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.indigoAccent,
+                        blurRadius: 30,
+                        spreadRadius: 5,
+                        offset: Offset(0, 0),
+                      )
+                    ],
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        if (isBridge)
-          Positioned(
-            top: ropeEndPoint.dy - 48 / 1.2,
-            left: ropeEndPoint.dx - 48 / 2,
-            child: MouseRegion(
-              cursor: SystemMouseCursors.grab,
-              child: Draggable(
-                  onDragUpdate: ((details) {
-                    ropeEndPoint = details.globalPosition;
-                  }),
-                  feedback: const SizedBox.shrink(),
-                  child: Container(
-                    height: 48,
-                    width: 48,
-                    decoration: const BoxDecoration(
-                      color: Colors.indigo,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.indigoAccent,
-                          blurRadius: 30,
-                          spreadRadius: 5,
-                          offset: Offset(0, 0),
-                        )
-                      ],
-                      shape: BoxShape.circle,
-                    ),
-                  )),
+          if (isBridge)
+            Positioned(
+              top: ropeEndPoint.dy - 48 / 1.2,
+              left: ropeEndPoint.dx - 48 / 2,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.grab,
+                child: Draggable(
+                    onDragUpdate: ((details) {
+                      ropeEndPoint = details.globalPosition;
+                    }),
+                    feedback: const SizedBox.shrink(),
+                    child: Container(
+                      height: 48,
+                      width: 48,
+                      decoration: const BoxDecoration(
+                        color: Colors.indigo,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.indigoAccent,
+                            blurRadius: 30,
+                            spreadRadius: 5,
+                            offset: Offset(0, 0),
+                          )
+                        ],
+                        shape: BoxShape.circle,
+                      ),
+                    )),
+              ),
             ),
-          ),
 
-        IgnorePointer(
-          ignoring: true,
-          child: FutureBuilder<Stripes>(
-            future: helloWorld,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Stack(
-                  children: [
-                    CustomPaint(
-                      painter: StringsPainter(
-                        snapshot.data!.shader(
-                          resolution: MediaQuery.of(context).size,
-                          uTime: delta,
-                          tiles: 2.0,
-                          speed: delta / 15,
-                          direction: 0.5, // -1 to 1
-                          warpScale: 1,
-                          warpTiling: 5,
-                          color1: Colors.amber.toColorVector(),
-                          color2: Colors.blue.toColorVector(),
+          IgnorePointer(
+            ignoring: true,
+            child: Stack(
+              children: [
+                StripesShaderBuilder(
+                  builder: (shader, delta) {
+                    shader.shader(
+                      floatUniforms: StripesShaderArguments(
+                        size: Size(
+                          constraints.maxWidth,
+                          constraints.maxHeight,
                         ),
+                        delta: delta,
+                        tiles: 2.0,
+                        speed: delta / 15,
+                        direction: 0.5, // -1 to 1
+                        warpScale: 1,
+                        warpTiling: 5,
+                        color1: Colors.amber.toColorVector(),
+                        color2: Colors.blue.toColorVector(),
+                      ).uniforms,
+                      samplerUniforms: [],
+                    );
+                    return CustomPaint(
+                      painter: StringsPainter(
+                        shader,
                         ropeSegments,
                       ),
                       size: Size.infinite,
-                    ),
-                  ],
-                );
-              }
-              return Container();
-            },
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }
 
