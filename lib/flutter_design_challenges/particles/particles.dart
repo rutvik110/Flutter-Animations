@@ -193,6 +193,8 @@ class _ParticlesSystemState extends State<ParticlesSystem> {
                   : 0.01
               : 0;
 
+          final updatedScale = particle.scale + musicAmplitude * 0.01;
+
           particle.update(
             sineMultipler: updatedSine,
             sineAngle: sineY,
@@ -205,7 +207,9 @@ class _ParticlesSystemState extends State<ParticlesSystem> {
             frame: particle.frame + 1,
             rotation: particle.rotation +
                 (displacementx * sin(22.5 * degree) / 10) * particle.scale,
-            scale: particle.scale + musicAmplitude * 0.01,
+            scale: updatedScale < 0
+                ? particle.scale + musicAmplitude.abs() * 0.1
+                : updatedScale,
           );
 
           if (particle.y < -100 ||
