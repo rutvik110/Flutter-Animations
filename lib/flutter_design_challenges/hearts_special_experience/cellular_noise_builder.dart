@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/flutter_design_challenges/particles/shader_view_skeleton.dart';
+import 'package:flutter_animations/flutter_design_challenges/hearts_special_experience/shader_view_skeleton.dart';
 
 class CellularNoiseBuilder extends StatelessWidget {
   const CellularNoiseBuilder({super.key});

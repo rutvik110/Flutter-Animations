@@ -5,14 +5,14 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animations/flutter_design_challenges/particles/cellular_noise_builder.dart';
-import 'package:flutter_animations/flutter_design_challenges/particles/custom_heart.dart';
-import 'package:flutter_animations/flutter_design_challenges/particles/load_audio_data.dart';
+import 'package:flutter_animations/flutter_design_challenges/hearts_special_experience/cellular_noise_builder.dart';
+import 'package:flutter_animations/flutter_design_challenges/hearts_special_experience/custom_heart.dart';
+import 'package:flutter_animations/flutter_design_challenges/hearts_special_experience/load_audio_data.dart';
 import 'package:particle_field/particle_field.dart';
 import 'package:rnd/rnd.dart';
 
-class HeartsSpecialChallenge extends StatelessWidget {
-  const HeartsSpecialChallenge({super.key});
+class HeartsSpecialExperience extends StatelessWidget {
+  const HeartsSpecialExperience({super.key});
 
   @override
   Widget build(BuildContext context) {
