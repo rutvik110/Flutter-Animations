@@ -7,14 +7,14 @@ import 'package:flutter_animations/flutter_design_challenges/hearts_special_expe
 import 'package:particle_field/particle_field.dart';
 import 'package:rnd/rnd.dart';
 
-class FishesUnderwater extends StatefulWidget {
-  const FishesUnderwater({super.key});
+class PowerUp extends StatefulWidget {
+  const PowerUp({super.key});
 
   @override
-  State<FishesUnderwater> createState() => _FishesUnderwaterState();
+  State<PowerUp> createState() => _FishesUnderwaterState();
 }
 
-class _FishesUnderwaterState extends State<FishesUnderwater> {
+class _FishesUnderwaterState extends State<PowerUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
