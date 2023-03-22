@@ -1,7 +1,8 @@
 ## **Power Up Fun Experiment**
 
+https://user-images.githubusercontent.com/65209850/226941047-f857fb07-422c-43fd-b84c-856724a24cfb.mp4
+
 ## Supporting Article : Coming Soon...
 
-https://user-images.githubusercontent.com/65209850/216127486-5d37385a-c02e-4dd4-bd69-5e8f9af110a2.mov
 
 
