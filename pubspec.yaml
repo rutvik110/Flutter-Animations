@@ -78,6 +78,8 @@ flutter:
     - shaders/hello_world.glsl
     - shaders/stripes.glsl
     - shaders/cellular_noise.glsl
+    - shaders/gradient_ball.glsl
+    - shaders/anime_warp.glsl
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
