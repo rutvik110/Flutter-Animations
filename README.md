@@ -14,6 +14,12 @@
 <h2></h2>
 
 
+[Power Up](https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/power_up)
+
+https://user-images.githubusercontent.com/65209850/226941047-f857fb07-422c-43fd-b84c-856724a24cfb.mp4
+
+<br>
+
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/star_wars_intro_theme"><img src="https://media3.giphy.com/media/zeXhCh9eL9LzoaOdzL/giphy.gif" width="49%"></a>
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/spotify_notifications_chips"><img src="https://media3.giphy.com/media/8WzFkyoYYHPVD1BHEx/giphy.gif" width="49%"></a>
 
