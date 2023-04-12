@@ -20,6 +20,13 @@ https://user-images.githubusercontent.com/65209850/226941047-f857fb07-422c-43fd-
 
 <br>
 
+[Hearts Special](https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/hearts_special_experience)
+
+https://user-images.githubusercontent.com/65209850/218824275-29327501-b423-4303-a466-c4e7de8d2e8b.mov
+
+
+<br>
+
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/star_wars_intro_theme"><img src="https://media3.giphy.com/media/zeXhCh9eL9LzoaOdzL/giphy.gif" width="49%"></a>
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/spotify_notifications_chips"><img src="https://media3.giphy.com/media/8WzFkyoYYHPVD1BHEx/giphy.gif" width="49%"></a>
 
