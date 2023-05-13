@@ -14,6 +14,12 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
+        },
+        {
+            "name": "flutter_animations (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
         }
     ]
 }

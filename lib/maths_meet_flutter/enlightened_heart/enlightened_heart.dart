@@ -29,7 +29,7 @@ class _EnlightenedHeartState extends State<EnlightenedHeart>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.transparent,
       body: CustomPaint(
         painter: EnlightenedHeartPainter(
           animationValue: animationController.value,
