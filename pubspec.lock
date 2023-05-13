@@ -198,6 +198,14 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
+  particle_field:
+    dependency: "direct main"
+    description:
+      name: particle_field
+      sha256: "33ef365ffa50c5f7e550ebbddb961d74fe27124fc4b81b5d6c4c281b49f3daba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1+1"
   path:
     dependency: transitive
     description:
@@ -268,6 +276,14 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.4"
+  rnd:
+    dependency: "direct main"
+    description:
+      name: rnd
+      sha256: "87799a8c447da2e728096264b2cc13679a11af49f0504331f4d588986a371fcf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   scidart:
     dependency: "direct main"
     description:

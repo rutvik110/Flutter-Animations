@@ -51,3 +51,4 @@ app.*.map.json
 /macos_older_dir
 
 .vscode
+hearts_special/
