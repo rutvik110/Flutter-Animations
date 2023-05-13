@@ -6,7 +6,7 @@ import FlutterMacOS
 import Foundation
 
 import audioplayers
-import path_provider_macos
+import path_provider_foundation
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   AudioplayersPlugin.register(with: registry.registrar(forPlugin: "AudioplayersPlugin"))
