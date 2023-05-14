@@ -52,9 +52,9 @@ class _MagicGridViewState extends State<MagicGridView>
                   children: List.generate(
                     10,
                     (index) => Container(
-                      height: 100 + 100 * animation.value,
+                      height: 50 + 50 * animation.value,
                       margin: const EdgeInsets.all(8.0),
-                      width: 100 + 100 * animation.value,
+                      width: 50 + 50 * animation.value,
                       decoration: BoxDecoration(
                           color: Colors.orange,
                           border: Border.all(
@@ -180,14 +180,18 @@ class MagicGridRenderObject extends RenderBox
 // need to smooth out its entrance to next row when condition is met
       if (childDx > size.width) {
         final randomDX = childParentData.itemsBefore * child.size.width;
-
+        listChildOffset = Offset(
+          size.width / 2 - child.size.width / 2,
+          listChildOffset.dy,
+        );
         gridChildOffset = Offset(
           randomDX,
-          lerpDouble(
-            gridChildOffset.dy,
-            gridChildOffset.dy + child.size.height,
-            animation.value,
-          )!,
+          gridChildOffset.dy + child.size.height,
+          // lerpDouble(
+          //   gridChildOffset.dy,
+          //   gridChildOffset.dy + child.size.height,
+          //   animation.value,
+          // )!,
         );
       }
       // childOffset = Offset(
