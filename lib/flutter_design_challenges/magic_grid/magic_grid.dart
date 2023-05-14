@@ -52,9 +52,9 @@ class _MagicGridViewState extends State<MagicGridView>
                   children: List.generate(
                     10,
                     (index) => Container(
-                      height: 50 + 50 * animation.value,
+                      height: 70, //+ 70 * animation.value,
                       margin: const EdgeInsets.all(8.0),
-                      width: 50 + 50 * animation.value,
+                      width: 70, //+ 70 * animation.value,
                       decoration: BoxDecoration(
                           color: Colors.orange,
                           border: Border.all(
