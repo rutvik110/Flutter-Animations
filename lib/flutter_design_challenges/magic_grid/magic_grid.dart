@@ -52,9 +52,9 @@ class _MagicGridViewState extends State<MagicGridView>
                   children: List.generate(
                     10,
                     (index) => Container(
-                      height: 70, //+ 70 * animation.value,
+                      height: 70 + 70 * animation.value,
                       margin: const EdgeInsets.all(8.0),
-                      width: 70, //+ 70 * animation.value,
+                      width: 70 + 70 * animation.value,
                       decoration: BoxDecoration(
                           color: Colors.orange,
                           border: Border.all(
@@ -148,6 +148,7 @@ class MagicGridRenderObject extends RenderBox
     RenderBox? child = firstChild;
     // positioning childs
     child = firstChild;
+    Offset childGridPosition = const Offset(0, 0);
     Offset childOffset = const Offset(0, 0);
     Offset listChildOffset = Offset(size.width / 2 - child!.size.width / 2, 0);
     Offset gridChildOffset = const Offset(0, 0);
@@ -155,44 +156,81 @@ class MagicGridRenderObject extends RenderBox
     while (child != null) {
       final MagicGridParentData childParentData =
           child.parentData! as MagicGridParentData;
-      childOffset = Offset(
-        lerpDouble(gridChildOffset.dx, listChildOffset.dx, animation.value)!,
-        lerpDouble(gridChildOffset.dy, listChildOffset.dy, animation.value)!,
-      );
-      childParentData.offset = Offset(
-        childOffset.dx, //* (animation.value),
-        childOffset.dy, //* (1 - animation.value),
-      );
-      listChildOffset += Offset(
-        0,
-        child.size.height,
-      );
-      listChildOffset = Offset(
-        size.width / 2 - child.size.width / 2,
-        listChildOffset.dy,
-      );
-      final randomDX = childParentData.itemsBefore * child.size.width;
-      gridChildOffset += Offset(
-        child.size.width + randomDX * (1 - 0), //* animation.value,
-        0, //* (1 - animation.value),
-      );
-      final childDx = gridChildOffset.dx + child.size.width;
+
+      childGridPosition = childParentData.offset;
+      // final randomDX = childParentData.itemsBefore * child.size.width;
+      // childGridPosition += Offset(
+      //   child.size.width + randomDX,
+      //   0,
+      // );
+      // final childDx = childGridPosition.dx + child.size.width;
+
+      // if (childDx > size.width) {
+      //   childGridPosition = Offset(
+      //     randomDX,
+      //     childGridPosition.dy + child.size.height,
+      //   );
+      // }
 // need to smooth out its entrance to next row when condition is met
-      if (childDx > size.width) {
-        final randomDX = childParentData.itemsBefore * child.size.width;
+      if (animation.value == 0) {
+        childOffset = Offset(
+          lerpDouble(gridChildOffset.dx, listChildOffset.dx, animation.value)!,
+          lerpDouble(gridChildOffset.dy, listChildOffset.dy, animation.value)!,
+        );
+        childParentData.offset = Offset(
+          childOffset.dx, //* (animation.value),
+          childOffset.dy, //* (1 - animation.value),
+        );
+
+        listChildOffset += Offset(
+          0,
+          child.size.height,
+        );
         listChildOffset = Offset(
           size.width / 2 - child.size.width / 2,
           listChildOffset.dy,
         );
-        gridChildOffset = Offset(
-          randomDX,
-          gridChildOffset.dy + child.size.height,
-          // lerpDouble(
-          //   gridChildOffset.dy,
-          //   gridChildOffset.dy + child.size.height,
-          //   animation.value,
-          // )!,
+        final randomDX = childParentData.itemsBefore * child.size.width;
+        gridChildOffset += Offset(
+          child.size.width + randomDX * (1 - 0), //* animation.value,
+          0, //* (1 - animation.value),
         );
+        final childDx = gridChildOffset.dx + child.size.width;
+        if (childDx > size.width) {
+          final randomDX = childParentData.itemsBefore * child.size.width;
+          listChildOffset = Offset(
+            size.width / 2 - child.size.width / 2,
+            listChildOffset.dy,
+          );
+          gridChildOffset = Offset(
+            randomDX,
+            gridChildOffset.dy + child.size.height,
+          );
+        }
+      }
+      if (animation.value > 0 && animation.value <= 1.0) {
+        childOffset = Offset(
+          lerpDouble(
+              childGridPosition.dx, listChildOffset.dx, animation.value)!,
+          lerpDouble(
+              childGridPosition.dy, listChildOffset.dy, animation.value)!,
+        );
+        listChildOffset += Offset(
+          0,
+          child.size.height,
+        );
+        listChildOffset = Offset(
+          size.width / 2 - child.size.width / 2,
+          listChildOffset.dy,
+        );
+        childParentData.offset = Offset(
+          childOffset.dx, //* (animation.value),
+          childOffset.dy, //* (1 - animation.value),
+        );
+        // listChildOffset = Offset(
+        //   lerpDouble(a, b, animation.value)!,
+        //   lerpDouble(a, b, animation.value)!,
+        // );
       }
       // childOffset = Offset(
       //   lerpDouble(gridChildOffset.dx, listChildOffset.dx, animation.value)!,
