@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -155,7 +154,6 @@ class MagicGridRenderObject extends RenderBox
         childOffset.dx * (animation.value),
         childOffset.dy * (1 - animation.value),
       );
-      log(childParentData.offset.dx.toString());
       childOffset += Offset(
         child.size.width, //* animation.value,
         child.size.height, //* (1 - animation.value),
@@ -222,7 +220,10 @@ class MagicGridRenderObject extends RenderBox
     width = maxWidth;
     // width = lerpDouble(maxWidth, width, 1.0 - animation.value)!;
     size = constraints.constrain(Size(width, height));
-
+//  size = constraints.constrain(
+//       Size(lerpDouble(maxWidth, width, 1.0 - animation.value)!,
+//           lerpDouble(maxHeight, height, animation.value)!),
+//     );
     // log("${size.height}  ${size.width}");
     return size;
   }
