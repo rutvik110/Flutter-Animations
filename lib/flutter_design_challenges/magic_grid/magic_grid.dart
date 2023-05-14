@@ -21,12 +21,16 @@ class _MagicGridViewState extends State<MagicGridView>
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 5),
+      duration: const Duration(seconds: 1),
     );
     animation = Tween<double>(
       begin: 0,
       end: 1,
-    ).animate(controller);
+    )
+        .chain(CurveTween(
+          curve: Curves.easeInOut,
+        ))
+        .animate(controller);
     controller.addListener(() {
       setState(() {});
     });
@@ -48,9 +52,9 @@ class _MagicGridViewState extends State<MagicGridView>
                   children: List.generate(
                     10,
                     (index) => Container(
-                      height: 100 + 100 * animation.value,
+                      height: 100,
                       margin: const EdgeInsets.all(8.0),
-                      width: 50 + 50 * animation.value,
+                      width: 50,
                       color: Colors.orange,
                       child: Center(
                         child: Text(
