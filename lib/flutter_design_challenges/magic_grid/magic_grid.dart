@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -37,42 +38,32 @@ class _MagicGridViewState extends State<MagicGridView>
       body: Column(
         children: [
           Text(controller.value.toString()),
-          ColoredBox(
-            color: Colors.red,
-            child: MagicGrid(
-              animation: animation,
-              children: [
-                Container(
-                  height: 100,
-                  width: 50,
-                  margin: const EdgeInsets.all(8.0),
-                  color: Colors.green,
+          Expanded(
+            child: SizedBox(
+              width: double.infinity,
+              child: ColoredBox(
+                color: Colors.red,
+                child: MagicGrid(
+                  animation: animation,
+                  children: List.generate(
+                    10,
+                    (index) => Container(
+                      height: 100 + 100 * animation.value,
+                      margin: const EdgeInsets.all(8.0),
+                      width: 50 + 50 * animation.value,
+                      color: Colors.orange,
+                      child: Center(
+                        child: Text(
+                          index.toString(),
+                          style: TextStyle(
+                            fontSize: 20 * animation.value,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                Container(
-                  height: 100,
-                  width: 50,
-                  margin: const EdgeInsets.all(8.0),
-                  color: Colors.blue,
-                ),
-                Container(
-                  height: 100,
-                  width: 50,
-                  margin: const EdgeInsets.all(8.0),
-                  color: Colors.yellow,
-                ),
-                Container(
-                  height: 100,
-                  width: 50,
-                  margin: const EdgeInsets.all(8.0),
-                  color: Colors.purple,
-                ),
-                Container(
-                  height: 100,
-                  margin: const EdgeInsets.all(8.0),
-                  width: 50,
-                  color: Colors.orange,
-                ),
-              ],
+              ),
             ),
           ),
           ElevatedButton(
@@ -114,7 +105,12 @@ class MagicGrid extends MultiChildRenderObjectWidget {
       BuildContext context, covariant MagicGridRenderObject renderObject) {}
 }
 
-class MagicGridParentData extends ContainerBoxParentData<RenderBox> {}
+class MagicGridParentData extends ContainerBoxParentData<RenderBox> {
+  MagicGridParentData({
+    this.itemsBefore = 0,
+  });
+  final int itemsBefore;
+}
 
 class MagicGridRenderObject extends RenderBox
     with
@@ -145,19 +141,46 @@ class MagicGridRenderObject extends RenderBox
     // positioning childs
     child = firstChild;
     Offset childOffset = const Offset(0, 0);
+    Offset listChildOffset = Offset(size.width / 2 - child!.size.width / 2, 0);
+    Offset gridChildOffset = const Offset(0, 0);
 
     while (child != null) {
       final MagicGridParentData childParentData =
           child.parentData! as MagicGridParentData;
-
+      childOffset = Offset(
+        lerpDouble(gridChildOffset.dx, listChildOffset.dx, animation.value)!,
+        lerpDouble(gridChildOffset.dy, listChildOffset.dy, animation.value)!,
+      );
       childParentData.offset = Offset(
-        childOffset.dx * (animation.value),
-        childOffset.dy * (1 - animation.value),
+        childOffset.dx, //* (animation.value),
+        childOffset.dy, //* (1 - animation.value),
       );
-      childOffset += Offset(
-        child.size.width, //* animation.value,
-        child.size.height, //* (1 - animation.value),
+      listChildOffset += Offset(
+        0,
+        child.size.height,
       );
+      listChildOffset = Offset(
+        size.width / 2 - child.size.width / 2,
+        listChildOffset.dy,
+      );
+      final randomDX = childParentData.itemsBefore * child.size.width;
+      gridChildOffset += Offset(
+        child.size.width + randomDX * (1 - 0), //* animation.value,
+        0, //* (1 - animation.value),
+      );
+      final childDx = gridChildOffset.dx + child.size.width;
+
+      if (childDx > size.width) {
+        final randomDX = childParentData.itemsBefore * child.size.width;
+
+        gridChildOffset =
+            Offset(randomDX * (1 - 0), gridChildOffset.dy + child.size.height);
+      }
+      // childOffset = Offset(
+      //   lerpDouble(gridChildOffset.dx, listChildOffset.dx, animation.value)!,
+      //   lerpDouble(gridChildOffset.dy, listChildOffset.dy, animation.value)!,
+      // );
+
       // }
 
       child = childParentData.nextSibling;
@@ -198,7 +221,7 @@ class MagicGridRenderObject extends RenderBox
           BoxConstraints(
             // minHeight: child.size.height,
             maxHeight: constraints.maxHeight, // child.size.height,
-            maxWidth: double.infinity,
+            maxWidth: constraints.maxWidth,
           ),
           parentUsesSize: true,
         );
@@ -252,7 +275,10 @@ class MagicGridRenderObject extends RenderBox
   @override
   void setupParentData(covariant RenderObject child) {
     if (child.parentData is! MagicGridParentData) {
-      child.parentData = MagicGridParentData();
+      final random = math.Random().nextInt(4);
+      child.parentData = MagicGridParentData(
+        itemsBefore: random,
+      );
     }
   }
 }
