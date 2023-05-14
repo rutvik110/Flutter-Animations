@@ -20,21 +20,21 @@ class MyCustomRenderObjectDemo extends StatelessWidget {
         children: [
           CustomColumn(
             children: [
-              CustomBox(
+              const CustomBox(
                 flex: 1,
               ),
-              CustomExpanded(
+              const CustomExpanded(
                 child: SizedBox.shrink(),
               ),
               Container(
                 color: Colors.red,
-                child: SizedBox(
+                child: const SizedBox(
                   height: 100,
                   width: 200,
                 ),
               ),
-              Text("Pwaadw aw da And Hello"),
-              Text("N")
+              const Text("Pwaadw aw da And Hello"),
+              const Text("N")
             ],
           ),
           CustomProxy(
@@ -89,14 +89,14 @@ class RenderCustomColumn extends RenderBox
   }) : _alignment = alignment;
 
   Alignment get alignment => _alignment;
-  Alignment _alignment;
+  final Alignment _alignment;
   @override
   void performLayout() {
     Size size = _performLayout(constraints, false);
     RenderBox? child = firstChild;
     // positioning childs
     child = firstChild;
-    Offset childOffset = Offset(0, 0);
+    Offset childOffset = const Offset(0, 0);
     while (child != null) {
       final CustomColumnParentData childParentData =
           child.parentData! as CustomColumnParentData;
@@ -109,7 +109,7 @@ class RenderCustomColumn extends RenderBox
   }
 
   set alignment(Alignment alignment) {
-    markNeedsLayout();
+    super.markNeedsLayout();
   }
 
   Size _performLayout(BoxConstraints constraints, bool isDry) {
@@ -157,7 +157,7 @@ class RenderCustomColumn extends RenderBox
     }
     size = constraints.constrain(Size(width, height));
 
-    log(size.height.toString() + "  " + size.width.toString());
+    log("${size.height}  ${size.width}");
     return size;
   }
 
@@ -181,7 +181,7 @@ class RenderCustomColumn extends RenderBox
       child = childParentData.nextSibling;
     }
 
-    log("Min Height-->" + height.toString());
+    log("Min Height-->$height");
 
     return height;
   }
@@ -200,7 +200,7 @@ class RenderCustomColumn extends RenderBox
       child = childParentData.nextSibling;
     }
 
-    log("Max Height-->" + height.toString());
+    log("Max Height-->$height");
 
     return height;
   }
@@ -219,7 +219,7 @@ class RenderCustomColumn extends RenderBox
       child = childParentData.nextSibling;
     }
 
-    log("Max Width-->" + width.toString());
+    log("Max Width-->$width");
 
     return height;
   }
@@ -238,7 +238,7 @@ class RenderCustomColumn extends RenderBox
       child = childParentData.nextSibling;
     }
 
-    log("Min Width-->" + width.toString());
+    log("Min Width-->$width");
 
     return height;
   }
