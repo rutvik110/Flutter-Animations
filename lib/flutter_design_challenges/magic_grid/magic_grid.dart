@@ -38,38 +38,43 @@ class _MagicGridViewState extends State<MagicGridView>
       body: Column(
         children: [
           Text(controller.value.toString()),
-          MagicGrid(
-            animation: animation,
-            children: [
-              Container(
-                height: 100,
-                width: 50,
-                color: Colors.green,
-              ),
-              Container(
-                height: 100,
-                width: 50,
-                color: Colors.blue,
-              ),
-              Container(
-                color: Colors.green,
-              ),
-              Container(
-                height: 100,
-                width: 50,
-                color: Colors.yellow,
-              ),
-              Container(
-                height: 100,
-                width: 50,
-                color: Colors.purple,
-              ),
-              Container(
-                height: 100,
-                width: 50,
-                color: Colors.orange,
-              ),
-            ],
+          ColoredBox(
+            color: Colors.red,
+            child: MagicGrid(
+              animation: animation,
+              children: [
+                Container(
+                  height: 100,
+                  width: 50,
+                  margin: const EdgeInsets.all(8.0),
+                  color: Colors.green,
+                ),
+                Container(
+                  height: 100,
+                  width: 50,
+                  margin: const EdgeInsets.all(8.0),
+                  color: Colors.blue,
+                ),
+                Container(
+                  height: 100,
+                  width: 50,
+                  margin: const EdgeInsets.all(8.0),
+                  color: Colors.yellow,
+                ),
+                Container(
+                  height: 100,
+                  width: 50,
+                  margin: const EdgeInsets.all(8.0),
+                  color: Colors.purple,
+                ),
+                Container(
+                  height: 100,
+                  margin: const EdgeInsets.all(8.0),
+                  width: 50,
+                  color: Colors.orange,
+                ),
+              ],
+            ),
           ),
           ElevatedButton(
             onPressed: () {
