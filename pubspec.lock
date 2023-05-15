@@ -130,10 +130,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_shaders
-      sha256: "1cf98f699701b520ed029c144f22c478c1f37f5784a4789b61d4fdbe95350a56"
+      sha256: "08b990b6c234553784624f39d2db9d6b50275eb0d550baa061089dd1cdbbab9c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.6"
+    version: "0.1.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
