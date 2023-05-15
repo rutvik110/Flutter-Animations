@@ -101,18 +101,18 @@ packages:
     dependency: "direct main"
     description:
       name: flame
-      sha256: "0c55f8d704f09536125c811a19d9aab7407dce245b2bfb507e84296c1c996202"
+      sha256: c38e1be5827aa839c166c6ed08a2733bb4523bf153d8c670739c20c842fa1844
       url: "https://pub.dev"
     source: hosted
-    version: "1.6.0"
+    version: "1.7.3"
   flame_forge2d:
     dependency: "direct main"
     description:
       name: flame_forge2d
-      sha256: "2bcfc01287f7eeaf62362bd2d85ddf2e1cfd9b6fc221e7f09659fbe713cbd860"
+      sha256: "23a6b3a57f5a5a60ed64ea87ca38453fde9fac97a7479d44209464a58ad1efa8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.5"
+    version: "0.13.0+1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -220,10 +220,10 @@ packages:
     dependency: transitive
     description:
       name: ordered_set
-      sha256: "74b0454418f58c34c8e527d91fb1ef571297dbcd5d3b4e5f983dc884e39cdf85"
+      sha256: "3fedcc9121b3ba24c0a84f32da2989c42e36c159b73feadbc2f402dc55966b81"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "5.0.1"
   particle_field:
     dependency: "direct main"
     description:
