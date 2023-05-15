@@ -41,7 +41,7 @@ dependencies:
   dart_numerics: ^0.0.6
   flutter_shaders: ^0.0.6
   vector_math: ^2.1.4
-  particle_field: ^0.0.1+1
+  particle_field: ^1.0.0
   rnd: ^0.2.0
 
 dependency_overrides:
