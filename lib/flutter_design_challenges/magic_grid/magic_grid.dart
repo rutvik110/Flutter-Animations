@@ -76,8 +76,7 @@ class _MagicGridViewState extends State<MagicGridView>
                       // duration: const Duration(milliseconds: 300),
                       clipBehavior: Clip.hardEdge,
                       margin: const EdgeInsets.all(8.0),
-                      width: 140 + 140 * animation.value,
-
+                      width: 140 + 200 * animation.value,
                       decoration: BoxDecoration(
                         color: Colors.orange,
                         border: Border.all(
