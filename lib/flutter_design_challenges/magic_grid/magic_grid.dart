@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -129,6 +130,7 @@ class MagicGridRenderObject extends RenderBox
   });
   // ignore: prefer_final_fields
   final Animation<double> animation;
+  Map<String, Offset> itemsGridPositions = {};
 
   // set isColumn(bool value) {
   //   // if (value != isColumn) {
@@ -148,7 +150,7 @@ class MagicGridRenderObject extends RenderBox
     RenderBox? child = firstChild;
     // positioning childs
     child = firstChild;
-    Offset childGridPosition = const Offset(0, 0);
+    Offset childGridOffset = const Offset(0, 0);
     Offset childOffset = const Offset(0, 0);
     Offset listChildOffset = Offset(size.width / 2 - child!.size.width / 2, 0);
     Offset gridChildOffset = const Offset(0, 0);
@@ -157,22 +159,25 @@ class MagicGridRenderObject extends RenderBox
       final MagicGridParentData childParentData =
           child.parentData! as MagicGridParentData;
 
-      childGridPosition = childParentData.offset;
+      childGridOffset = childParentData.offset;
       // final randomDX = childParentData.itemsBefore * child.size.width;
-      // childGridPosition += Offset(
-      //   child.size.width + randomDX,
-      //   0,
+      // childGridOffset += Offset(
+      //   child.size.width + randomDX, //* animation.value,
+      //   0, //* (1 - animation.value),
       // );
-      // final childDx = childGridPosition.dx + child.size.width;
-
+      // final childDx = childGridOffset.dx + child.size.width;
       // if (childDx > size.width) {
-      //   childGridPosition = Offset(
+      //   childGridOffset = Offset(
       //     randomDX,
-      //     childGridPosition.dy + child.size.height,
+      //     childGridOffset.dy + child.size.height,
       //   );
       // }
-// need to smooth out its entrance to next row when condition is met
+      // need to smooth out its entrance to next row when condition is met
       if (animation.value == 0) {
+        if (itemsGridPositions[child.hashCode] == null) {
+          itemsGridPositions[child.hashCode.toString()] =
+              childParentData.offset;
+        }
         childOffset = Offset(
           lerpDouble(gridChildOffset.dx, listChildOffset.dx, animation.value)!,
           lerpDouble(gridChildOffset.dy, listChildOffset.dy, animation.value)!,
@@ -197,11 +202,6 @@ class MagicGridRenderObject extends RenderBox
         );
         final childDx = gridChildOffset.dx + child.size.width;
         if (childDx > size.width) {
-          final randomDX = childParentData.itemsBefore * child.size.width;
-          listChildOffset = Offset(
-            size.width / 2 - child.size.width / 2,
-            listChildOffset.dy,
-          );
           gridChildOffset = Offset(
             randomDX,
             gridChildOffset.dy + child.size.height,
@@ -209,11 +209,12 @@ class MagicGridRenderObject extends RenderBox
         }
       }
       if (animation.value > 0 && animation.value <= 1.0) {
+        log(itemsGridPositions.entries.toString());
+        final itemGridPosition = itemsGridPositions[child.hashCode.toString()];
         childOffset = Offset(
           lerpDouble(
-              childGridPosition.dx, listChildOffset.dx, animation.value)!,
-          lerpDouble(
-              childGridPosition.dy, listChildOffset.dy, animation.value)!,
+              itemGridPosition!.dx, listChildOffset.dx, animation.value)!,
+          lerpDouble(itemGridPosition.dy, listChildOffset.dy, animation.value)!,
         );
         listChildOffset += Offset(
           0,
