@@ -16,10 +16,14 @@ class _MagicGridViewState extends State<MagicGridView>
     with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
+  late int activeIndex;
+  int? hoveringIndex;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    activeIndex = 0;
     controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
@@ -40,32 +44,73 @@ class _MagicGridViewState extends State<MagicGridView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Text(controller.value.toString()),
-          Expanded(
-            child: SizedBox(
-              width: double.infinity,
-              child: ColoredBox(
-                color: Colors.red,
-                child: MagicGrid(
-                  animation: animation,
-                  children: List.generate(
-                    10,
-                    (index) => Container(
-                      height: 70 + 70 * animation.value,
+      body: ColoredBox(
+        color: const Color(0xFF141514),
+        child: ListView(
+          children: [
+            MagicGrid(
+              activeIndex: activeIndex,
+              animation: animation,
+              children: List.generate(
+                14,
+                (index) => MouseRegion(
+                  onEnter: (event) {
+                    hoveringIndex = index;
+                    setState(() {});
+                  },
+                  onExit: (event) {
+                    hoveringIndex = null;
+                    setState(() {});
+                  },
+                  child: InkWell(
+                    onTap: () {
+                      activeIndex = index;
+                      setState(() {});
+                      if (controller.isCompleted) {
+                        controller.reverse();
+                      } else {
+                        controller.forward();
+                      }
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      clipBehavior: Clip.hardEdge,
                       margin: const EdgeInsets.all(8.0),
-                      width: 70 + 70 * animation.value,
+                      width: 140 + 200 * animation.value,
                       decoration: BoxDecoration(
-                          color: Colors.orange,
-                          border: Border.all(
-                            color: Colors.white,
-                          )),
-                      child: Center(
-                        child: Text(
-                          index.toString(),
-                          style: TextStyle(
-                            fontSize: 20 * animation.value,
+                        color: Colors.orange,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 0.5,
+                        ),
+                        boxShadow: index == hoveringIndex
+                            ? const [
+                                BoxShadow(
+                                  color: Color.fromARGB(255, 14, 220, 220),
+                                  spreadRadius: 5,
+
+                                  offset: Offset(
+                                    8,
+                                    8,
+                                  ), // changes position of shadow
+                                ),
+                              ]
+                            : null,
+                      ),
+                      foregroundDecoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 0.5,
+                        ),
+                      ),
+                      child: AspectRatio(
+                        aspectRatio: 3 / 4,
+                        child: AnimatedScale(
+                          duration: const Duration(milliseconds: 300),
+                          scale: hoveringIndex == index ? 1.1 : 1,
+                          child: Image.asset(
+                            "assets/images/people/${index + 1}.jpg",
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
@@ -74,20 +119,8 @@ class _MagicGridViewState extends State<MagicGridView>
                 ),
               ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                if (controller.isCompleted) {
-                  controller.reverse();
-                } else {
-                  controller.forward();
-                }
-              });
-            },
-            child: const Text("Change Flex"),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -98,20 +131,25 @@ class MagicGrid extends MultiChildRenderObjectWidget {
     super.key,
     required super.children,
     required this.animation,
+    required this.activeIndex,
   });
   final Animation<double> animation;
+  final int activeIndex;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
     // TODO: implement createRenderObject
     return MagicGridRenderObject(
       animation: animation,
+      activeIndex: activeIndex,
     );
   }
 
   @override
   void updateRenderObject(
-      BuildContext context, covariant MagicGridRenderObject renderObject) {}
+      BuildContext context, covariant MagicGridRenderObject renderObject) {
+    renderObject.activeIndex = activeIndex;
+  }
 }
 
 class MagicGridParentData extends ContainerBoxParentData<RenderBox> {
@@ -127,22 +165,20 @@ class MagicGridRenderObject extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, MagicGridParentData> {
   MagicGridRenderObject({
     required this.animation,
-  });
+    required int activeIndex,
+  }) : _activeIndex = activeIndex;
   // ignore: prefer_final_fields
   final Animation<double> animation;
   Map<String, Offset> itemsGridPositions = {};
+  int _activeIndex;
+  int get activeIndex => _activeIndex;
 
-  // set isColumn(bool value) {
-  //   // if (value != isColumn) {
-  //   //   isColumn = value;
-  //   // // Parent needs to update coze we are changing something on the parent data.
-  //   // parentData!.isColumn = value;
-  //   if (value != isColumn) {
-  //     _isColumn = value;
-  //     markNeedsLayout();
-  //   }
-  //   // }
-  // }
+  set activeIndex(int value) {
+    if (value != activeIndex) {
+      _activeIndex = value;
+      markNeedsLayout();
+    }
+  }
 
   @override
   void performLayout() {
@@ -156,23 +192,14 @@ class MagicGridRenderObject extends RenderBox
     Offset gridChildOffset = const Offset(0, 0);
 
     while (child != null) {
+      double activeChildOffset =
+          child.size.height * activeIndex - child.size.height / 2;
+
       final MagicGridParentData childParentData =
           child.parentData! as MagicGridParentData;
 
       childGridOffset = childParentData.offset;
-      // final randomDX = childParentData.itemsBefore * child.size.width;
-      // childGridOffset += Offset(
-      //   child.size.width + randomDX, //* animation.value,
-      //   0, //* (1 - animation.value),
-      // );
-      // final childDx = childGridOffset.dx + child.size.width;
-      // if (childDx > size.width) {
-      //   childGridOffset = Offset(
-      //     randomDX,
-      //     childGridOffset.dy + child.size.height,
-      //   );
-      // }
-      // need to smooth out its entrance to next row when condition is met
+
       if (animation.value == 0) {
         if (itemsGridPositions[child.hashCode] == null) {
           itemsGridPositions[child.hashCode.toString()] =
@@ -183,8 +210,8 @@ class MagicGridRenderObject extends RenderBox
           lerpDouble(gridChildOffset.dy, listChildOffset.dy, animation.value)!,
         );
         childParentData.offset = Offset(
-          childOffset.dx, //* (animation.value),
-          childOffset.dy, //* (1 - animation.value),
+          childOffset.dx,
+          childOffset.dy,
         );
 
         listChildOffset += Offset(
@@ -197,8 +224,8 @@ class MagicGridRenderObject extends RenderBox
         );
         final randomDX = childParentData.itemsBefore * child.size.width;
         gridChildOffset += Offset(
-          child.size.width + randomDX * (1 - 0), //* animation.value,
-          0, //* (1 - animation.value),
+          child.size.width + randomDX * (1 - 0),
+          0,
         );
         final childDx = gridChildOffset.dx + child.size.width;
         if (childDx > size.width) {
@@ -225,20 +252,10 @@ class MagicGridRenderObject extends RenderBox
           listChildOffset.dy,
         );
         childParentData.offset = Offset(
-          childOffset.dx, //* (animation.value),
-          childOffset.dy, //* (1 - animation.value),
+          childOffset.dx,
+          childOffset.dy - activeChildOffset * animation.value,
         );
-        // listChildOffset = Offset(
-        //   lerpDouble(a, b, animation.value)!,
-        //   lerpDouble(a, b, animation.value)!,
-        // );
       }
-      // childOffset = Offset(
-      //   lerpDouble(gridChildOffset.dx, listChildOffset.dx, animation.value)!,
-      //   lerpDouble(gridChildOffset.dy, listChildOffset.dy, animation.value)!,
-      // );
-
-      // }
 
       child = childParentData.nextSibling;
     }
@@ -249,7 +266,6 @@ class MagicGridRenderObject extends RenderBox
     double width = 0;
     double maxHeight = 0;
     double maxWidth = 0;
-    //int totalFlex = 0;
 
     RenderBox? child = firstChild;
 
@@ -287,24 +303,17 @@ class MagicGridRenderObject extends RenderBox
 
       maxHeight += childSize.height;
       maxWidth += childSize.width;
-      // if (isColumn) {
-      //   height += childSize.height;
+
       width = math.max(width, childSize.width);
-      // } else {
-      //   width += childSize.width;
+
       height = math.max(height, childSize.height);
-      // }
+
       child = childParentData.nextSibling;
     }
-    height = maxHeight; //lerpDouble(maxHeight, height, animation.value)!;
+    height = maxHeight;
     width = maxWidth;
-    // width = lerpDouble(maxWidth, width, 1.0 - animation.value)!;
     size = constraints.constrain(Size(width, height));
-//  size = constraints.constrain(
-//       Size(lerpDouble(maxWidth, width, 1.0 - animation.value)!,
-//           lerpDouble(maxHeight, height, animation.value)!),
-//     );
-    // log("${size.height}  ${size.width}");
+
     return size;
   }
 
@@ -332,10 +341,24 @@ class MagicGridRenderObject extends RenderBox
   @override
   void setupParentData(covariant RenderObject child) {
     if (child.parentData is! MagicGridParentData) {
-      final random = math.Random().nextInt(4);
+      final random = math.Random().nextInt(5);
       child.parentData = MagicGridParentData(
         itemsBefore: random,
       );
     }
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    // Iterate over the children in reverse order to prioritize the topmost child for hit testing.
+    final children = getChildrenAsList();
+    for (final child in children.reversed) {
+      final childParentData = child.parentData as MagicGridParentData?;
+      if (childParentData != null &&
+          child.hitTest(result, position: position - childParentData.offset)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
