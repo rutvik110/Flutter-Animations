@@ -72,30 +72,18 @@ class _MagicGridViewState extends State<MagicGridView>
                         controller.forward();
                       }
                     },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
+                    child: Container(
+                      // duration: const Duration(milliseconds: 300),
                       clipBehavior: Clip.hardEdge,
                       margin: const EdgeInsets.all(8.0),
-                      width: 140 + 200 * animation.value,
+                      width: 140 + 140 * animation.value,
+
                       decoration: BoxDecoration(
                         color: Colors.orange,
                         border: Border.all(
                           color: Colors.white,
                           width: 0.5,
                         ),
-                        boxShadow: index == hoveringIndex
-                            ? const [
-                                BoxShadow(
-                                  color: Color.fromARGB(255, 14, 220, 220),
-                                  spreadRadius: 5,
-
-                                  offset: Offset(
-                                    8,
-                                    8,
-                                  ), // changes position of shadow
-                                ),
-                              ]
-                            : null,
                       ),
                       foregroundDecoration: BoxDecoration(
                         border: Border.all(
@@ -106,8 +94,9 @@ class _MagicGridViewState extends State<MagicGridView>
                       child: AspectRatio(
                         aspectRatio: 3 / 4,
                         child: AnimatedScale(
+                          curve: Curves.decelerate,
                           duration: const Duration(milliseconds: 300),
-                          scale: hoveringIndex == index ? 1.1 : 1,
+                          scale: hoveringIndex == index ? 1.3 : 1,
                           child: Image.asset(
                             "assets/images/people/${index + 1}.jpg",
                             fit: BoxFit.cover,
