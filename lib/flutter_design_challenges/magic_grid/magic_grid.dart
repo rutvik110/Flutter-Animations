@@ -1,3 +1,5 @@
+// ongoing implementaion of grid interaction shown here, https://tympanus.net/Development/GridToSlider/
+
 import 'dart:developer';
 import 'dart:math' as math;
 import 'dart:ui';
