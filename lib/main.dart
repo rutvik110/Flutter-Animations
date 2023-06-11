@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/flutter_design_challenges/power_up/power_up.dart';
+import 'package:flutter_animations/flutter_design_challenges/rolling_donuts/rolling_donuts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         // textTheme: GoogleFonts.rubikTextTheme(Theme.of(context).textTheme),
       ),
-      home: const PowerUp(),
+      home: const ScrollingDonuts(),
     );
   }
 }
