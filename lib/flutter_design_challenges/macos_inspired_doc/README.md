@@ -1,3 +1,3 @@
 ### Supporting Article
 
-## [Build a MacOS Inspired Dock With Flutter](https://takrutvik.com/build-a-macos-inspired-dock-with-flutter)
+## [Build a MacOS Inspired Dock With Flutter](https://code.pieces.app/blog/build-a-macos-inspired-dock-with-flutter)
