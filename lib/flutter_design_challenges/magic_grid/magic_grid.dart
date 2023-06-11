@@ -14,12 +14,12 @@ class MagicGridView extends StatefulWidget {
   State<MagicGridView> createState() => _MagicGridViewState();
 }
 
-class _MagicGridViewState extends State<MagicGridView>
-    with SingleTickerProviderStateMixin {
+class _MagicGridViewState extends State<MagicGridView> with SingleTickerProviderStateMixin {
   late Animation<double> animation;
   late AnimationController controller;
   late int activeIndex;
   int? hoveringIndex;
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -48,8 +48,9 @@ class _MagicGridViewState extends State<MagicGridView>
     return Scaffold(
       body: ColoredBox(
         color: const Color(0xFF141514),
-        child: ListView(
-          children: [
+        child: ScrollConfiguration(
+          behavior: const ScrollBehavior().copyWith(overscroll: true),
+          child: ListView(controller: scrollController, children: [
             MagicGrid(
               activeIndex: activeIndex,
               animation: animation,
@@ -67,11 +68,30 @@ class _MagicGridViewState extends State<MagicGridView>
                   child: InkWell(
                     onTap: () {
                       activeIndex = index;
+                      const height = (340 * (4 / 3));
+                      double activeChildOffset = height * activeIndex - height / 2;
+                      final childOffset = index * height;
+                      final scrollOffset = activeChildOffset + height / 2;
+
                       setState(() {});
                       if (controller.isCompleted) {
-                        controller.reverse();
+                        final afuture = controller.reverse();
+                        // afuture.whenComplete(() {
+                        //   scrollController.animateTo(
+                        //     scrollOffset,
+                        //     duration: const Duration(milliseconds: 300),
+                        //     curve: Curves.easeInOut,
+                        //   );
+                        // });
                       } else {
-                        controller.forward();
+                        final afuture = controller.forward();
+                        // afuture.whenComplete(() {
+                        //   scrollController.animateTo(
+                        //     scrollOffset,
+                        //     duration: const Duration(milliseconds: 300),
+                        //     curve: Curves.easeInOut,
+                        //   );
+                        // });
                       }
                     },
                     child: Container(
@@ -108,8 +128,8 @@ class _MagicGridViewState extends State<MagicGridView>
                   ),
                 ),
               ),
-            ),
-          ],
+            )
+          ]),
         ),
       ),
     );
@@ -117,7 +137,7 @@ class _MagicGridViewState extends State<MagicGridView>
 }
 
 class MagicGrid extends MultiChildRenderObjectWidget {
-  MagicGrid({
+  const MagicGrid({
     super.key,
     required super.children,
     required this.animation,
@@ -136,8 +156,7 @@ class MagicGrid extends MultiChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(
-      BuildContext context, covariant MagicGridRenderObject renderObject) {
+  void updateRenderObject(BuildContext context, covariant MagicGridRenderObject renderObject) {
     renderObject.activeIndex = activeIndex;
   }
 }
@@ -182,18 +201,15 @@ class MagicGridRenderObject extends RenderBox
     Offset gridChildOffset = const Offset(0, 0);
 
     while (child != null) {
-      double activeChildOffset =
-          child.size.height * activeIndex - child.size.height / 2;
+      double activeChildOffset = child.size.height * activeIndex - child.size.height / 2;
 
-      final MagicGridParentData childParentData =
-          child.parentData! as MagicGridParentData;
+      final MagicGridParentData childParentData = child.parentData! as MagicGridParentData;
 
       childGridOffset = childParentData.offset;
 
       if (animation.value == 0) {
         if (itemsGridPositions[child.hashCode] == null) {
-          itemsGridPositions[child.hashCode.toString()] =
-              childParentData.offset;
+          itemsGridPositions[child.hashCode.toString()] = childParentData.offset;
         }
         childOffset = Offset(
           lerpDouble(gridChildOffset.dx, listChildOffset.dx, animation.value)!,
@@ -229,8 +245,7 @@ class MagicGridRenderObject extends RenderBox
         log(itemsGridPositions.entries.toString());
         final itemGridPosition = itemsGridPositions[child.hashCode.toString()];
         childOffset = Offset(
-          lerpDouble(
-              itemGridPosition!.dx, listChildOffset.dx, animation.value)!,
+          lerpDouble(itemGridPosition!.dx, listChildOffset.dx, animation.value)!,
           lerpDouble(itemGridPosition.dy, listChildOffset.dy, animation.value)!,
         );
         listChildOffset += Offset(
@@ -264,8 +279,7 @@ class MagicGridRenderObject extends RenderBox
 
     // calculating layout sizes
     while (child != null) {
-      final MagicGridParentData childParentData =
-          child.parentData! as MagicGridParentData;
+      final MagicGridParentData childParentData = child.parentData! as MagicGridParentData;
       late final Size childSize;
 
       if (isDry) {
@@ -344,8 +358,7 @@ class MagicGridRenderObject extends RenderBox
     final children = getChildrenAsList();
     for (final child in children.reversed) {
       final childParentData = child.parentData as MagicGridParentData?;
-      if (childParentData != null &&
-          child.hitTest(result, position: position - childParentData.offset)) {
+      if (childParentData != null && child.hitTest(result, position: position - childParentData.offset)) {
         return true;
       }
     }
