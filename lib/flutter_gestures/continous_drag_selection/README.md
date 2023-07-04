@@ -1,6 +1,6 @@
 ## Continuous Drag Detection Across Widgets
 
-A rough write explaining the overall code could be found [here](https://twitter.com/TakRutvik/status/1676184987190829056?s=20).
+A rough write-up explaining the overall code could be found [here](https://twitter.com/TakRutvik/status/1676184987190829056?s=20).
 
 Demo:
 
