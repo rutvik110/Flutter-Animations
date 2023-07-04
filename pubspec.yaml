@@ -35,7 +35,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   google_fonts: ^4.0.3
   flame: ^1.6.0
-  audioplayers: ^0.20.1
+  audioplayers: ^4.1.0
   flame_forge2d: ^0.12.5
   scidart: ^0.0.2-dev.12
   dart_numerics: ^0.0.6
