@@ -43,9 +43,13 @@ dependencies:
   vector_math: ^2.1.4
   particle_field: ^0.0.1+1
   rnd: ^0.2.0
-
+  device_frame:
+    git:
+      url: https://github.com/rutvik110/flutter_device_preview.git
+      path: device_frame
 dependency_overrides:
   file: 6.1.4
+  ordered_set: ^5.0.1
 
 dev_dependencies:
   flutter_test:

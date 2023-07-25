@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animations/flutter_gestures/continous_drag_selection/continous_drag_selection.dart';
+import 'package:flutter_animations/maths_meet_flutter/shadows.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         // textTheme: GoogleFonts.rubikTextTheme(Theme.of(context).textTheme),
       ),
-      home: const ContinousDragGesturesDetection(),
+      home: const FlutterShadows(),
     );
   }
 }
