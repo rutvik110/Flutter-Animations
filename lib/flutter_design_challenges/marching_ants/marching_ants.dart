@@ -9,8 +9,7 @@ class MarchingAnts extends StatefulWidget {
   State<MarchingAnts> createState() => _MarchingAntsState();
 }
 
-class _MarchingAntsState extends State<MarchingAnts>
-    with SingleTickerProviderStateMixin {
+class _MarchingAntsState extends State<MarchingAnts> with SingleTickerProviderStateMixin {
   late final AnimationController animationController;
   late final Animation<double> animation;
 

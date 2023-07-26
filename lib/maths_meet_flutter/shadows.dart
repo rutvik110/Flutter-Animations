@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:device_frame/device_frame.dart';
 import 'package:flutter/material.dart';
@@ -28,11 +27,12 @@ class _FlutterShadowsState extends State<FlutterShadows> {
               width: 300,
               child: Slider(
                 value: angle,
-                max: 360,
+                max: 2 * pi,
+                min: 0,
                 divisions: 360,
                 onChanged: (value) {
                   setState(() {
-                    angle = value * (pi / 180);
+                    angle = value;
                   });
                 },
               ),
@@ -58,7 +58,7 @@ class _FlutterShadowsState extends State<FlutterShadows> {
                       color: Colors.blue,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ],
@@ -87,11 +87,27 @@ class ShadowPainter extends CustomPainter {
           size,
       Radius.circular(newBorderRadius),
     );
-    final paint = Paint()
+    final upperShadowPaint = Paint()
       ..shader = LinearGradient(
           tileMode: TileMode.clamp,
           transform: GradientRotation(
-            angle,
+            (angle.clamp(0, 4).toDouble() - 45 * (pi / 180)),
+          ),
+          colors: [
+            Colors.black12,
+            Colors.white.withOpacity(0),
+          ],
+          stops: const [
+            0,
+            0.4,
+          ]).createShader(
+        Offset.zero & size * 2,
+      );
+    final bottomShadowPaint = Paint()
+      ..shader = LinearGradient(
+          tileMode: TileMode.clamp,
+          transform: GradientRotation(
+            (angle.clamp(0, 24).toDouble() + 24 * (pi / 180)),
           ),
           colors: [
             Colors.black12,
@@ -108,8 +124,30 @@ class ShadowPainter extends CustomPainter {
     final topRightCorner = Offset(width - rounredRect.trRadiusX / 1.2, 0);
     final bottomRightCorner = Offset(width, height);
     final bottomLeftCorner = Offset(rounredRect.blRadiusX / 1.2, height);
-    final topRightCornerBelowPoint = Offset(width * 1.9, 110);
-    final bottomLeftCornerBelowPOint = Offset(width * 1.3, height + 110);
+    Offset topRightCornerBelowPoint = Offset(width * 1.9, 110);
+    // rotate the point (topRightCornerBelowPoint) by [angle] taking the topRightCorner
+    // as the center of rotation
+    topRightCornerBelowPoint = Offset(
+      cos(angle) * (topRightCornerBelowPoint.dx - topRightCorner.dx) -
+          sin(angle) * (topRightCornerBelowPoint.dy - topRightCorner.dy) +
+          topRightCorner.dx,
+      sin(angle) * (topRightCornerBelowPoint.dx - topRightCorner.dx) +
+          cos(angle) * (topRightCornerBelowPoint.dy - topRightCorner.dy) +
+          topRightCorner.dy,
+    );
+    Offset bottomLeftCornerBelowPOint = Offset(width * 1.3, height + 110);
+    // rotate the point (bottomLeftCornerBelowPOint) by [angle] taking the bottomLeftCorner
+    // as the center of rotation
+
+    bottomLeftCornerBelowPOint = Offset(
+      cos(angle) * (bottomLeftCornerBelowPOint.dx - bottomLeftCorner.dx) -
+          sin(angle) * (bottomLeftCornerBelowPOint.dy - bottomLeftCorner.dy) +
+          bottomLeftCorner.dx,
+      sin(angle) * (bottomLeftCornerBelowPOint.dx - bottomLeftCorner.dx) +
+          cos(angle) * (bottomLeftCornerBelowPOint.dy - bottomLeftCorner.dy) +
+          bottomLeftCorner.dy,
+    );
+
     final path = Path()
       ..moveTo(topRightCorner.dx, topRightCorner.dy)
       ..lineTo(bottomRightCorner.dx, bottomRightCorner.dy)
@@ -117,15 +155,20 @@ class ShadowPainter extends CustomPainter {
       ..lineTo(bottomLeftCornerBelowPOint.dx, bottomLeftCornerBelowPOint.dy)
       ..lineTo(topRightCornerBelowPoint.dx, topRightCornerBelowPoint.dy)
       ..close();
+
     final clipPath = Path()
       ..moveTo(topRightCorner.dx, topRightCorner.dy)
+      ..lineTo(bottomRightCorner.dx, bottomRightCorner.dy)
       ..lineTo(bottomLeftCorner.dx, bottomLeftCorner.dy)
       ..lineTo(bottomLeftCornerBelowPOint.dx, bottomLeftCornerBelowPOint.dy)
       ..lineTo(topRightCornerBelowPoint.dx, topRightCornerBelowPoint.dy)
       ..close();
 
     canvas.clipPath(clipPath);
-    canvas.drawPath(path, paint);
+    //bottom shadow
+    canvas.drawPath(path, bottomShadowPaint);
+    //upper shadow
+    canvas.drawPath(path, upperShadowPaint);
 
     final paint2 = Paint()
       ..shader = LinearGradient(
@@ -146,6 +189,7 @@ class ShadowPainter extends CustomPainter {
     canvas.drawPath(path, paint2);
 
     Path rectPath = Path()..addRRect(rounredRect);
+
     rectPath = rectPath.shift(
       const Offset(
         10,
@@ -153,35 +197,25 @@ class ShadowPainter extends CustomPainter {
       ),
     );
 
-    canvas.drawShadow(rectPath, Colors.black54, 18, true);
+    // final rectRoundedRightSideBorderLine = Path()
+    //   ..moveTo(
+    //     width,
+    //     0,
+    //   )
+    //   //rounded br center
+    //   ..lineTo(
+    //     rounredRect.width,
+    //     rounredRect.height,
+    //   )
+    //   ..lineTo(
+    //     0,
+    //     height,
+    //   );
+  }
 
-    final rectRoundedRightSideBorderLine = Path()
-      ..moveTo(
-        width,
-        0,
-      )
-      //rounded br center
-      ..lineTo(
-        rounredRect.width,
-        rounredRect.height,
-      )
-      ..lineTo(
-        0,
-        height,
-      );
-
-    final arcRectPaint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round
-      ..imageFilter = ImageFilter.blur(
-        sigmaX: 0.1,
-        sigmaY: 0.1,
-      );
-
-    // canvas.drawPath(rectRoundedRightSideBorderLine, arcRectPaint);
+  double hypot(double side1, double side2) {
+    double hypotenuse = sqrt(side1 * side1 + side2 * side2);
+    return hypotenuse;
   }
 
   @override
