@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animations/maths_meet_flutter/shadows.dart';
 
 void main() {
+  Paint.enableDithering = true;
   runApp(const MyApp());
 }
 
