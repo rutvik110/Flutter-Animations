@@ -109,3 +109,28 @@ class AnimeWarpBuilder extends StatelessWidget {
     );
   }
 }
+
+class AirDropEffectBuilder extends StatelessWidget {
+  const AirDropEffectBuilder({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderViewSkeleton(
+      isActive: true,
+      shaderAssetKey: 'shaders/airdrop.glsl',
+      image: child,
+      updateShaderInputs: (fragmentShader, image, size, delta) {
+        return fragmentShader
+          ..setFloat(0, size.width)
+          ..setFloat(1, size.height)
+          ..setFloat(2, delta)
+          ..setImageSampler(0, image);
+      },
+    );
+  }
+}

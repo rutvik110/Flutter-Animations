@@ -71,7 +71,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			<key>License</key>
 			<string>BSD</string>
 			<key>Title</key>
-			<string>path_provider_ios</string>
+			<string>path_provider_foundation</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>

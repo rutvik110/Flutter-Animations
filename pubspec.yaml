@@ -39,7 +39,7 @@ dependencies:
   flame_forge2d: ^0.12.5
   scidart: ^0.0.2-dev.12
   dart_numerics: ^0.0.6
-  flutter_shaders: ^0.0.6
+  flutter_shaders: ^0.1.2
   vector_math: ^2.1.4
   particle_field: ^0.0.1+1
   rnd: ^0.2.0
@@ -80,6 +80,7 @@ flutter:
     - shaders/cellular_noise.glsl
     - shaders/gradient_ball.glsl
     - shaders/anime_warp.glsl
+    - shaders/airdrop.glsl
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
