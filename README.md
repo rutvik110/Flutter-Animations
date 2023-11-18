@@ -3,7 +3,7 @@
 🏠 Home for animations and design challeges 🖌 I created inspired by micro-macro interactions from different apps, musics, movies, games and sometimes just for fun with Flutter 💙
 
 
-<h2> Sponsored with 💙 by </h2>
+<!--<h2> Sponsored with 💙 by </h2>
 <div align="center">
  <div style="background-color:lightblue">
     
@@ -12,6 +12,7 @@
   </div>
 </div>
 <h2></h2>
+-->
 
 
 [Power Up](https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/power_up)
