@@ -48,6 +48,8 @@ class _BlobsPainter extends CustomPainter {
         tileMode: TileMode.decal,
       );
 
+    // This will group next drawing operations, and on restore will flatten group into layer
+    // and apply the provided paint colorfilter and blendmodes.
     canvas.saveLayer(Rect.fromLTWH(0, 0, size.width, size.height), blurLayerPaint);
 
     canvas.drawCircle(_pointer, 70, blackCirclesPainter);
