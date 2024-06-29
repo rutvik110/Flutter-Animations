@@ -14,8 +14,7 @@ class LogInScreen extends StatefulWidget {
   State<LogInScreen> createState() => _LogInScreenState();
 }
 
-class _LogInScreenState extends State<LogInScreen>
-    with SingleTickerProviderStateMixin {
+class _LogInScreenState extends State<LogInScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> blueBoxHeightAnimation;
   late Animation<double> whiteBoxHeightAnimation;
@@ -28,8 +27,7 @@ class _LogInScreenState extends State<LogInScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 4));
+    _animationController = AnimationController(vsync: this, duration: const Duration(seconds: 4));
 
     blueBoxHeightAnimation = TweenSequence<double>(
       [
@@ -121,8 +119,7 @@ class WhiteBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height:
-          MediaQuery.of(context).size.height * whiteBoxHeightAnimation.value,
+      height: MediaQuery.of(context).size.height * whiteBoxHeightAnimation.value,
       child: SlideFadeWidget(
         commonFadeSlideAnimation: commonFadeSlideAnimation,
         child: const LogInForm(),
@@ -146,10 +143,8 @@ class LogInForm extends StatelessWidget {
           const TextField(
             decoration: InputDecoration(
                 labelText: "Email",
-                labelStyle:
-                    TextStyle(fontWeight: FontWeight.w500, color: kDarkGrey),
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: kOffGrey))),
+                labelStyle: TextStyle(fontWeight: FontWeight.w500, color: kDarkGrey),
+                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: kOffGrey))),
           ),
           const SizedBox(
             height: 25,
@@ -157,10 +152,8 @@ class LogInForm extends StatelessWidget {
           const TextField(
             decoration: InputDecoration(
                 labelText: "Password",
-                labelStyle:
-                    TextStyle(fontWeight: FontWeight.w500, color: kDarkGrey),
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: kOffGrey))),
+                labelStyle: TextStyle(fontWeight: FontWeight.w500, color: kDarkGrey),
+                enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: kOffGrey))),
           ),
           const SizedBox(
             height: 20,
@@ -232,7 +225,7 @@ class BlueBox extends StatelessWidget {
                 children: [
                   Text("LOG IN",
                       textAlign: TextAlign.end,
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             fontWeight: FontWeight.bold,
                             color: true ? Colors.white : Colors.white60,
                             fontSize: true ? 27 : 15,
@@ -240,7 +233,7 @@ class BlueBox extends StatelessWidget {
                   Text(
                     "SIGN UP",
                     textAlign: TextAlign.end,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.bold,
                           color: false ? Colors.white : Colors.white60,
                           fontSize: false ? 27 : 15,
@@ -292,10 +285,7 @@ class SlideFadeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: Offset(
-          MediaQuery.of(context).size.width *
-              (1 - commonFadeSlideAnimation.value),
-          0),
+      offset: Offset(MediaQuery.of(context).size.width * (1 - commonFadeSlideAnimation.value), 0),
       child: Opacity(
         opacity: commonFadeSlideAnimation.value,
         child: child,

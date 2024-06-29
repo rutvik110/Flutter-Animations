@@ -10,8 +10,7 @@ class SignUpImplicitAnimation extends StatefulWidget {
   const SignUpImplicitAnimation({Key? key}) : super(key: key);
 
   @override
-  State<SignUpImplicitAnimation> createState() =>
-      _SignUpImplicitAnimationState();
+  State<SignUpImplicitAnimation> createState() => _SignUpImplicitAnimationState();
 }
 
 class _SignUpImplicitAnimationState extends State<SignUpImplicitAnimation> {
@@ -51,15 +50,11 @@ class _SignUpImplicitAnimationState extends State<SignUpImplicitAnimation> {
       // },
       transitionBuilder: (child, animation) {
         return SlideTransition(
-          position: Tween<Offset>(
-                  begin: const Offset(0, -0.05), end: const Offset(0, 0))
-              .animate(animation),
+          position: Tween<Offset>(begin: const Offset(0, -0.05), end: const Offset(0, 0)).animate(animation),
           child: FadeTransition(opacity: animation, child: child),
         );
       },
-      child: isRegistering
-          ? Register(changePage: changePage)
-          : LogIn(changePage: changePage),
+      child: isRegistering ? Register(changePage: changePage) : LogIn(changePage: changePage),
     ));
   }
 }
@@ -80,7 +75,7 @@ class LogIn extends StatelessWidget {
             alignment: Alignment.topLeft,
             child: Text(
               'Login',
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
           const SizedBox(
@@ -143,7 +138,7 @@ class Register extends StatelessWidget {
             alignment: Alignment.topLeft,
             child: Text(
               'Register',
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
           const SizedBox(
