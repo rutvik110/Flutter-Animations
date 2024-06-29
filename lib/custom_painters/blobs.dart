@@ -72,6 +72,22 @@ class _BlobsPainter extends CustomPainter {
         ..style = PaintingStyle.fill
         ..blendMode = BlendMode.colorBurn,
     );
+
+    canvas.drawRect(
+      Rect.fromCenter(center: Offset(size.width / 2, size.height / 2), width: size.width, height: size.height),
+      Paint()
+        ..style = PaintingStyle.fill
+        ..shader = const RadialGradient(
+          colors: [Colors.yellow, Colors.pink],
+        ).createShader(
+          Rect.fromCenter(
+            center: Offset(size.width / 2, size.height / 2),
+            width: size.width,
+            height: size.height,
+          ),
+        )
+        ..blendMode = BlendMode.screen,
+    );
   }
 
   @override
