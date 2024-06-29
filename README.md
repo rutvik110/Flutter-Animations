@@ -67,3 +67,10 @@ https://user-images.githubusercontent.com/65209850/216130784-843b0ba8-341b-49c3-
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/twitter_profile_scroll"><img src="https://media.giphy.com/media/EP4iS4RT411qqoIAY1/giphy.gif" width="49%"></a>
 
 
+<a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/custom_painters/blobs.dart">
+ Blobs
+</a>
+
+https://github.com/rutvik110/Flutter-Animations/assets/65209850/0878780a-3a62-4ac4-8dde-f95cc63b76f1
+
+
