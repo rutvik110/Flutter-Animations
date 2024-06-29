@@ -50,7 +50,7 @@ class Particle {
     // imageMode(CENTER);
     // tint(255, lifespan);
     final alpha = (((lifespan) / 100) * 255).toInt();
-    // sketch.tint();
+    // sketch.tint(   Color.fromARGB(alpha, 255, 255, 255));
 
     sketch.image(
       image: img,

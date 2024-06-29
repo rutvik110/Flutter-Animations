@@ -42,153 +42,240 @@ class _MyShaderState extends State<StripesShaderView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: ListView(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: StripesShaderBuilder(
-                    direction: 1.0,
-                    child: Container(
-                      height: 300,
-                      color: Colors.white,
-                    ),
-                    updateShaderInputs: (shader, size, delta) {
-                      return StripesShaderArguments(
-                        size: size,
-                        delta: delta,
-                        tiles: 4.0,
-                        speed: delta / 10,
-                        direction: -.8, // -1 to 1
-                        warpScale: 0.5,
-                        warpTiling: 0.8,
-                        color1: Colors.red.toColorVector(),
-                        color2: Colors.blue.toColorVector(),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              StripesShaderBuilder(
+                direction: 1.0,
+                builder: (shader, delta) {
+                  return ShaderMask(
+                    shaderCallback: (bounds) {
+                      shader = shader.shader(
+                        floatUniforms: StripesShaderArguments(
+                          size: bounds.size,
+                          delta: delta,
+                          tiles: 4.0,
+                          speed: delta / 10,
+                          direction: -.8, // -1 to 1
+                          warpScale: 0.5,
+                          warpTiling: 0.3,
+                          color1: Colors.red.toColorVector(),
+                          color2: Colors.blue.toColorVector(),
+                        ).uniforms,
+                        samplerUniforms: [],
                       );
+                      return shader;
                     },
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(
-                  child: StripesShaderBuilder(
-                    direction: 1.0,
-                    child: Container(
-                      height: 300,
-                      decoration: const BoxDecoration(
+                    child: const Text(
+                      "Stylized Text",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
                         color: Colors.white,
-                        shape: BoxShape.circle,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 60,
                       ),
                     ),
-                    updateShaderInputs: (shader, size, delta) {
-                      return StripesShaderArguments(
-                        size: size,
-                        delta: delta,
-                        tiles: 6.0,
-                        speed: delta / 10,
-                        direction: .5, // -1 to 1
-                        warpScale: 0.5,
-                        warpTiling: 0.8,
-                        color1: Colors.red.toColorVector(),
-                        color2: Colors.blue.toColorVector(),
-                      );
-                    },
+                  );
+                },
+              ),
+              ElevatedButton(
+                style: TextButton.styleFrom(
+                  side: const BorderSide(
+                    color: Colors.black,
+                    width: 2,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 50,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: const StripesShaderBuilder(
+                  backgroundBuilder: (context, setState, child) {
+                    return StripesShaderBuilder(
                       direction: 1.0,
-                      child: ColoredBox(
-                        color: Colors.white,
-                      ),
-                    ),
+                      builder: (shader, delta) {
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Positioned.fill(
+                              child: StripesShaderBuilder(
+                                direction: 1.0,
+                                child: Container(
+                                  color: Colors.white,
+                                ),
+                                updateShaderInputs: (shader, size, delta) {
+                                  return StripesShaderArguments(
+                                    size: size,
+                                    delta: delta,
+                                    tiles: 3.0,
+                                    speed: delta / 10,
+                                    direction: 0.5, // -1 to 1
+                                    warpScale: 0.1,
+                                    warpTiling: 0.5,
+                                    color1: Colors.red.toColorVector(),
+                                    color2: Colors.blue.toColorVector(),
+                                  );
+                                },
+                              ),
+                            ),
+                            child!,
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+                onPressed: () {},
+                child: const Text(
+                  "Stylized Button Backgrounds",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
                   ),
                 ),
-              ],
-            ),
-            StripesShaderBuilder(
-              direction: 1.0,
-              builder: (shader, delta) {
-                return ShaderMask(
-                  shaderCallback: (bounds) {
-                    shader = shader.shader(
-                      floatUniforms: StripesShaderArguments(
-                        size: bounds.size,
-                        delta: delta,
-                        tiles: 4.0,
-                        speed: delta / 10,
-                        direction: -.8, // -1 to 1
-                        warpScale: 0.5,
-                        warpTiling: 0.3,
-                        color1: Colors.red.toColorVector(),
-                        color2: Colors.blue.toColorVector(),
-                      ).uniforms,
-                      samplerUniforms: [],
-                    );
-                    return shader;
-                  },
-                  child: const Text(
-                    "Shaders",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 60,
-                    ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            StripesShaderBuilder(
-              direction: 1.0,
-              builder: (shader, delta) {
-                const size = Size(
-                  250,
-                  250,
-                );
-                shader = shader.shader(
-                    floatUniforms: StripesShaderArguments(
-                  size: size,
-                  delta: delta,
-                  tiles: 5.0,
-                  speed: delta / 20,
-                  direction: 0.7, // -1 to 1
-                  warpScale: 0.5,
-                  warpTiling: 0.5, color1: Colors.red.toColorVector(),
-                  color2: Colors.blue.toColorVector(),
-                ).uniforms);
-                return CustomPaint(
-                  painter: MyPainter(
-                    shader,
-                  ),
-                  size: size,
-                );
-              },
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-          ],
+              ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: StripesShaderBuilder(
+              //         direction: 1.0,
+              //         child: Container(
+              //           height: 300,
+              //           color: Colors.white,
+              //         ),
+              //         updateShaderInputs: (shader, size, delta) {
+              //           return StripesShaderArguments(
+              //             size: size,
+              //             delta: delta,
+              //             tiles: 4.0,
+              //             speed: delta / 10,
+              //             direction: -.8, // -1 to 1
+              //             warpScale: 0.5,
+              //             warpTiling: 0.8,
+              //             color1: Colors.red.toColorVector(),
+              //             color2: Colors.blue.toColorVector(),
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //     const SizedBox(
+              //       width: 20,
+              //     ),
+              //     Expanded(
+              //       child: StripesShaderBuilder(
+              //         direction: 1.0,
+              //         child: Container(
+              //           height: 300,
+              //           decoration: const BoxDecoration(
+              //             color: Colors.white,
+              //             shape: BoxShape.circle,
+              //           ),
+              //         ),
+              //         updateShaderInputs: (shader, size, delta) {
+              //           return StripesShaderArguments(
+              //             size: size,
+              //             delta: delta,
+              //             tiles: 6.0,
+              //             speed: delta / 10,
+              //             direction: .5, // -1 to 1
+              //             warpScale: 0.5,
+              //             warpTiling: 0.8,
+              //             color1: Colors.red.toColorVector(),
+              //             color2: Colors.blue.toColorVector(),
+              //           );
+              //         },
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: Container(
+              //         height: 50,
+              //         clipBehavior: Clip.hardEdge,
+              //         decoration: BoxDecoration(
+              //           color: Colors.white,
+              //           borderRadius: BorderRadius.circular(100),
+              //         ),
+              //         child: const StripesShaderBuilder(
+              //           direction: 1.0,
+              //           child: ColoredBox(
+              //             color: Colors.white,
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // StripesShaderBuilder(
+              //   direction: 1.0,
+              //   builder: (shader, delta) {
+              //     return ShaderMask(
+              //       shaderCallback: (bounds) {
+              //         shader = shader.shader(
+              //           floatUniforms: StripesShaderArguments(
+              //             size: bounds.size,
+              //             delta: delta,
+              //             tiles: 4.0,
+              //             speed: delta / 10,
+              //             direction: -.8, // -1 to 1
+              //             warpScale: 0.5,
+              //             warpTiling: 0.3,
+              //             color1: Colors.red.toColorVector(),
+              //             color2: Colors.blue.toColorVector(),
+              //           ).uniforms,
+              //           samplerUniforms: [],
+              //         );
+              //         return shader;
+              //       },
+              //       child: const Text(
+              //         "Shaders",
+              //         style: TextStyle(
+              //           color: Colors.white,
+              //           fontWeight: FontWeight.bold,
+              //           fontSize: 60,
+              //         ),
+              //       ),
+              //     );
+              //   },
+              // ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // StripesShaderBuilder(
+              //   direction: 1.0,
+              //   builder: (shader, delta) {
+              //     const size = Size(
+              //       250,
+              //       250,
+              //     );
+              //     shader = shader.shader(
+              //         floatUniforms: StripesShaderArguments(
+              //       size: size,
+              //       delta: delta,
+              //       tiles: 5.0,
+              //       speed: delta / 20,
+              //       direction: 0.7, // -1 to 1
+              //       warpScale: 0.5,
+              //       warpTiling: 0.5, color1: Colors.red.toColorVector(),
+              //       color2: Colors.blue.toColorVector(),
+              //     ).uniforms);
+              //     return CustomPaint(
+              //       painter: MyPainter(
+              //         shader,
+              //       ),
+              //       size: size,
+              //     );
+              //   },
+              // ),
+              const SizedBox(
+                height: 50,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -219,8 +306,7 @@ class MyPainter extends CustomPainter {
       double pointAngleValue = angle * i;
 
       //calculate the x and y coordinates of the point
-      final offset =
-          calculatePointOffset(angle: pointAngleValue, radius: heartRadius);
+      final offset = calculatePointOffset(angle: pointAngleValue, radius: heartRadius);
       path.lineTo(offset.dx, offset.dy);
     }
 
@@ -237,11 +323,7 @@ class MyPainter extends CustomPainter {
   Offset calculatePointOffset({required double angle, required double radius}) {
     return Offset(
       16 * pow(sin(angle), 3) * radius,
-      -radius *
-          (13 * cos(angle) -
-              5 * cos(angle * 2) -
-              2 * cos(angle * 3) -
-              cos(angle * 4)),
+      -radius * (13 * cos(angle) - 5 * cos(angle * 2) - 2 * cos(angle * 3) - cos(angle * 4)),
     );
   }
 
