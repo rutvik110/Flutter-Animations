@@ -21,7 +21,7 @@ class _BlobsViewState extends State<BlobsView> {
         },
         child: Center(
           child: CustomPaint(
-            painter: BlobsPainter(),
+            painter: _BlobsPainter(),
             size: MediaQuery.of(context).size,
           ),
         ),
@@ -32,7 +32,7 @@ class _BlobsViewState extends State<BlobsView> {
 
 Offset _pointer = const Offset(0, 0);
 
-class BlobsPainter extends CustomPainter {
+class _BlobsPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final blackCirclesPainter = Paint()
