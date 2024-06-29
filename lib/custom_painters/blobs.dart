@@ -48,7 +48,7 @@ class _BlobsPainter extends CustomPainter {
         tileMode: TileMode.decal,
       );
 
-    // This will group next drawing operations, and on restore will flatten group into layer
+    // This will group next drawing operations, and on restore will flatten the group into layer
     // and apply the provided paint colorfilter and blendmodes.
     canvas.saveLayer(Rect.fromLTWH(0, 0, size.width, size.height), blurLayerPaint);
 
