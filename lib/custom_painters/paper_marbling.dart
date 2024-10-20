@@ -16,6 +16,28 @@ class _PaperMarblingViewState extends State<PaperMarblingView>
     with SingleTickerProviderStateMixin {
   List<Drop> drops = [];
 
+  late final Ticker ticker;
+
+  @override
+  void initState() {
+    super.initState();
+
+    ticker = createTicker((elapsed) {
+      final position = Vector2(
+        math.Random().nextDouble() * 400,
+        math.Random().nextDouble() * 400,
+      );
+      final radius = math.max<double>(math.Random().nextDouble() * 100, 10);
+    });
+
+    for (var i = 0; i < 10; i++) {
+      addInk(Vector2(300, 300), 50);
+    }
+
+    tineLine(300, 20, 10);
+    // ticker.start();
+  }
+
   void addInk(Vector2 position, double radius) {
     final drop = Drop(
       position: Vector2(position.x, position.y),
@@ -34,22 +56,11 @@ class _PaperMarblingViewState extends State<PaperMarblingView>
     print("Drop added");
   }
 
-  late final Ticker ticker;
-
-  @override
-  void initState() {
-    super.initState();
-
-    ticker = createTicker((elapsed) {
-      final position = Vector2(
-        math.Random().nextDouble() * 400,
-        math.Random().nextDouble() * 400,
-      );
-      final radius = math.max<double>(math.Random().nextDouble() * 100, 10);
-
-      addInk(position, radius);
-    });
-    ticker.start();
+  void tineLine(double xl, double z, double c) {
+    for (var i = 0; i < drops.length; i++) {
+      final drop = drops[i];
+      drop.tine(xl, z, c);
+    }
   }
 
   @override
@@ -73,7 +84,7 @@ class _PaperMarblingViewState extends State<PaperMarblingView>
           print("Drop added");
         },
         child: CustomPaint(
-          size: const Size(400, 400),
+          size: const Size(600, 600),
           painter: PaperMarblingPainter(
             drops: drops,
           ),
@@ -167,6 +178,16 @@ class Drop {
       p.add(c);
 
       _vertices[i] = p;
+    }
+  }
+
+  void tine(double xl, double z, double c) {
+    final u = 1 / (math.pow(2, 1 / c));
+    for (var i = 0; i < _vertices.length; i++) {
+      final v = _vertices[i];
+
+      v.x = v.x;
+      v.y = v.y + z * math.pow(u, (v.x - xl).abs());
     }
   }
 }
