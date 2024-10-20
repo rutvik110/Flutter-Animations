@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:vector_math/vector_math.dart' hide Colors;
 import 'dart:math' as math;
 
@@ -11,8 +12,45 @@ class PaperMarblingView extends StatefulWidget {
   State<PaperMarblingView> createState() => _PaperMarblingViewState();
 }
 
-class _PaperMarblingViewState extends State<PaperMarblingView> {
+class _PaperMarblingViewState extends State<PaperMarblingView>
+    with SingleTickerProviderStateMixin {
   List<Drop> drops = [];
+
+  void addInk(Vector2 position, double radius) {
+    final drop = Drop(
+      position: Vector2(position.x, position.y),
+      radius: radius,
+    );
+
+    // transform other drops
+    for (var other in drops) {
+      other.marble(drop);
+    }
+
+    drops.add(drop);
+
+    setState(() {});
+
+    print("Drop added");
+  }
+
+  late final Ticker ticker;
+
+  @override
+  void initState() {
+    super.initState();
+
+    ticker = createTicker((elapsed) {
+      final position = Vector2(
+        math.Random().nextDouble() * 400,
+        math.Random().nextDouble() * 400,
+      );
+      final radius = math.max<double>(math.Random().nextDouble() * 100, 10);
+
+      addInk(position, radius);
+    });
+    ticker.start();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +73,7 @@ class _PaperMarblingViewState extends State<PaperMarblingView> {
           print("Drop added");
         },
         child: CustomPaint(
-          size: Size.infinite,
+          size: const Size(400, 400),
           painter: PaperMarblingPainter(
             drops: drops,
           ),
