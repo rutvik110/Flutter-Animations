@@ -23,19 +23,25 @@ class _PaperMarblingViewState extends State<PaperMarblingView>
     super.initState();
 
     ticker = createTicker((elapsed) {
-      final position = Vector2(
-        math.Random().nextDouble() * 400,
-        math.Random().nextDouble() * 400,
-      );
-      final radius = math.max<double>(math.Random().nextDouble() * 100, 10);
+      // final position = Vector2(
+      //   math.Random().nextDouble() * 400,
+      //   math.Random().nextDouble() * 400,
+      // );
+      // final radius = math.max<double>(math.Random().nextDouble() * 100, 10);
+
+      if (isMousePressed) {
+        setState(() {
+          tineLine(mousePosition.dx, 1, 10);
+        });
+      }
     });
 
     for (var i = 0; i < 10; i++) {
       addInk(Vector2(300, 300), 50);
     }
 
-    tineLine(300, 20, 10);
-    // ticker.start();
+    // tineLine(300, 20, 10);
+    ticker.start();
   }
 
   void addInk(Vector2 position, double radius) {
@@ -63,25 +69,37 @@ class _PaperMarblingViewState extends State<PaperMarblingView>
     }
   }
 
+  bool isMousePressed = false;
+  Offset mousePosition = Offset.zero;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
         onTapDown: (event) {
+          isMousePressed = true;
+
           final position = event.globalPosition;
-          final drop =
-              Drop(position: Vector2(position.dx, position.dy), radius: 30);
+          mousePosition = position;
 
-          // transform other drops
-          for (var other in drops) {
-            other.marble(drop);
-          }
+          // final drop =
+          //     Drop(position: Vector2(position.dx, position.dy), radius: 30);
 
-          drops.add(drop);
+          // // transform other drops
+          // for (var other in drops) {
+          //   other.marble(drop);
+          // }
+
+          // drops.add(drop);
 
           setState(() {});
 
-          print("Drop added");
+          // print("Drop added");
+        },
+        onTapUp: (event) {
+          isMousePressed = false;
+
+          setState(() {});
         },
         child: CustomPaint(
           size: const Size(600, 600),
