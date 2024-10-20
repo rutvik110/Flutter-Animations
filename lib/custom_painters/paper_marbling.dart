@@ -94,6 +94,9 @@ class Drop {
     ..style = PaintingStyle.fill;
 
   void show(Canvas canvas) {
+    paint.color = Color.fromRGBO(math.Random().nextInt(255),
+        math.Random().nextInt(255), math.Random().nextInt(255), 1);
+
     final path = Path();
 
     for (var i = 0; i < _vertices.length; i++) {
