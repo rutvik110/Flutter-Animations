@@ -297,10 +297,10 @@ packages:
     dependency: "direct main"
     description:
       name: particle_field
-      sha256: "33ef365ffa50c5f7e550ebbddb961d74fe27124fc4b81b5d6c4c281b49f3daba"
+      sha256: "9a5ebdde32751f82aba64198e9bbd46738e789e275bf9e7a88318ed460be560e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1+1"
+    version: "1.0.0"
   path:
     dependency: transitive
     description:
