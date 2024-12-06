@@ -23,11 +23,12 @@ class _PaperMarblingViewState extends State<PaperMarblingView>
     super.initState();
 
     ticker = createTicker((elapsed) {
-      // final position = Vector2(
-      //   math.Random().nextDouble() * 400,
-      //   math.Random().nextDouble() * 400,
-      // );
-      // final radius = math.max<double>(math.Random().nextDouble() * 100, 10);
+      final position = Vector2(
+        math.Random().nextDouble() * 400,
+        math.Random().nextDouble() * 400,
+      );
+      final radius = math.max<double>(math.Random().nextDouble() * 100, 10);
+      addInk(position, radius);
 
       if (isMousePressed) {
         setState(() {
@@ -36,9 +37,9 @@ class _PaperMarblingViewState extends State<PaperMarblingView>
       }
     });
 
-    for (var i = 0; i < 10; i++) {
-      addInk(Vector2(300, 300), 50);
-    }
+    // for (var i = 0; i < 10; i++) {
+    //   addInk(Vector2(300, 300), 50);
+    // }
 
     // tineLine(300, 20, 10);
     ticker.start();
