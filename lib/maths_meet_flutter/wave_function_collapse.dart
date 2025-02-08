@@ -51,6 +51,13 @@ class WaveFunctionCollapsePainter extends CustomPainter {
       );
     }
 
+    grid[0] = Cell(
+      isCollapsed: true,
+      options: [
+        Direction.UP,
+      ],
+    );
+
     drawImage(canvas, cellWidth, cellHeight);
   }
 
@@ -58,6 +65,7 @@ class WaveFunctionCollapsePainter extends CustomPainter {
     for (var j = 0; j < DIM; j++) {
       for (var i = 0; i < DIM; i++) {
         final cell = grid[i + j * DIM];
+        final index = cell.options[0].tileIndex;
 
         if (cell.isCollapsed) {
           canvas.drawRect(
@@ -68,9 +76,8 @@ class WaveFunctionCollapsePainter extends CustomPainter {
               ..style = PaintingStyle.stroke,
           );
           canvas.drawImageRect(
-            tilesImages[cell.options[1].tileIndex],
-            Rect.fromLTWH(0, 0, tilesImages[cell.options[1].tileIndex].width.toDouble(),
-                tilesImages[cell.options[1].tileIndex].height.toDouble()),
+            tilesImages[index],
+            Rect.fromLTWH(0, 0, tilesImages[index].width.toDouble(), tilesImages[index].height.toDouble()),
             Rect.fromLTWH(i * cellWidth, j * cellHeight, cellWidth, cellHeight),
             Paint(),
           );
@@ -91,8 +98,8 @@ class WaveFunctionCollapsePainter extends CustomPainter {
 }
 
 class Cell {
-  final bool isCollapsed;
-  final List<Direction> options;
+  bool isCollapsed;
+  List<Direction> options;
 
   Cell({
     required this.isCollapsed,
