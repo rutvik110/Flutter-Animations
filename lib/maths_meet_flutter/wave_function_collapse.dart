@@ -18,7 +18,7 @@ class _WaveFunctionCollapseViewState extends State<WaveFunctionCollapseView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomPaint(
-        size: const Size(double.infinity, double.infinity),
+        size: const Size(300, 300),
         painter: WaveFunctionCollapsePainter(),
       ),
     );
@@ -57,10 +57,29 @@ class WaveFunctionCollapsePainter extends CustomPainter {
   Future<void> drawImage(Canvas canvas, double cellWidth, double cellHeight) async {
     for (var j = 0; j < DIM; j++) {
       for (var i = 0; i < DIM; i++) {
-        final index = grid[i + j * DIM];
+        final cell = grid[i + j * DIM];
 
-        canvas.drawImage(tilesImages[index.options[0].tileIndex], Offset(i * cellWidth, j * cellHeight),
-            Paint()..color = Colors.red);
+        if (cell.isCollapsed) {
+          canvas.drawRect(
+            Rect.fromLTWH(i * cellWidth, j * cellHeight, cellWidth, cellHeight),
+            Paint()
+              ..color = Colors.white
+              ..strokeWidth = 2
+              ..style = PaintingStyle.stroke,
+          );
+          canvas.drawImageRect(
+            tilesImages[cell.options[1].tileIndex],
+            Rect.fromLTWH(0, 0, tilesImages[cell.options[1].tileIndex].width.toDouble(),
+                tilesImages[cell.options[1].tileIndex].height.toDouble()),
+            Rect.fromLTWH(i * cellWidth, j * cellHeight, cellWidth, cellHeight),
+            Paint(),
+          );
+        } else {
+          canvas.drawRect(
+            Rect.fromLTWH(i * cellWidth, j * cellHeight, cellWidth, cellHeight),
+            Paint()..color = Colors.blue,
+          );
+        }
       }
     }
   }
