@@ -75,6 +75,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/pokemons/
+    - assets/images/wfc_tiles/
   generate: true
   shaders:
     - shaders/hello_world.glsl
