@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import '../main.dart';
 
 List<Cell> grid = [];
-const int DIM = 7;
+const int DIM = 10;
 
 class WaveFunctionCollapseView extends StatefulWidget {
   const WaveFunctionCollapseView({super.key});
