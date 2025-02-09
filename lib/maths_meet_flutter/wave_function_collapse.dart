@@ -71,7 +71,9 @@ class WaveFunctionCollapsePainter extends CustomPainter {
 
     // draw image, reduce the entropy of cells
     List<Cell> gridCopy = List<Cell>.from(grid);
-    gridCopy.remove((element) => element.isCollapsed);
+    gridCopy.removeWhere((Cell element) => element.isCollapsed);
+
+    print("GridLength:${gridCopy.length}");
 
     // sort based on options left
     gridCopy.sort((a, b) => a.options.length.compareTo(b.options.length));
@@ -157,41 +159,53 @@ class WaveFunctionCollapsePainter extends CustomPainter {
           // look up
           if (j > 0) {
             final upCell = grid[i + (j - 1) * DIM];
+            List<Direction> validOptions = [];
 
             for (var option in upCell.options) {
               final valid = rules[option]![2];
-              options = checkValid(options, valid);
+              validOptions.addAll(valid);
             }
+
+            options = checkValid(options, validOptions);
           }
 
           // look right
           if (i < DIM - 1) {
             final rightCell = grid[i + 1 + (j * DIM)];
+            List<Direction> validOptions = [];
 
             for (var option in rightCell.options) {
               final valid = rules[option]![3]; // if looking right, i wanna know what's valid to left of the cell
-              options = checkValid(options, valid);
+              validOptions.addAll(valid);
             }
+
+            options = checkValid(options, validOptions);
           }
 
           // look down
           if (j < DIM - 1) {
             final downCell = grid[i + (j + 1) * DIM];
+            List<Direction> validOptions = [];
 
             for (var option in downCell.options) {
               final valid = rules[option]![0]; // if looking down, i wanna know what's valid to up of the cell
-              options = checkValid(options, valid);
+              validOptions.addAll(valid);
             }
+
+            options = checkValid(options, validOptions);
           }
 
           // look left
           if (i > 0) {
             final leftCell = grid[i - 1 + (j * DIM)];
+            List<Direction> validOptions = [];
 
             for (var option in leftCell.options) {
               final valid = rules[option]![1]; // if looking left, i wanna know what's valid to right of the cell
-              options = checkValid(options, valid);
+              validOptions.addAll(valid);
             }
+
+            options = checkValid(options, validOptions);
           }
 
           print("1");
@@ -212,13 +226,7 @@ class WaveFunctionCollapsePainter extends CustomPainter {
   }
 
   List<Direction> checkValid(List<Direction> options, List<Direction> valid) {
-    final List<Direction> validOptions = [
-      Direction.BLANK,
-      Direction.UP,
-      Direction.RIGHT,
-      Direction.DOWN,
-      Direction.LEFT,
-    ];
+    final List<Direction> validOptions = List.from(options);
 
     for (var option in options) {
       if (!valid.contains(option)) {
