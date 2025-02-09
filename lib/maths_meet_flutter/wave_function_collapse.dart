@@ -57,25 +57,6 @@ class WaveFunctionCollapsePainter extends CustomPainter {
       }
     }
 
-    grid[2] = Cell(
-      x: grid[2].x,
-      y: grid[2].y,
-      isCollapsed: false,
-      options: [
-        Direction.UP,
-        Direction.DOWN,
-      ],
-    );
-    grid[0] = Cell(
-      x: grid[0].x,
-      y: grid[0].y,
-      isCollapsed: false,
-      options: [
-        Direction.RIGHT,
-        Direction.LEFT,
-      ],
-    );
-
     // draw image, reduce the entropy of cells
     List<Cell> gridCopy = List<Cell>.from(grid);
     // sort based on options left
@@ -93,7 +74,9 @@ class WaveFunctionCollapsePainter extends CustomPainter {
       }
     }
 
-    gridCopy = gridCopy.sublist(0, stopIndex);
+    if (stopIndex > 0) {
+      gridCopy = gridCopy.sublist(0, stopIndex);
+    }
 
     final Cell randomCell = gridCopy[Random().nextInt(gridCopy.length)];
     randomCell.isCollapsed = true;
