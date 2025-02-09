@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
@@ -36,32 +38,75 @@ class WaveFunctionCollapsePainter extends CustomPainter {
     final cellWidth = width / DIM;
     final cellHeight = height / DIM;
 
-    for (var i = 0; i < DIM * DIM; i++) {
-      grid.add(
-        Cell(
-          isCollapsed: false,
-          options: [
-            Direction.BLANK,
-            Direction.UP,
-            Direction.RIGHT,
-            Direction.DOWN,
-            Direction.LEFT,
-          ],
-        ),
-      );
+    for (var j = 0; j < DIM; j++) {
+      for (var i = 0; i < DIM; i++) {
+        grid.add(
+          Cell(
+            x: i,
+            y: j,
+            isCollapsed: false,
+            options: [
+              Direction.BLANK,
+              Direction.UP,
+              Direction.RIGHT,
+              Direction.DOWN,
+              Direction.LEFT,
+            ],
+          ),
+        );
+      }
     }
 
-    grid[0] = Cell(
-      isCollapsed: true,
+    grid[2] = Cell(
+      x: grid[2].x,
+      y: grid[2].y,
+      isCollapsed: false,
       options: [
         Direction.UP,
+        Direction.DOWN,
+      ],
+    );
+    grid[0] = Cell(
+      x: grid[0].x,
+      y: grid[0].y,
+      isCollapsed: false,
+      options: [
+        Direction.RIGHT,
+        Direction.LEFT,
       ],
     );
 
-    drawImage(canvas, cellWidth, cellHeight);
-  }
+    // draw image, reduce the entropy of cells
+    List<Cell> gridCopy = List<Cell>.from(grid);
+    // sort based on options left
+    gridCopy.sort((a, b) => a.options.length.compareTo(b.options.length));
 
-  Future<void> drawImage(Canvas canvas, double cellWidth, double cellHeight) async {
+    // filter the items with least entropy
+    final int leastCellEntropy = gridCopy[0].options.length;
+
+    int stopIndex = 0;
+
+    for (var i = 0; i < gridCopy.length; i++) {
+      if (gridCopy[i].options.length > leastCellEntropy) {
+        stopIndex = i;
+        break;
+      }
+    }
+
+    gridCopy = gridCopy.sublist(0, stopIndex);
+
+    final Cell randomCell = gridCopy[Random().nextInt(gridCopy.length)];
+    randomCell.isCollapsed = true;
+    randomCell.options = [randomCell.options[Random().nextInt(randomCell.options.length)]];
+
+    // update the original grid
+    final randomCellIndex = grid.indexOf(randomCell);
+
+    grid[randomCellIndex] = randomCell;
+
+    print(grid);
+    print(gridCopy);
+
     for (var j = 0; j < DIM; j++) {
       for (var i = 0; i < DIM; i++) {
         final cell = grid[i + j * DIM];
@@ -100,10 +145,14 @@ class WaveFunctionCollapsePainter extends CustomPainter {
 class Cell {
   bool isCollapsed;
   List<Direction> options;
+  final int x;
+  final int y;
 
   Cell({
     required this.isCollapsed,
     required this.options,
+    required this.x,
+    required this.y,
   });
 }
 
