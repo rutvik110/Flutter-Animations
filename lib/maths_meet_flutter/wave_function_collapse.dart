@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
@@ -9,7 +10,7 @@ import 'package:flutter/services.dart';
 import '../main.dart';
 
 List<Cell> grid = [];
-const int DIM = 2;
+const int DIM = 7;
 
 class WaveFunctionCollapseView extends StatefulWidget {
   const WaveFunctionCollapseView({super.key});
@@ -18,7 +19,9 @@ class WaveFunctionCollapseView extends StatefulWidget {
   State<WaveFunctionCollapseView> createState() => _WaveFunctionCollapseViewState();
 }
 
-class _WaveFunctionCollapseViewState extends State<WaveFunctionCollapseView> {
+class _WaveFunctionCollapseViewState extends State<WaveFunctionCollapseView> with SingleTickerProviderStateMixin {
+  late final Ticker ticker;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +44,11 @@ class _WaveFunctionCollapseViewState extends State<WaveFunctionCollapseView> {
         );
       }
     }
+
+    ticker = createTicker((elapsed) {
+      setState(() {});
+    })
+      ..start();
   }
 
   @override
@@ -98,45 +106,49 @@ class WaveFunctionCollapsePainter extends CustomPainter {
     final cellWidth = width / DIM;
     final cellHeight = height / DIM;
 
-    // draw image, reduce the entropy of cells
-    List<Cell> gridCopy = List<Cell>.from(grid);
-    gridCopy.removeWhere((Cell element) => element.isCollapsed);
+    final isEntireGridnotCollapsed = grid.any((element) => !element.isCollapsed);
 
-    print("GridLength:${gridCopy.length}");
+    if (isEntireGridnotCollapsed) {
+      // draw image, reduce the entropy of cells
+      List<Cell> gridCopy = List<Cell>.from(grid);
+      gridCopy.removeWhere((Cell element) => element.isCollapsed);
 
-    if (gridCopy.isEmpty) {
-      gridCopy = grid;
-    }
+      print("GridLength:${gridCopy.length}");
 
-    // sort based on options left
-    gridCopy.sort((a, b) => a.options.length.compareTo(b.options.length));
-
-    // filter the items with least entropy
-    final int leastCellEntropy = gridCopy[0].options.length;
-
-    int stopIndex = 0;
-
-    for (var i = 0; i < gridCopy.length; i++) {
-      if (gridCopy[i].options.length > leastCellEntropy) {
-        stopIndex = i;
-        break;
+      if (gridCopy.isEmpty) {
+        gridCopy = grid;
       }
+
+      // sort based on options left
+      gridCopy.sort((a, b) => a.options.length.compareTo(b.options.length));
+
+      // filter the items with least entropy
+      final int leastCellEntropy = gridCopy[0].options.length;
+
+      int stopIndex = 0;
+
+      for (var i = 0; i < gridCopy.length; i++) {
+        if (gridCopy[i].options.length > leastCellEntropy) {
+          stopIndex = i;
+          break;
+        }
+      }
+
+      if (stopIndex > 0) {
+        gridCopy = gridCopy.sublist(0, stopIndex);
+      }
+
+      final Cell randomCell = gridCopy[Random().nextInt(gridCopy.length)];
+      randomCell.isCollapsed = true;
+      if (randomCell.options.isNotEmpty) {
+        randomCell.options = [randomCell.options[Random().nextInt(randomCell.options.length)]];
+      }
+
+      // update the original grid
+      final randomCellIndex = grid.indexOf(randomCell);
+
+      grid[randomCellIndex] = randomCell;
     }
-
-    if (stopIndex > 0) {
-      gridCopy = gridCopy.sublist(0, stopIndex);
-    }
-
-    final Cell randomCell = gridCopy[Random().nextInt(gridCopy.length)];
-    randomCell.isCollapsed = true;
-    if (randomCell.options.isNotEmpty) {
-      randomCell.options = [randomCell.options[Random().nextInt(randomCell.options.length)]];
-    }
-
-    // update the original grid
-    final randomCellIndex = grid.indexOf(randomCell);
-
-    grid[randomCellIndex] = randomCell;
 
     for (var j = 0; j < DIM; j++) {
       for (var i = 0; i < DIM; i++) {
@@ -166,7 +178,9 @@ class WaveFunctionCollapsePainter extends CustomPainter {
       }
     }
 
-    grid = formNextGrid();
+    if (isEntireGridnotCollapsed) {
+      grid = formNextGrid();
+    }
   }
 
   List<Cell> formNextGrid() {
@@ -272,7 +286,7 @@ class WaveFunctionCollapsePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+    return grid.any((element) => !element.isCollapsed);
   }
 }
 
