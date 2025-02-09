@@ -46,6 +46,33 @@ class _WaveFunctionCollapseViewState extends State<WaveFunctionCollapseView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            grid = [];
+
+            for (var j = 0; j < DIM; j++) {
+              for (var i = 0; i < DIM; i++) {
+                grid.add(
+                  Cell(
+                    x: i,
+                    y: j,
+                    isCollapsed: false,
+                    options: [
+                      Direction.BLANK,
+                      Direction.UP,
+                      Direction.RIGHT,
+                      Direction.DOWN,
+                      Direction.LEFT,
+                    ],
+                  ),
+                );
+              }
+            }
+          });
+        },
+        child: const Icon(Icons.refresh),
+      ),
       body: InkWell(
         onTap: () {
           setState(() {});
@@ -62,6 +89,8 @@ class _WaveFunctionCollapseViewState extends State<WaveFunctionCollapseView> {
 }
 
 class WaveFunctionCollapsePainter extends CustomPainter {
+  WaveFunctionCollapsePainter();
+
   @override
   void paint(Canvas canvas, Size size) {
     final height = size.height;
@@ -74,6 +103,10 @@ class WaveFunctionCollapsePainter extends CustomPainter {
     gridCopy.removeWhere((Cell element) => element.isCollapsed);
 
     print("GridLength:${gridCopy.length}");
+
+    if (gridCopy.isEmpty) {
+      gridCopy = grid;
+    }
 
     // sort based on options left
     gridCopy.sort((a, b) => a.options.length.compareTo(b.options.length));
