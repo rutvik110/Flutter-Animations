@@ -8,6 +8,9 @@ import 'package:flutter/services.dart';
 
 import '../main.dart';
 
+List<Cell> grid = [];
+const int DIM = 2;
+
 class WaveFunctionCollapseView extends StatefulWidget {
   const WaveFunctionCollapseView({super.key});
 
@@ -17,26 +20,8 @@ class WaveFunctionCollapseView extends StatefulWidget {
 
 class _WaveFunctionCollapseViewState extends State<WaveFunctionCollapseView> {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomPaint(
-        size: const Size(300, 300),
-        painter: WaveFunctionCollapsePainter(),
-      ),
-    );
-  }
-}
-
-class WaveFunctionCollapsePainter extends CustomPainter {
-  List<Cell> grid = [];
-
-  final int DIM = 2;
-  @override
-  void paint(Canvas canvas, Size size) {
-    final height = size.height;
-    final width = size.width;
-    final cellWidth = width / DIM;
-    final cellHeight = height / DIM;
+  void initState() {
+    super.initState();
 
     for (var j = 0; j < DIM; j++) {
       for (var i = 0; i < DIM; i++) {
@@ -56,9 +41,38 @@ class WaveFunctionCollapsePainter extends CustomPainter {
         );
       }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: InkWell(
+        onTap: () {
+          setState(() {});
+        },
+        child: Center(
+          child: CustomPaint(
+            size: const Size(300, 300),
+            painter: WaveFunctionCollapsePainter(),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class WaveFunctionCollapsePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final height = size.height;
+    final width = size.width;
+    final cellWidth = width / DIM;
+    final cellHeight = height / DIM;
 
     // draw image, reduce the entropy of cells
     List<Cell> gridCopy = List<Cell>.from(grid);
+    gridCopy.remove((element) => element.isCollapsed);
+
     // sort based on options left
     gridCopy.sort((a, b) => a.options.length.compareTo(b.options.length));
 
@@ -80,15 +94,14 @@ class WaveFunctionCollapsePainter extends CustomPainter {
 
     final Cell randomCell = gridCopy[Random().nextInt(gridCopy.length)];
     randomCell.isCollapsed = true;
-    randomCell.options = [randomCell.options[Random().nextInt(randomCell.options.length)]];
+    if (randomCell.options.isNotEmpty) {
+      randomCell.options = [randomCell.options[Random().nextInt(randomCell.options.length)]];
+    }
 
     // update the original grid
     final randomCellIndex = grid.indexOf(randomCell);
 
     grid[randomCellIndex] = randomCell;
-
-    print(grid);
-    print(gridCopy);
 
     for (var j = 0; j < DIM; j++) {
       for (var i = 0; i < DIM; i++) {
@@ -117,6 +130,103 @@ class WaveFunctionCollapsePainter extends CustomPainter {
         }
       }
     }
+
+    grid = formNextGrid();
+  }
+
+  List<Cell> formNextGrid() {
+    // possibilities
+    List<Cell> nextGrid = [];
+
+    for (var j = 0; j < DIM; j++) {
+      for (var i = 0; i < DIM; i++) {
+        final int index = i + (j * DIM);
+        final cell = grid[index];
+
+        if (cell.isCollapsed) {
+          nextGrid.add(cell);
+        } else {
+          List<Direction> options = [
+            Direction.BLANK,
+            Direction.UP,
+            Direction.RIGHT,
+            Direction.DOWN,
+            Direction.LEFT,
+          ];
+
+          // look up
+          if (j > 0) {
+            final upCell = grid[i + (j - 1) * DIM];
+
+            for (var option in upCell.options) {
+              final valid = rules[option]![2];
+              options = checkValid(options, valid);
+            }
+          }
+
+          // look right
+          if (i < DIM - 1) {
+            final rightCell = grid[i + 1 + (j * DIM)];
+
+            for (var option in rightCell.options) {
+              final valid = rules[option]![3]; // if looking right, i wanna know what's valid to left of the cell
+              options = checkValid(options, valid);
+            }
+          }
+
+          // look down
+          if (j < DIM - 1) {
+            final downCell = grid[i + (j + 1) * DIM];
+
+            for (var option in downCell.options) {
+              final valid = rules[option]![0]; // if looking down, i wanna know what's valid to up of the cell
+              options = checkValid(options, valid);
+            }
+          }
+
+          // look left
+          if (i > 0) {
+            final leftCell = grid[i - 1 + (j * DIM)];
+
+            for (var option in leftCell.options) {
+              final valid = rules[option]![1]; // if looking left, i wanna know what's valid to right of the cell
+              options = checkValid(options, valid);
+            }
+          }
+
+          print("1");
+
+          nextGrid.add(Cell(
+            x: grid[index].x,
+            y: grid[index].y,
+            isCollapsed: false,
+            options: options,
+          ));
+        }
+      }
+    }
+
+    print("NextGrid-->${nextGrid.map((e) => e.options)}");
+
+    return nextGrid;
+  }
+
+  List<Direction> checkValid(List<Direction> options, List<Direction> valid) {
+    final List<Direction> validOptions = [
+      Direction.BLANK,
+      Direction.UP,
+      Direction.RIGHT,
+      Direction.DOWN,
+      Direction.LEFT,
+    ];
+
+    for (var option in options) {
+      if (!valid.contains(option)) {
+        validOptions.remove(option);
+      }
+    }
+
+    return validOptions;
   }
 
   @override
@@ -161,3 +271,36 @@ enum Direction {
     }
   }
 }
+
+const rules = {
+  Direction.BLANK: [
+    [Direction.BLANK, Direction.UP],
+    [Direction.BLANK, Direction.RIGHT],
+    [Direction.BLANK, Direction.DOWN],
+    [Direction.BLANK, Direction.LEFT],
+  ],
+  Direction.UP: [
+    [Direction.RIGHT, Direction.LEFT, Direction.DOWN],
+    [Direction.LEFT, Direction.UP, Direction.DOWN],
+    [Direction.BLANK, Direction.DOWN],
+    [Direction.RIGHT, Direction.UP, Direction.DOWN],
+  ],
+  Direction.RIGHT: [
+    [Direction.RIGHT, Direction.LEFT, Direction.DOWN],
+    [Direction.LEFT, Direction.UP, Direction.DOWN],
+    [Direction.RIGHT, Direction.LEFT, Direction.UP],
+    [Direction.BLANK, Direction.LEFT],
+  ],
+  Direction.DOWN: [
+    [Direction.BLANK, Direction.UP],
+    [Direction.LEFT, Direction.UP, Direction.DOWN],
+    [Direction.RIGHT, Direction.LEFT, Direction.UP],
+    [Direction.RIGHT, Direction.UP, Direction.DOWN],
+  ],
+  Direction.LEFT: [
+    [Direction.RIGHT, Direction.LEFT, Direction.DOWN],
+    [Direction.BLANK, Direction.RIGHT],
+    [Direction.RIGHT, Direction.LEFT, Direction.UP],
+    [Direction.UP, Direction.DOWN, Direction.RIGHT],
+  ],
+};
