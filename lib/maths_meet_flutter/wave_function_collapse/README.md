@@ -1,6 +1,6 @@
 # Wave Function Collapse
 
-https://user-images.githubusercontent.com/65209850/196029076-c6548842-cbab-4632-b79f-fc3b2cde9150.mov
+https://github.com/user-attachments/assets/db3a280c-ff12-43aa-ae51-c27f495196a6
 
 # Supporting Video - @thecodingtrain
 
