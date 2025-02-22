@@ -131,7 +131,7 @@ class MazePainter extends CustomPainter {
       canvas.drawRect(
         Rect.fromLTWH(x, y, cellW, cellW),
         Paint()
-          ..color = Colors.blue
+          ..color = cell.x == current.x && cell.y == current.y ? Colors.purple : Colors.blue
           ..strokeWidth = 0,
       );
     }
