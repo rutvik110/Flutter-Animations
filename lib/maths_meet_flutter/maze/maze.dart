@@ -42,25 +42,38 @@ class _MazeViewState extends State<MazeView> with SingleTickerProviderStateMixin
 class MazePainter extends CustomPainter {
   MazePainter();
 
+  final painter = Paint()
+    ..style = PaintingStyle.stroke
+    ..color = Colors.black;
+
   @override
   void paint(Canvas canvas, Size size) {
-    final painter = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = Colors.black;
-
     final width = size.width;
-    // final height = size.height;
     final cellW = width / DIM;
-    // final cellH = height / DIM;
 
     for (var i = 0; i < grid.length; i++) {
       final cell = grid[i];
-      final x = cell.x * cellW;
-      final y = cell.y * cellW;
+      showCell(canvas, cell, cellW);
+    }
+  }
 
+  void showCell(Canvas canvas, Cell cell, double cellW) {
+    final x = cell.x * cellW;
+    final y = cell.y * cellW;
+
+    if (cell.walls[0]) {
       canvas.drawLine(Offset(x, y), Offset(x + cellW, y), painter);
+    }
+
+    if (cell.walls[1]) {
       canvas.drawLine(Offset(x + cellW, y), Offset(x + cellW, y + cellW), painter);
+    }
+
+    if (cell.walls[2]) {
       canvas.drawLine(Offset(x + cellW, y + cellW), Offset(x, y + cellW), painter);
+    }
+
+    if (cell.walls[3]) {
       canvas.drawLine(Offset(x, y + cellW), Offset(x, y), painter);
     }
   }
@@ -74,10 +87,12 @@ class MazePainter extends CustomPainter {
 class Cell {
   final int x;
   final int y;
+  final List<bool> walls;
 
   Cell({
     required this.x,
     required this.y,
+    this.walls = const [true, true, true, true],
   });
 }
 
