@@ -17,7 +17,13 @@ class _MazeViewState extends State<MazeView> with SingleTickerProviderStateMixin
 
     for (int j = 0; j < DIM; j++) {
       for (int i = 0; i < DIM; i++) {
-        grid.add(Cell(x: i, y: j));
+        grid.add(
+          Cell(
+            x: i,
+            y: j,
+            isVisited: i == 0 && j == 0,
+          ),
+        );
       }
     }
   }
@@ -76,6 +82,13 @@ class MazePainter extends CustomPainter {
     if (cell.walls[3]) {
       canvas.drawLine(Offset(x, y + cellW), Offset(x, y), painter);
     }
+
+    if (cell.isVisited) {
+      canvas.drawRect(
+        Rect.fromLTWH(x, y, cellW, cellW),
+        Paint()..color = Colors.blue,
+      );
+    }
   }
 
   @override
@@ -88,11 +101,13 @@ class Cell {
   final int x;
   final int y;
   final List<bool> walls;
+  bool isVisited;
 
   Cell({
     required this.x,
     required this.y,
     this.walls = const [true, true, true, true],
+    this.isVisited = false,
   });
 }
 
