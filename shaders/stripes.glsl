@@ -28,15 +28,9 @@ vec2 rotatePoint(vec2 pt,vec2 center,float angle){
 void main(){
     vec2 uv=gl_FragCoord.xy/iResolution.xy;
     
-    // float tiles=tiles;
-    
-    // vec2 uv2=uv;
-    
-    // uv2.x=mix(uv.x,uv.y,direction);
-    // uv2.y=mix(uv.y,1.-uv.x,direction);
     vec2 uv2=rotatePoint(uv.xy,vec2(.5,.5),direction*2.*PI);
     
-    uv2.x+=sin(uv2.y*warpTiling*PI*2.)*warpScale+speed;//u_time/10.;
+    uv2.x+=sin(uv2.y*warpTiling*PI*2.)*warpScale+speed;
     uv2.x*=tiles;
     
     float st=floor(fract(uv2.x)+.5);
