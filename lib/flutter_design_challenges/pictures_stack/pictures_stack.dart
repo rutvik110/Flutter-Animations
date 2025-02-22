@@ -46,124 +46,125 @@ class _ImagesStackerState extends State<PicturesStack> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      appBar: AppBar(
+        title: const Text("Pokedex"),
+        centerTitle: false,
+        backgroundColor: Colors.blue,
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Container(
-              clipBehavior: Clip.hardEdge,
-              decoration: const BoxDecoration(
-                color: Colors.black,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: SizedBox(
-                height: 400,
-                child: AnimatedList(
-                    key: key,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                    ),
-                    controller: scrollController,
-                    scrollDirection: Axis.horizontal,
-                    initialItemCount: items.length,
-                    itemBuilder: (context, index, animation) {
-                      return AnimatedBuilder(
-                        animation: animation,
-                        builder: (context, child) {
-                          return Align(
-                            widthFactor: math.max(animation.value, 0.0),
-                            child: SlideTransition(
-                              position: animation
-                                  .drive(CurveTween(curve: Curves.decelerate))
-                                  .drive(
-                                    Tween<Offset>(
-                                      begin: const Offset(1, 0),
-                                      end: Offset.zero,
-                                    ),
-                                  ),
-                              child: RotationTransition(
-                                turns: animation.drive(
-                                  Tween<double>(
-                                    begin: (math.pi / 180) * 22.5,
-                                    end: 0,
+          Text(
+            "Build your team",
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          Container(
+            decoration: const BoxDecoration(
+                // color: Colors.black,
+                ),
+            child: SizedBox(
+              height: 400,
+              child: AnimatedList(
+                  key: key,
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                  ),
+                  controller: scrollController,
+                  scrollDirection: Axis.horizontal,
+                  initialItemCount: items.length,
+                  itemBuilder: (context, index, animation) {
+                    return AnimatedBuilder(
+                      animation: animation,
+                      builder: (context, child) {
+                        return Align(
+                          widthFactor: math.max(animation.value, 0.0),
+                          child: SlideTransition(
+                            position: animation.drive(CurveTween(curve: Curves.decelerate)).drive(
+                                  Tween<Offset>(
+                                    begin: const Offset(1, 0),
+                                    end: Offset.zero,
                                   ),
                                 ),
-                                child: child,
+                            child: RotationTransition(
+                              turns: animation.drive(
+                                Tween<double>(
+                                  begin: (math.pi / 180) * 22.5,
+                                  end: 0,
+                                ),
                               ),
+                              child: child,
                             ),
-                          );
-                        },
-                        child: Align(
-                          widthFactor: 0.7,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(140),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color.fromARGB(202, 234, 234, 234),
-                                  blurRadius: 20,
-                                  spreadRadius: 0.1,
+                          ),
+                        );
+                      },
+                      child: Align(
+                        widthFactor: 0.7,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(140),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color.fromARGB(199, 141, 141, 141),
+                                blurRadius: 20,
+                                spreadRadius: 0.1,
+                              ),
+                            ],
+                          ),
+                          child: ClipOval(
+                            key: items[index].key,
+                            child: Stack(
+                              children: [
+                                StripesShaderBuilder(
+                                  updateShaderInputs: (shader, size, delta) {
+                                    return StripesShaderArguments(
+                                      size: size,
+                                      delta: delta,
+                                      tiles: 2,
+                                      speed: delta / 10,
+                                      direction: 0.1,
+                                      warpScale: 0.3,
+                                      warpTiling: 0.25,
+                                      color1: items[index].color1,
+                                      color2: items[index].color2,
+                                    );
+                                  },
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 30,
+                                        color: Colors.white,
+                                      ),
+                                      // image: DecorationImage(
+                                      //   image: AssetImage(
+                                      //     items[index].assetImage,
+                                      //   ),
+                                      // ),
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(
+                                        70,
+                                      ),
+                                    ),
+                                    child: const SizedBox(
+                                      height: 140,
+                                      width: 140,
+                                    ),
+                                  ),
+                                ),
+                                CircleAvatar(
+                                  radius: 70,
+                                  backgroundColor: Colors.transparent,
+                                  backgroundImage: AssetImage(
+                                    items[index].assetImage,
+                                  ),
                                 ),
                               ],
                             ),
-                            child: ClipOval(
-                              key: items[index].key,
-                              child: Stack(
-                                children: [
-                                  StripesShaderBuilder(
-                                    updateShaderInputs: (shader, size, delta) {
-                                      return StripesShaderArguments(
-                                        size: size,
-                                        delta: delta,
-                                        tiles: 4,
-                                        speed: delta / 10,
-                                        direction: 0.85,
-                                        warpScale: 1.0,
-                                        warpTiling: 0.6,
-                                        color1: items[index].color1,
-                                        color2: items[index].color2,
-                                      );
-                                    },
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          width: 30,
-                                          color: Colors.white,
-                                        ),
-                                        // image: DecorationImage(
-                                        //   image: AssetImage(
-                                        //     items[index].assetImage,
-                                        //   ),
-                                        // ),
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.circular(
-                                          70,
-                                        ),
-                                      ),
-                                      child: const SizedBox(
-                                        height: 140,
-                                        width: 140,
-                                      ),
-                                    ),
-                                  ),
-                                  CircleAvatar(
-                                    radius: 70,
-                                    backgroundColor: Colors.transparent,
-                                    backgroundImage: AssetImage(
-                                      items[index].assetImage,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ),
                         ),
-                      );
-                    }),
-              ),
+                      ),
+                    );
+                  }),
             ),
           ),
           Row(
@@ -171,9 +172,7 @@ class _ImagesStackerState extends State<PicturesStack> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  final index = math.Random()
-                          .nextInt(items.length < 5 ? items.length : 4) +
-                      1;
+                  final index = math.Random().nextInt(items.length < 5 ? items.length : 4) + 1;
                   final item = pokemonstList[index];
                   setState(() {
                     items.insert(
@@ -245,8 +244,7 @@ class _ImagesStackerState extends State<PicturesStack> {
                                   children: [
                                     StripesShaderBuilder(
                                       direction: 1.0,
-                                      updateShaderInputs:
-                                          (shader, size, delta) {
+                                      updateShaderInputs: (shader, size, delta) {
                                         return StripesShaderArguments(
                                           size: size,
                                           delta: delta,

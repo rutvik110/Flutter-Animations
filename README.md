@@ -3,7 +3,7 @@
 🏠 Home for animations and design challeges 🖌 I created inspired by micro-macro interactions from different apps, musics, movies, games and sometimes just for fun with Flutter 💙
 
 
-<h2> Sponsored with 💙 by </h2>
+<!--<h2> Sponsored with 💙 by </h2>
 <div align="center">
  <div style="background-color:lightblue">
     
@@ -12,6 +12,7 @@
   </div>
 </div>
 <h2></h2>
+-->
 
 
 [Power Up](https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/power_up)
@@ -64,5 +65,13 @@ https://user-images.githubusercontent.com/65209850/216130784-843b0ba8-341b-49c3-
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/spotify_lyrics_hero_animation"><img src="https://media.giphy.com/media/uco6P6mZixFtZs9D16/giphy.gif" width="49%"></a>
 
 <a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/flutter_design_challenges/twitter_profile_scroll"><img src="https://media.giphy.com/media/EP4iS4RT411qqoIAY1/giphy.gif" width="49%"></a>
+
+
+<a target="_blank" href="https://github.com/rutvik110/Flutter-Animations/tree/master/lib/custom_painters/blobs.dart">
+ Blobs
+</a>
+
+https://github.com/rutvik110/Flutter-Animations/assets/65209850/86d6253a-d99d-4def-9aa5-0ae9276afd17
+
 
 
