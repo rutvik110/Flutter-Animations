@@ -27,6 +27,7 @@ class _MazeViewState extends State<MazeView> with SingleTickerProviderStateMixin
           Cell(
             x: i,
             y: j,
+            walls: [true, true, true, true],
           ),
         );
       }
@@ -64,6 +65,7 @@ class MazePainter extends CustomPainter {
 
   final painter = Paint()
     ..style = PaintingStyle.stroke
+    ..strokeWidth = 2
     ..color = Colors.black;
 
   @override
@@ -80,6 +82,8 @@ class MazePainter extends CustomPainter {
     if (next != null) {
       next.isVisited = true;
       grid[index(current.x, current.y)] = current;
+
+      removeWalls(current, next);
 
       current = next;
     }
@@ -108,7 +112,9 @@ class MazePainter extends CustomPainter {
     if (cell.isVisited) {
       canvas.drawRect(
         Rect.fromLTWH(x, y, cellW, cellW),
-        Paint()..color = Colors.blue,
+        Paint()
+          ..color = Colors.blue
+          ..strokeWidth = 0,
       );
     }
   }
@@ -152,6 +158,29 @@ class MazePainter extends CustomPainter {
         : null;
   }
 
+  void removeWalls(Cell current, Cell next) {
+    final x = current.x - next.x;
+    if (x == 1) {
+      current.walls[3] = false;
+      next.walls[1] = false;
+    } else if (x == -1) {
+      current.walls[1] = false;
+      next.walls[3] = false;
+    }
+
+    final y = current.y - next.y;
+    if (y == 1) {
+      current.walls[0] = false;
+      next.walls[2] = false;
+    } else if (y == -1) {
+      current.walls[2] = false;
+      next.walls[0] = false;
+    }
+
+    grid[index(current.x, current.y)] = current;
+    grid[index(next.x, next.y)] = next;
+  }
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
@@ -161,13 +190,13 @@ class MazePainter extends CustomPainter {
 class Cell {
   final int x;
   final int y;
-  final List<bool> walls;
+  List<bool> walls;
   bool isVisited;
 
   Cell({
     required this.x,
     required this.y,
-    this.walls = const [true, true, true, true],
+    required this.walls,
     this.isVisited = false,
   });
 }
