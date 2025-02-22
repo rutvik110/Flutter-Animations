@@ -47,7 +47,25 @@ class _MazeViewState extends State<MazeView> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          grid = [];
+
+          for (int j = 0; j < DIM; j++) {
+            for (int i = 0; i < DIM; i++) {
+              grid.add(
+                Cell(
+                  x: i,
+                  y: j,
+                  walls: [true, true, true, true],
+                ),
+              );
+            }
+          }
+
+          current = grid[0];
+          current.isVisited = true;
+          grid[0] = current;
+        },
         child: const Icon(Icons.refresh),
       ),
       body: Center(
