@@ -1,12 +1,4 @@
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-
-import 'package:flutter/services.dart';
-
-import '../../main.dart';
 
 List<Cell> grid = [];
 const int DIM = 10;
@@ -57,19 +49,19 @@ class MazePainter extends CustomPainter {
       ..color = Colors.black;
 
     final width = size.width;
-    final height = size.height;
+    // final height = size.height;
     final cellW = width / DIM;
-    final cellH = height / DIM;
+    // final cellH = height / DIM;
 
     for (var i = 0; i < grid.length; i++) {
       final cell = grid[i];
       final x = cell.x * cellW;
-      final y = cell.y * cellH;
+      final y = cell.y * cellW;
 
-      canvas.drawRect(
-        Rect.fromLTWH(x, y, cellW, cellH),
-        painter,
-      );
+      canvas.drawLine(Offset(x, y), Offset(x + cellW, y), painter);
+      canvas.drawLine(Offset(x + cellW, y), Offset(x + cellW, y + cellW), painter);
+      canvas.drawLine(Offset(x + cellW, y + cellW), Offset(x, y + cellW), painter);
+      canvas.drawLine(Offset(x, y + cellW), Offset(x, y), painter);
     }
   }
 
