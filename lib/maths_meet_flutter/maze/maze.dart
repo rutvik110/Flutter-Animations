@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 List<Cell> grid = [];
 const int DIM = 10;
+late Cell current;
 
 class MazeView extends StatefulWidget {
   const MazeView({super.key});
@@ -11,6 +15,8 @@ class MazeView extends StatefulWidget {
 }
 
 class _MazeViewState extends State<MazeView> with SingleTickerProviderStateMixin {
+  late final Ticker ticker;
+
   @override
   void initState() {
     super.initState();
@@ -21,11 +27,19 @@ class _MazeViewState extends State<MazeView> with SingleTickerProviderStateMixin
           Cell(
             x: i,
             y: j,
-            isVisited: i == 0 && j == 0,
           ),
         );
       }
     }
+
+    current = grid[0];
+    current.isVisited = true;
+    grid[0] = current;
+
+    ticker = createTicker((elapsed) {
+      setState(() {});
+    })
+      ..start();
   }
 
   @override
@@ -61,6 +75,14 @@ class MazePainter extends CustomPainter {
       final cell = grid[i];
       showCell(canvas, cell, cellW);
     }
+
+    final next = checkNeighbours(current);
+    if (next != null) {
+      next.isVisited = true;
+      grid[index(current.x, current.y)] = current;
+
+      current = next;
+    }
   }
 
   void showCell(Canvas canvas, Cell cell, double cellW) {
@@ -89,6 +111,45 @@ class MazePainter extends CustomPainter {
         Paint()..color = Colors.blue,
       );
     }
+  }
+
+  int index(int x, int y) {
+    if (x < 0 || y < 0 || x > DIM - 1 || y > DIM - 1) {
+      return -1;
+    }
+
+    return x + y * DIM;
+  }
+
+  Cell? checkNeighbours(Cell cell) {
+    final neighbours = <Cell>[];
+    final x = cell.x;
+    final y = cell.y;
+
+    final topIndex = index(x, y - 1);
+    final rightIndex = index(x + 1, y);
+    final bottomIndex = index(x, y + 1);
+    final leftIndex = index(x - 1, y);
+
+    if (topIndex != -1 && !grid[topIndex].isVisited) {
+      neighbours.add(grid[topIndex]);
+    }
+
+    if (rightIndex != -1 && !grid[rightIndex].isVisited) {
+      neighbours.add(grid[rightIndex]);
+    }
+
+    if (bottomIndex != -1 && !grid[bottomIndex].isVisited) {
+      neighbours.add(grid[bottomIndex]);
+    }
+
+    if (leftIndex != -1 && !grid[leftIndex].isVisited) {
+      neighbours.add(grid[leftIndex]);
+    }
+
+    return neighbours.isNotEmpty //
+        ? neighbours[Random().nextInt(neighbours.length)]
+        : null;
   }
 
   @override
