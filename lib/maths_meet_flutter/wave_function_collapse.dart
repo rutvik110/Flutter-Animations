@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
 
@@ -30,8 +29,6 @@ class _WaveFunctionCollapseViewState extends State<WaveFunctionCollapseView> wit
       for (var i = 0; i < DIM; i++) {
         grid.add(
           Cell(
-            x: i,
-            y: j,
             isCollapsed: false,
             options: [
               Direction.BLANK,
@@ -63,8 +60,6 @@ class _WaveFunctionCollapseViewState extends State<WaveFunctionCollapseView> wit
               for (var i = 0; i < DIM; i++) {
                 grid.add(
                   Cell(
-                    x: i,
-                    y: j,
                     isCollapsed: false,
                     options: [
                       Direction.BLANK,
@@ -87,7 +82,7 @@ class _WaveFunctionCollapseViewState extends State<WaveFunctionCollapseView> wit
         },
         child: Center(
           child: CustomPaint(
-            size: const Size(300, 300),
+            size: const Size(500, 500),
             painter: WaveFunctionCollapsePainter(),
           ),
         ),
@@ -258,8 +253,6 @@ class WaveFunctionCollapsePainter extends CustomPainter {
           print("1");
 
           nextGrid.add(Cell(
-            x: grid[index].x,
-            y: grid[index].y,
             isCollapsed: false,
             options: options,
           ));
@@ -293,14 +286,10 @@ class WaveFunctionCollapsePainter extends CustomPainter {
 class Cell {
   bool isCollapsed;
   List<Direction> options;
-  final int x;
-  final int y;
 
   Cell({
     required this.isCollapsed,
     required this.options,
-    required this.x,
-    required this.y,
   });
 }
 
