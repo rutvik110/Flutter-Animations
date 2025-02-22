@@ -11,8 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_animations/flutter_gestures/continous_drag_selection/continous_drag_selection.dart';
 import 'package:flutter_animations/flutter_shaders/stripes_shader/stripes_shader_view.dart';
 import 'package:flutter_animations/maths_meet_flutter/fire_simulations/smoke_simulation.dart';
-
-import 'maths_meet_flutter/wave_function_collapse.dart';
+import 'package:flutter_animations/maths_meet_flutter/maze/maze.dart';
 
 late ui.Image image;
 
@@ -46,7 +45,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           // textTheme: GoogleFonts.rubikTextTheme(Theme.of(context).textTheme),
         ),
-        home: const WaveFunctionCollapseView()
+        home: const MazeView()
         //     Scaffold(
         //   backgroundColor: Colors.black,
         //   body: Center(
