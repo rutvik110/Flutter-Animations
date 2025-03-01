@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 List<Cell> grid = [];
-const int DIM = 10;
+List<Cell> stack = [];
+const int DIM = 50;
 late Cell current;
 
 class MazeView extends StatefulWidget {
@@ -99,11 +100,16 @@ class MazePainter extends CustomPainter {
     final next = checkNeighbours(current);
     if (next != null) {
       next.isVisited = true;
+
+      stack.add(current);
+
       grid[index(current.x, current.y)] = current;
 
       removeWalls(current, next);
 
       current = next;
+    } else if (stack.isNotEmpty) {
+      current = stack.removeLast();
     }
   }
 
