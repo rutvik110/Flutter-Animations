@@ -5,7 +5,7 @@ import 'package:flutter/scheduler.dart';
 
 List<Cell> grid = [];
 List<Cell> stack = [];
-const int DIM = 50;
+const int DIM = 20;
 late Cell current;
 
 class MazeView extends StatefulWidget {
