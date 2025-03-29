@@ -15,9 +15,14 @@ position = (0,0, 0)
 # Add a rectangular plane at the given position
 #bpy.ops.mesh.primitive_cube_add(size=2, location=position,scale=(1,2,2))
 
+bpy.ops.mesh.primitive_cube_add(size=2, location=position,scale=(1,3,2))
+
 # activeRect = bpy.context.object
 
+# TODO: Use a rect?
 def draw_line(start, end):
+#    bpy.ops.mesh.primitive_cube_add(size=2, location=start,scale=e)
+#    bpy.ops.mesh.primitive_cube_add(size=2, location=start,scale=(abs(end.x -start.x),abs(end.y - start.y),2));
     mesh = bpy.data.meshes.new(name="Line")
     obj = bpy.data.objects.new("Line", mesh)
     bpy.context.collection.objects.link(obj)
@@ -40,7 +45,7 @@ class Cell:
 
 grid: list[Cell] = [];
 stack: list[Cell] = [];
-DIM: int = 4;
+DIM: int = 3;
 current:Cell;
 
 
