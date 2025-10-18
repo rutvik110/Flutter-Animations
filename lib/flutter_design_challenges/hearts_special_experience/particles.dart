@@ -18,10 +18,7 @@ class HeartsSpecialExperience extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: const [
-          Positioned.fill(child: CellularNoiseBuilder()),
-          ParticlesSystem()
-        ],
+        children: const [Positioned.fill(child: CellularNoiseBuilder()), ParticlesSystem()],
       ),
     );
   }
@@ -75,8 +72,7 @@ class _ParticlesSystemState extends State<ParticlesSystem> {
     // maxDuration in milliseconds
     await Future.delayed(const Duration(milliseconds: 200));
 
-    int maxDurationInmilliseconds =
-        await audioPlayer.fixedPlayer!.getDuration();
+    int maxDurationInmilliseconds = await audioPlayer.fixedPlayer!.getDuration();
 
     maxDuration = Duration(milliseconds: maxDurationInmilliseconds);
     setState(() {
@@ -86,8 +82,7 @@ class _ParticlesSystemState extends State<ParticlesSystem> {
 
   void get updateActiveIndex {
     if (samples.isNotEmpty) {
-      final elapsedTimeRatio =
-          elapsedDuration.inMilliseconds / maxDuration.inMilliseconds;
+      final elapsedTimeRatio = elapsedDuration.inMilliseconds / maxDuration.inMilliseconds;
       final index = (samples.length * elapsedTimeRatio).round();
       musicAmplitude = index < samples.length ? samples[index] : 0;
     }
@@ -116,8 +111,7 @@ class _ParticlesSystemState extends State<ParticlesSystem> {
         elapsedDuration = maxDuration;
       });
     });
-    audioPlayer.fixedPlayer!.onAudioPositionChanged
-        .listen((Duration timeElapsed) {
+    audioPlayer.fixedPlayer!.onAudioPositionChanged.listen((Duration timeElapsed) {
       setState(() {
         elapsedDuration = timeElapsed;
         updateActiveIndex;
@@ -176,9 +170,7 @@ class _ParticlesSystemState extends State<ParticlesSystem> {
           // and increment the frame
           final sineY = (particle.sineAngle + 1);
           final isCircle = sineY ~/ 2 == 0;
-          final updatedSine = isCircle
-              ? particle.sineMultipler
-              : particle.sineMultipler + 0.0005;
+          final updatedSine = isCircle ? particle.sineMultipler : particle.sineMultipler + 0.0005;
           final displacementx = sin(sineY * degree) * updatedSine;
           final isXAhead = dragPoint.dx < particle.x;
           final isYAhead = dragPoint.dy < particle.y;
@@ -199,17 +191,10 @@ class _ParticlesSystemState extends State<ParticlesSystem> {
             sineMultipler: updatedSine,
             sineAngle: sineY,
             vx: displacementx + dragVelocity.dx / 100 + xChange,
-            vy: particle.vy -
-                0.0005 +
-                dragVelocity.dy / 100 +
-                yChange +
-                musicAmplitude * 0.25,
+            vy: particle.vy - 0.0005 + dragVelocity.dy / 100 + yChange + musicAmplitude * 0.25,
             frame: particle.frame + 1,
-            rotation: particle.rotation +
-                (displacementx * sin(22.5 * degree) / 10) * particle.scale,
-            scale: updatedScale < 0
-                ? particle.scale + musicAmplitude.abs() * 0.1
-                : updatedScale,
+            rotation: particle.rotation + (displacementx * sin(22.5 * degree) / 10) * particle.scale,
+            scale: updatedScale < 0 ? particle.scale + musicAmplitude.abs() * 0.1 : updatedScale,
           );
 
           if (particle.y < -100 ||
@@ -253,6 +238,26 @@ class _ParticlesSystemState extends State<ParticlesSystem> {
             child: CustomEnlightenedHeart(
               musicAmplitude: musicAmplitude,
             ),
+          ),
+          Positioned(
+            bottom: 20,
+            left: 20,
+            child: IconButton(
+                onPressed: () {
+                  // play if paused
+                  // pause if playing
+                  // INSERT_YOUR_CODE
+                  // You need to toggle playback state (play if paused, pause if playing)
+                  // Let's assume there's a bool isPlaying and a method togglePlayback() in scope
+                  setState(() {
+                    if (audioPlayer.fixedPlayer!.state == PlayerState.PLAYING) {
+                      audioPlayer.fixedPlayer!.pause();
+                    } else {
+                      audioPlayer.fixedPlayer!.resume();
+                    }
+                  });
+                },
+                icon: Icon(Icons.play_arrow)),
           )
         ],
       ),

@@ -3,8 +3,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_processing/flutter_processing.dart';
 import 'package:flutter_processing/flutter_processing.dart' as fp;
+import 'package:flutter_processing/flutter_processing.dart';
 
 class Particle {
   late final PVector loc;
@@ -54,7 +54,7 @@ class Particle {
 
     sketch.image(
       image: img,
-      alpha: alpha,
+      // alpha: alpha,
       origin: Offset(
         loc.x.toDouble(),
         loc.y.toDouble(),
