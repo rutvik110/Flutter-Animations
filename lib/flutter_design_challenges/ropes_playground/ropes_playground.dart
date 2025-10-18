@@ -133,10 +133,10 @@ class _RopesViewState extends State<RopesPhysics> {
 
     for (var i = 0; i < segments; i++) {
       Offset firstSegment = ropeSegments[i];
-      Vector2 velocity = firstSegment.posNow - oldSegments[i].posNow;
+      // Vector2 velocity = firstSegment.posNow - oldSegments[i].posNow;
 
       oldSegments[i] = firstSegment;
-      Vector2 latestPosition = firstSegment.posNow + velocity;
+      Vector2 latestPosition = firstSegment.posNow; //+ velocity;
 
       latestPosition += wind;
       latestPosition += forceGravity;
@@ -170,8 +170,7 @@ class _RopesViewState extends State<RopesPhysics> {
 
       Vector2 changedAmount = changeDir * error;
       if (i != 0) {
-        firstSegment -= changedAmount *
-            0.5; // multiply by error for proper single point hanging and by 0.5 for bridge;
+        firstSegment -= changedAmount * 0.5; // multiply by error for proper single point hanging and by 0.5 for bridge;
         ropeSegments[i] = Offset(firstSegment.x, firstSegment.y);
         secondSegment += (changedAmount * 0.5);
         ropeSegments[i + 1] = Offset(secondSegment.x, secondSegment.y);
